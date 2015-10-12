@@ -1,0 +1,9 @@
+Mainloop:
+
+	Uppdatera lokala variabler för data från sensorenheten
+	
+	Om testläge -> in i testläges rutin annars tävlingsläge
+
+	Skicka order till styrenheten
+
+	Skicka data till PC
