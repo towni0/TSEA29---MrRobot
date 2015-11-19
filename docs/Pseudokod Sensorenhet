@@ -1,7 +1,0 @@
-Sensorenhetens pseudokod:
-
-Loop{
-filtrera data
-uppdatera data från alla sensormoduler
-Skicka data till ME
-}
