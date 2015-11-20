@@ -20,26 +20,30 @@
 #define IR_PWM PINB5
 #define IR_PORT PINB
 
+#define LED1 PINBX
+#define LED2 PINBX
+#define LED3 PINBX
+
 //Orders
-#define DO_NOTHING 			0
-#define MOVE_FORWARD 		1
-#define TURN_LEFT 			2
-#define TURN_RIGHT 			3
-#define ACTIVATE_LASER 		4
-#define DEACTIVATE_LASER 	5
-#define TURN_OFF_IR_SIG		6
-#define TURN_ON_IR_SIG 		7
-#define STOP_MOVING 		8
-#define DECREMENT_LED_LIVES	9
+#define DO_NOTHING 						0
+#define MOVE_FORWARD 					1
+#define TURN_LEFT 						2
+#define TURN_RIGHT 						3
+#define ACTIVATE_LASER 					4
+#define DEACTIVATE_LASER 				5
+#define TURN_OFF_IR_SIG					6
+#define TURN_ON_IR_SIG 					7
+#define STOP_MOVING 					8
+#define DECREMENT_LED_LIVES				9
+#define TURN_INVISIBLE_AND_DEC_LIFE_LED 10
+#define ACTIVATE_LASER_AND_TURN_RIGHT 	11
+
+
+#define RESET_SE						20
+
 
 #define MOVEMENT_SPEED 128
 #define ROTATION_SPEED 64
-
-// VARIABLES
-int period = 255; // Period time
-int dutyCycle = period* 0.5; // 50% duty cycle to start
-
-uint8_t currentOrder = 0;
 
 // Function headers
 void InitModule();
@@ -50,12 +54,24 @@ void TurnLeft(int speed);
 void TurnRight(int speed);
 void ActivateLaser();
 void DeactivateLaser();
-void TurnInvisible();
-void TurnVisible();
 void StopMove();
 void TurnOffIRSignature();
 void TurnOnIRSignature();
 void DecrementLEDLives();
+void ResetSE();
+
+
+// VARIABLES
+int period = 255; // Period time
+int dutyCycle = period* 0.5; // 50% duty cycle to start
+
+// Health stuff
+int health = 3;
+
+
+uint8_t currentOrder = 0;
+
+
 
 
 int main(void){
@@ -135,13 +151,23 @@ int main(void){
 			DecrementLEDLives();
 			break;		 
 			
+		case DECREMENT_LED_LIVES:
+			ResetSE();
+			break;		 
+			
+		
 		default:
 			// Error
 			break;	
     }
 }
 
+// Reset all neccesary data
+void ResetSE() {
+	health = 3;
+}
 
+// Set doutyCycle for the PWM pins
 void SetPWM() {
 	OCR1A = ICR1 - dutyCycle; // duty cycle on "dutyCycle" of length "period" for PD5
 	OCR1B = ICR1 - dutyCycle; // duty cycle on "dutyCycle" of length "period" for PD4
@@ -149,7 +175,7 @@ void SetPWM() {
 
 
 
-// Setup of PWM 
+// Setup of PWM and DIR
 void InitPWM() {
 	// PWM setup
 	TCCR1A |= 1<<WGM11 | 1<<COM1A1 | 1<<COM1A0 |1<<COM1B0 | 1<<COM1B1;
@@ -187,22 +213,22 @@ void TurnRight(int speed) {
 	DIR_PWM_PORT |= (1<<DIR1);
 }
 
+// Activates the laser pointer
 void ActivateLaser() {
 
 }
 
-void TurnInvisible() {
-
-}
-
+// Turns the IR-sender off (invisible)
 void TurnOffIRSignature() {
 	
 }
 
+// Turns the IR-sender on (not invisible)
 void TurnOnIRSignature() {
 	
 }
 
+// Decrement the amount of lives we have (show on less LED)
 void DecrementLEDLives() {
 	
 }
