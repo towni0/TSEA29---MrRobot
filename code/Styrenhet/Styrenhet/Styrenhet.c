@@ -32,6 +32,9 @@
 #define STOP_MOVING 		8
 #define DECREMENT_LED_LIVES	9
 
+#define MOVEMENT_SPEED 128
+#define ROTATION_SPEED 64
+
 // VARIABLES
 int period = 255; // Period time
 int dutyCycle = period* 0.5; // 50% duty cycle to start
@@ -50,7 +53,9 @@ void DeactivateLaser();
 void TurnInvisible();
 void TurnVisible();
 void StopMove();
-
+void TurnOffIRSignature();
+void TurnOnIRSignature();
+void DecrementLEDLives();
 
 
 int main(void){
@@ -94,32 +99,41 @@ int main(void){
 		case DO_NOTHING:	
 			break;
 			
-		case MOVE_FORWARD:	// 
-			return "Move Forward";
+		case MOVE_FORWARD:
+			MoveForward(MOVEMENT_SPEED);
+			break;
 			
-		case TURN_LEFT:	// 
-			return "Turn Left";
+		case TURN_LEFT:	
+			TurnLeft(ROTATION_SPEED);
+			break;
 			
-		case TURN_RIGHT:	// 
-			return "Turn Right";
+		case TURN_RIGHT:	
+			TurnRight(ROTATION_SPEED);
+			break;
 			
-		case ACTIVATE_LASER:	// 
-			return "Activate Laser";
+		case ACTIVATE_LASER:	 
+			ActivateLaser();
+			break;
 			
-		case DEACTIVATE_LASER:	// 
-			return "Deactivate Laser";
+		case DEACTIVATE_LASER:
+			DeactivateLaser();
+			break;
 			
-		case TURN_OFF_IR_SIG:	// 
-			return "Turn Off IR Signature";
+		case TURN_OFF_IR_SIG:	
+			TurnOffIRSignature();
+			break;
 			
-		case TURN_ON_IR_SIG:	// 
-			return "Turn On IR Signature";
+		case TURN_ON_IR_SIG:	
+			TurnOnIRSignature();
+			break;
 			
-		case STOP_MOVING:	// 
-			return "Stop Moving";
+		case STOP_MOVING:	 
+			StopMove();
+			break;
 			
-		case DECREMENT_LED_LIVES:	// 
-			return "Decrement LED Lives";		 
+		case DECREMENT_LED_LIVES:
+			DecrementLEDLives();
+			break;		 
 			
 		default:
 			// Error
@@ -179,6 +193,18 @@ void ActivateLaser() {
 
 void TurnInvisible() {
 
+}
+
+void TurnOffIRSignature() {
+	
+}
+
+void TurnOnIRSignature() {
+	
+}
+
+void DecrementLEDLives() {
+	
 }
 
 // Set PWM1 and PWM2 to LOW(dutyCycle == 0)
