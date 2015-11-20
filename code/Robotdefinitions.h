@@ -31,9 +31,6 @@
 //message 6
 #define ORDER_INDEX 3
 
-//Orders
-#define MOVE_FORWARD 1
-#define TURN_LEFT 0b00000010
 
 //UBRR constants for UART
 const uint8_t UBRR_SENSOR_MALSOKNING = 119;
