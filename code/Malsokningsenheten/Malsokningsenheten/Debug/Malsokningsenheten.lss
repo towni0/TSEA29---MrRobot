@@ -1,0 +1,1049 @@
+
+Malsokningsenheten.elf:     file format elf32-avr
+
+Sections:
+Idx Name          Size      VMA       LMA       File off  Algn
+  0 .data         0000000a  00800100  000005ca  0000065e  2**0
+                  CONTENTS, ALLOC, LOAD, DATA
+  1 .text         000005ca  00000000  00000000  00000094  2**1
+                  CONTENTS, ALLOC, LOAD, READONLY, CODE
+  2 .bss          00000017  0080010a  0080010a  00000668  2**0
+                  ALLOC
+  3 .comment      00000030  00000000  00000000  00000668  2**0
+                  CONTENTS, READONLY
+  4 .note.gnu.avr.deviceinfo 00000040  00000000  00000000  00000698  2**2
+                  CONTENTS, READONLY
+  5 .debug_aranges 00000090  00000000  00000000  000006d8  2**0
+                  CONTENTS, READONLY, DEBUGGING
+  6 .debug_info   000006df  00000000  00000000  00000768  2**0
+                  CONTENTS, READONLY, DEBUGGING
+  7 .debug_abbrev 00000248  00000000  00000000  00000e47  2**0
+                  CONTENTS, READONLY, DEBUGGING
+  8 .debug_line   00000690  00000000  00000000  0000108f  2**0
+                  CONTENTS, READONLY, DEBUGGING
+  9 .debug_frame  00000174  00000000  00000000  00001720  2**2
+                  CONTENTS, READONLY, DEBUGGING
+ 10 .debug_str    00000570  00000000  00000000  00001894  2**0
+                  CONTENTS, READONLY, DEBUGGING
+ 11 .debug_loc    00000271  00000000  00000000  00001e04  2**0
+                  CONTENTS, READONLY, DEBUGGING
+ 12 .debug_ranges 000000d0  00000000  00000000  00002075  2**0
+                  CONTENTS, READONLY, DEBUGGING
+
+Disassembly of section .text:
+
+00000000 <__vectors>:
+   0:	45 c0       	rjmp	.+138    	; 0x8c <__ctors_end>
+   2:	00 00       	nop
+   4:	60 c0       	rjmp	.+192    	; 0xc6 <__bad_interrupt>
+   6:	00 00       	nop
+   8:	5e c0       	rjmp	.+188    	; 0xc6 <__bad_interrupt>
+   a:	00 00       	nop
+   c:	5c c0       	rjmp	.+184    	; 0xc6 <__bad_interrupt>
+   e:	00 00       	nop
+  10:	5a c0       	rjmp	.+180    	; 0xc6 <__bad_interrupt>
+  12:	00 00       	nop
+  14:	58 c0       	rjmp	.+176    	; 0xc6 <__bad_interrupt>
+  16:	00 00       	nop
+  18:	56 c0       	rjmp	.+172    	; 0xc6 <__bad_interrupt>
+  1a:	00 00       	nop
+  1c:	54 c0       	rjmp	.+168    	; 0xc6 <__bad_interrupt>
+  1e:	00 00       	nop
+  20:	52 c0       	rjmp	.+164    	; 0xc6 <__bad_interrupt>
+  22:	00 00       	nop
+  24:	50 c0       	rjmp	.+160    	; 0xc6 <__bad_interrupt>
+  26:	00 00       	nop
+  28:	4e c0       	rjmp	.+156    	; 0xc6 <__bad_interrupt>
+  2a:	00 00       	nop
+  2c:	4c c0       	rjmp	.+152    	; 0xc6 <__bad_interrupt>
+  2e:	00 00       	nop
+  30:	4a c0       	rjmp	.+148    	; 0xc6 <__bad_interrupt>
+  32:	00 00       	nop
+  34:	48 c0       	rjmp	.+144    	; 0xc6 <__bad_interrupt>
+  36:	00 00       	nop
+  38:	46 c0       	rjmp	.+140    	; 0xc6 <__bad_interrupt>
+  3a:	00 00       	nop
+  3c:	44 c0       	rjmp	.+136    	; 0xc6 <__bad_interrupt>
+  3e:	00 00       	nop
+  40:	42 c0       	rjmp	.+132    	; 0xc6 <__bad_interrupt>
+  42:	00 00       	nop
+  44:	40 c0       	rjmp	.+128    	; 0xc6 <__bad_interrupt>
+  46:	00 00       	nop
+  48:	3e c0       	rjmp	.+124    	; 0xc6 <__bad_interrupt>
+  4a:	00 00       	nop
+  4c:	3c c0       	rjmp	.+120    	; 0xc6 <__bad_interrupt>
+  4e:	00 00       	nop
+  50:	4b c0       	rjmp	.+150    	; 0xe8 <__vector_20>
+  52:	00 00       	nop
+  54:	38 c0       	rjmp	.+112    	; 0xc6 <__bad_interrupt>
+  56:	00 00       	nop
+  58:	36 c0       	rjmp	.+108    	; 0xc6 <__bad_interrupt>
+  5a:	00 00       	nop
+  5c:	34 c0       	rjmp	.+104    	; 0xc6 <__bad_interrupt>
+  5e:	00 00       	nop
+  60:	32 c0       	rjmp	.+100    	; 0xc6 <__bad_interrupt>
+  62:	00 00       	nop
+  64:	30 c0       	rjmp	.+96     	; 0xc6 <__bad_interrupt>
+  66:	00 00       	nop
+  68:	2e c0       	rjmp	.+92     	; 0xc6 <__bad_interrupt>
+  6a:	00 00       	nop
+  6c:	2c c0       	rjmp	.+88     	; 0xc6 <__bad_interrupt>
+  6e:	00 00       	nop
+  70:	2a c0       	rjmp	.+84     	; 0xc6 <__bad_interrupt>
+  72:	00 00       	nop
+  74:	28 c0       	rjmp	.+80     	; 0xc6 <__bad_interrupt>
+  76:	00 00       	nop
+  78:	26 c0       	rjmp	.+76     	; 0xc6 <__bad_interrupt>
+  7a:	00 00       	nop
+  7c:	24 c0       	rjmp	.+72     	; 0xc6 <__bad_interrupt>
+  7e:	00 00       	nop
+  80:	22 c0       	rjmp	.+68     	; 0xc6 <__bad_interrupt>
+  82:	00 00       	nop
+  84:	20 c0       	rjmp	.+64     	; 0xc6 <__bad_interrupt>
+  86:	00 00       	nop
+  88:	1e c0       	rjmp	.+60     	; 0xc6 <__bad_interrupt>
+	...
+
+0000008c <__ctors_end>:
+  8c:	11 24       	eor	r1, r1
+  8e:	1f be       	out	0x3f, r1	; 63
+  90:	cf ef       	ldi	r28, 0xFF	; 255
+  92:	d0 e4       	ldi	r29, 0x40	; 64
+  94:	de bf       	out	0x3e, r29	; 62
+  96:	cd bf       	out	0x3d, r28	; 61
+
+00000098 <__do_copy_data>:
+  98:	11 e0       	ldi	r17, 0x01	; 1
+  9a:	a0 e0       	ldi	r26, 0x00	; 0
+  9c:	b1 e0       	ldi	r27, 0x01	; 1
+  9e:	ea ec       	ldi	r30, 0xCA	; 202
+  a0:	f5 e0       	ldi	r31, 0x05	; 5
+  a2:	00 e0       	ldi	r16, 0x00	; 0
+  a4:	0b bf       	out	0x3b, r16	; 59
+  a6:	02 c0       	rjmp	.+4      	; 0xac <__do_copy_data+0x14>
+  a8:	07 90       	elpm	r0, Z+
+  aa:	0d 92       	st	X+, r0
+  ac:	aa 30       	cpi	r26, 0x0A	; 10
+  ae:	b1 07       	cpc	r27, r17
+  b0:	d9 f7       	brne	.-10     	; 0xa8 <__do_copy_data+0x10>
+
+000000b2 <__do_clear_bss>:
+  b2:	21 e0       	ldi	r18, 0x01	; 1
+  b4:	aa e0       	ldi	r26, 0x0A	; 10
+  b6:	b1 e0       	ldi	r27, 0x01	; 1
+  b8:	01 c0       	rjmp	.+2      	; 0xbc <.do_clear_bss_start>
+
+000000ba <.do_clear_bss_loop>:
+  ba:	1d 92       	st	X+, r1
+
+000000bc <.do_clear_bss_start>:
+  bc:	a1 32       	cpi	r26, 0x21	; 33
+  be:	b2 07       	cpc	r27, r18
+  c0:	e1 f7       	brne	.-8      	; 0xba <.do_clear_bss_loop>
+  c2:	94 d0       	rcall	.+296    	; 0x1ec <main>
+  c4:	80 c2       	rjmp	.+1280   	; 0x5c6 <_exit>
+
+000000c6 <__bad_interrupt>:
+  c6:	9c cf       	rjmp	.-200    	; 0x0 <__vectors>
+
+000000c8 <_Z17waitForActivationv>:
+		case ACTIVATE_LASER_AND_TURN_RIGHT:
+			return 21;
+		default :
+			return 0;
+	}
+}
+  c8:	57 98       	cbi	0x0a, 7	; 10
+  ca:	8f ef       	ldi	r24, 0xFF	; 255
+  cc:	93 eb       	ldi	r25, 0xB3	; 179
+  ce:	01 97       	sbiw	r24, 0x01	; 1
+  d0:	f1 f7       	brne	.-4      	; 0xce <_Z17waitForActivationv+0x6>
+  d2:	00 c0       	rjmp	.+0      	; 0xd4 <_Z17waitForActivationv+0xc>
+  d4:	00 00       	nop
+  d6:	89 b1       	in	r24, 0x09	; 9
+  d8:	90 e0       	ldi	r25, 0x00	; 0
+  da:	88 0f       	add	r24, r24
+  dc:	89 2f       	mov	r24, r25
+  de:	88 1f       	adc	r24, r24
+  e0:	99 0b       	sbc	r25, r25
+  e2:	89 2b       	or	r24, r25
+  e4:	c1 f3       	breq	.-16     	; 0xd6 <_Z17waitForActivationv+0xe>
+  e6:	08 95       	ret
+
+000000e8 <__vector_20>:
+  e8:	1f 92       	push	r1
+  ea:	0f 92       	push	r0
+  ec:	0f b6       	in	r0, 0x3f	; 63
+  ee:	0f 92       	push	r0
+  f0:	11 24       	eor	r1, r1
+  f2:	8f 93       	push	r24
+  f4:	9f 93       	push	r25
+  f6:	90 91 c6 00 	lds	r25, 0x00C6
+  fa:	89 2f       	mov	r24, r25
+  fc:	87 70       	andi	r24, 0x07	; 7
+  fe:	82 30       	cpi	r24, 0x02	; 2
+ 100:	89 f0       	breq	.+34     	; 0x124 <__vector_20+0x3c>
+ 102:	28 f4       	brcc	.+10     	; 0x10e <__vector_20+0x26>
+ 104:	88 23       	and	r24, r24
+ 106:	41 f0       	breq	.+16     	; 0x118 <__vector_20+0x30>
+ 108:	81 30       	cpi	r24, 0x01	; 1
+ 10a:	49 f0       	breq	.+18     	; 0x11e <__vector_20+0x36>
+ 10c:	13 c0       	rjmp	.+38     	; 0x134 <__vector_20+0x4c>
+ 10e:	83 30       	cpi	r24, 0x03	; 3
+ 110:	61 f0       	breq	.+24     	; 0x12a <__vector_20+0x42>
+ 112:	84 30       	cpi	r24, 0x04	; 4
+ 114:	69 f0       	breq	.+26     	; 0x130 <__vector_20+0x48>
+ 116:	0e c0       	rjmp	.+28     	; 0x134 <__vector_20+0x4c>
+ 118:	90 93 20 01 	sts	0x0120, r25
+ 11c:	0b c0       	rjmp	.+22     	; 0x134 <__vector_20+0x4c>
+ 11e:	90 93 08 01 	sts	0x0108, r25
+ 122:	08 c0       	rjmp	.+16     	; 0x134 <__vector_20+0x4c>
+ 124:	90 93 07 01 	sts	0x0107, r25
+ 128:	05 c0       	rjmp	.+10     	; 0x134 <__vector_20+0x4c>
+ 12a:	90 93 06 01 	sts	0x0106, r25
+ 12e:	02 c0       	rjmp	.+4      	; 0x134 <__vector_20+0x4c>
+ 130:	90 93 05 01 	sts	0x0105, r25
+ 134:	9f 91       	pop	r25
+ 136:	8f 91       	pop	r24
+ 138:	0f 90       	pop	r0
+ 13a:	0f be       	out	0x3f, r0	; 63
+ 13c:	0f 90       	pop	r0
+ 13e:	1f 90       	pop	r1
+ 140:	18 95       	reti
+
+00000142 <_Z5Shootv>:
+ 142:	81 e0       	ldi	r24, 0x01	; 1
+ 144:	80 93 0d 01 	sts	0x010D, r24
+ 148:	84 e0       	ldi	r24, 0x04	; 4
+ 14a:	80 93 17 01 	sts	0x0117, r24
+ 14e:	08 95       	ret
+
+00000150 <_Z15StartLaserTimerv>:
+ 150:	10 92 85 00 	sts	0x0085, r1
+ 154:	10 92 84 00 	sts	0x0084, r1
+ 158:	85 e0       	ldi	r24, 0x05	; 5
+ 15a:	80 93 81 00 	sts	0x0081, r24
+ 15e:	08 95       	ret
+
+00000160 <_Z14StopLaserTimerv>:
+ 160:	e1 e8       	ldi	r30, 0x81	; 129
+ 162:	f0 e0       	ldi	r31, 0x00	; 0
+ 164:	80 81       	ld	r24, Z
+ 166:	8b 7f       	andi	r24, 0xFB	; 251
+ 168:	80 83       	st	Z, r24
+ 16a:	80 81       	ld	r24, Z
+ 16c:	8e 7f       	andi	r24, 0xFE	; 254
+ 16e:	80 83       	st	Z, r24
+ 170:	10 92 85 00 	sts	0x0085, r1
+ 174:	10 92 84 00 	sts	0x0084, r1
+ 178:	08 95       	ret
+
+0000017a <_Z12StartIRTimerv>:
+ 17a:	10 92 95 00 	sts	0x0095, r1
+ 17e:	10 92 94 00 	sts	0x0094, r1
+ 182:	85 e0       	ldi	r24, 0x05	; 5
+ 184:	80 93 91 00 	sts	0x0091, r24
+ 188:	08 95       	ret
+
+0000018a <_Z8WeAreHitv>:
+ 18a:	80 91 00 01 	lds	r24, 0x0100
+ 18e:	90 91 01 01 	lds	r25, 0x0101
+ 192:	01 97       	sbiw	r24, 0x01	; 1
+ 194:	90 93 01 01 	sts	0x0101, r25
+ 198:	80 93 00 01 	sts	0x0100, r24
+ 19c:	18 16       	cp	r1, r24
+ 19e:	19 06       	cpc	r1, r25
+ 1a0:	24 f0       	brlt	.+8      	; 0x1aa <_Z8WeAreHitv+0x20>
+ 1a2:	81 e0       	ldi	r24, 0x01	; 1
+ 1a4:	80 93 16 01 	sts	0x0116, r24
+ 1a8:	08 95       	ret
+ 1aa:	8a e0       	ldi	r24, 0x0A	; 10
+ 1ac:	80 93 17 01 	sts	0x0117, r24
+ 1b0:	e4 cf       	rjmp	.-56     	; 0x17a <_Z12StartIRTimerv>
+ 1b2:	08 95       	ret
+
+000001b4 <_Z11StopIRTimerv>:
+ 1b4:	e1 e9       	ldi	r30, 0x91	; 145
+ 1b6:	f0 e0       	ldi	r31, 0x00	; 0
+ 1b8:	80 81       	ld	r24, Z
+ 1ba:	8b 7f       	andi	r24, 0xFB	; 251
+ 1bc:	80 83       	st	Z, r24
+ 1be:	80 81       	ld	r24, Z
+ 1c0:	8e 7f       	andi	r24, 0xFE	; 254
+ 1c2:	80 83       	st	Z, r24
+ 1c4:	10 92 95 00 	sts	0x0095, r1
+ 1c8:	10 92 94 00 	sts	0x0094, r1
+ 1cc:	08 95       	ret
+
+000001ce <_Z4Scanv>:
+
+
+
+void Scan() {
+	scaning = true;
+ 1ce:	81 e0       	ldi	r24, 0x01	; 1
+ 1d0:	80 93 15 01 	sts	0x0115, r24
+	IR_TIMER &= ~(1 << CS30);
+	TCNT3 = 0;
+}
+
+void Rotate(int degrees, bool leftTurn) {
+	rotating = true;
+ 1d4:	80 93 14 01 	sts	0x0114, r24
+	targetRotation = degrees;
+ 1d8:	88 e6       	ldi	r24, 0x68	; 104
+ 1da:	91 e0       	ldi	r25, 0x01	; 1
+ 1dc:	90 93 11 01 	sts	0x0111, r25
+ 1e0:	80 93 10 01 	sts	0x0110, r24
+	
+	if (leftTurn) {
+		nextOrder = TURN_LEFT;
+ 1e4:	82 e0       	ldi	r24, 0x02	; 2
+ 1e6:	80 93 17 01 	sts	0x0117, r24
+ 1ea:	08 95       	ret
+
+000001ec <main>:
+
+int orders[10];
+
+
+int main(void)
+{
+ 1ec:	2f 92       	push	r2
+ 1ee:	3f 92       	push	r3
+ 1f0:	4f 92       	push	r4
+ 1f2:	5f 92       	push	r5
+ 1f4:	6f 92       	push	r6
+ 1f6:	7f 92       	push	r7
+ 1f8:	8f 92       	push	r8
+ 1fa:	9f 92       	push	r9
+ 1fc:	af 92       	push	r10
+ 1fe:	bf 92       	push	r11
+ 200:	cf 92       	push	r12
+ 202:	df 92       	push	r13
+ 204:	ef 92       	push	r14
+ 206:	ff 92       	push	r15
+ 208:	0f 93       	push	r16
+ 20a:	1f 93       	push	r17
+ 20c:	cf 93       	push	r28
+ 20e:	df 93       	push	r29
+	DDRB = 0b11111011;
+ 210:	8b ef       	ldi	r24, 0xFB	; 251
+ 212:	84 b9       	out	0x04, r24	; 4
+	
+	//enable global interrupts
+	sei();
+ 214:	78 94       	sei
+	//################
+	
+	//initiate UART målsökning from sensor
+	//set baud rate
+	uint16_t UBRR_val = UBRR_SENSOR_MALSOKNING;
+	UBRR0H = (unsigned char) (UBRR_val >> 8);
+ 216:	10 92 c5 00 	sts	0x00C5, r1
+	UBRR0L = (unsigned char) UBRR_val;
+ 21a:	87 e7       	ldi	r24, 0x77	; 119
+ 21c:	80 93 c4 00 	sts	0x00C4, r24
+	//enable receive + set frame 8 bits
+	UCSR0B = (1<<RXEN0);
+ 220:	e1 ec       	ldi	r30, 0xC1	; 193
+ 222:	f0 e0       	ldi	r31, 0x00	; 0
+ 224:	80 e1       	ldi	r24, 0x10	; 16
+ 226:	80 83       	st	Z, r24
+	UCSR0C = (1<<UCSZ00) | (1<<UCSZ01);
+ 228:	96 e0       	ldi	r25, 0x06	; 6
+ 22a:	90 93 c2 00 	sts	0x00C2, r25
+
+	//enable receive interrupt
+	UCSR0B |= (1<<RXCIE0);
+ 22e:	80 81       	ld	r24, Z
+ 230:	80 68       	ori	r24, 0x80	; 128
+ 232:	80 83       	st	Z, r24
+	
+	//initiate UART målsökning to styr
+	//set baud rate
+	//115200
+	uint16_t UBRR_val1 = UBRR_STYR_MALSOKNING;
+	UBRR1H = (unsigned char) (UBRR_val1 >> 8);
+ 234:	10 92 cd 00 	sts	0x00CD, r1
+	UBRR1L = (unsigned char) UBRR_val1;
+ 238:	89 e0       	ldi	r24, 0x09	; 9
+ 23a:	80 93 cc 00 	sts	0x00CC, r24
+	
+	//enable transmit + set frame 8 bits
+	UCSR1B = (1<<TXEN1);
+ 23e:	88 e0       	ldi	r24, 0x08	; 8
+ 240:	80 93 c9 00 	sts	0x00C9, r24
+	UCSR1C = (1<<UCSZ10) | (1<<UCSZ11);
+ 244:	90 93 ca 00 	sts	0x00CA, r25
+	//#UART INITS END#//
+	
+	waitForActivation();
+ 248:	3f df       	rcall	.-386    	; 0xc8 <_Z17waitForActivationv>
+			if (!foundSomethingToDo) {
+				nextOrder = MOVE_FORWARD;
+			}
+
+			// IR timer stuff
+			if (IR_TIMER_COUNTER >= ONE_SECOND) {
+ 24a:	04 e9       	ldi	r16, 0x94	; 148
+ 24c:	10 e0       	ldi	r17, 0x00	; 0
+					nextOrder = TURN_ON_IR_SIG;
+				}
+			}
+		
+			// LASER timer stuff
+			if (LASER_TIMER_COUNTER >= ONE_SECOND) {
+ 24e:	c4 e8       	ldi	r28, 0x84	; 132
+ 250:	d0 e0       	ldi	r29, 0x00	; 0
+		//#######################
+		//## UART Transmission ##
+		//#######################
+
+		//check if transmit buffer is empty
+		if((UCSR1A & (1<<UDRE1))){
+ 252:	0f 2e       	mov	r0, r31
+ 254:	f8 ec       	ldi	r31, 0xC8	; 200
+ 256:	8f 2e       	mov	r8, r31
+ 258:	91 2c       	mov	r9, r1
+ 25a:	f0 2d       	mov	r31, r0
+	TCNT3 = 0;
+}
+
+void Rotate(int degrees, bool leftTurn) {
+	rotating = true;
+	targetRotation = degrees;
+ 25c:	0f 2e       	mov	r0, r31
+ 25e:	fa e5       	ldi	r31, 0x5A	; 90
+ 260:	ef 2e       	mov	r14, r31
+ 262:	f1 2c       	mov	r15, r1
+ 264:	f0 2d       	mov	r31, r0
+ 266:	0f 2e       	mov	r0, r31
+ 268:	f4 eb       	ldi	r31, 0xB4	; 180
+ 26a:	cf 2e       	mov	r12, r31
+ 26c:	d1 2c       	mov	r13, r1
+ 26e:	f0 2d       	mov	r31, r0
+	UCSR1C = (1<<UCSZ10) | (1<<UCSZ11);
+	//#UART INITS END#//
+	
+	waitForActivation();
+	
+    while(!dead)
+ 270:	43 c1       	rjmp	.+646    	; 0x4f8 <main+0x30c>
+    {
+		
+		//disable interrupts
+		cli();
+ 272:	f8 94       	cli
+		
+		//############################
+		//## Snapshot sensor values ##
+		//############################
+		//Message 1
+		IRSignature = (message1>>IRSIGNATURE_INDEX) & 0b00000111;
+ 274:	20 91 20 01 	lds	r18, 0x0120
+ 278:	82 2f       	mov	r24, r18
+ 27a:	90 e0       	ldi	r25, 0x00	; 0
+ 27c:	ac 01       	movw	r20, r24
+ 27e:	55 95       	asr	r21
+ 280:	47 95       	ror	r20
+ 282:	55 95       	asr	r21
+ 284:	47 95       	ror	r20
+ 286:	55 95       	asr	r21
+ 288:	47 95       	ror	r20
+ 28a:	47 70       	andi	r20, 0x07	; 7
+ 28c:	40 93 1a 01 	sts	0x011A, r20
+		laserSensor = (message1>>LASER_INDEX) & 0b00000001;
+ 290:	08 2e       	mov	r0, r24
+ 292:	89 2f       	mov	r24, r25
+ 294:	00 0c       	add	r0, r0
+ 296:	88 1f       	adc	r24, r24
+ 298:	99 0b       	sbc	r25, r25
+ 29a:	00 0c       	add	r0, r0
+ 29c:	88 1f       	adc	r24, r24
+ 29e:	99 1f       	adc	r25, r25
+ 2a0:	81 70       	andi	r24, 0x01	; 1
+ 2a2:	80 93 19 01 	sts	0x0119, r24
+		activeIRsignature = (message1>>IRSENSOR_INDEX) & 0b00000001;
+ 2a6:	22 1f       	adc	r18, r18
+ 2a8:	22 27       	eor	r18, r18
+ 2aa:	22 1f       	adc	r18, r18
+ 2ac:	20 93 1b 01 	sts	0x011B, r18
+		
+		//Message 2
+		ultraSonicSensor1 = (message2>>ULTRASONICSENSOR1_INDEX) & 0b00011111;
+ 2b0:	80 91 08 01 	lds	r24, 0x0108
+ 2b4:	86 95       	lsr	r24
+ 2b6:	86 95       	lsr	r24
+ 2b8:	86 95       	lsr	r24
+ 2ba:	80 93 1d 01 	sts	0x011D, r24
+		
+		//Message 3
+		ultraSonicSensor2 = (message3>>ULTRASONICSENSOR2_INDEX) & 0b00011111;
+ 2be:	80 91 07 01 	lds	r24, 0x0107
+ 2c2:	86 95       	lsr	r24
+ 2c4:	86 95       	lsr	r24
+ 2c6:	86 95       	lsr	r24
+ 2c8:	80 93 1c 01 	sts	0x011C, r24
+		
+		//Message 4
+		gyro = (message4>>LOWERBITSGYRO_INDEX) & 0b00011111; //Low 5 bits
+ 2cc:	80 91 06 01 	lds	r24, 0x0106
+ 2d0:	86 95       	lsr	r24
+ 2d2:	86 95       	lsr	r24
+ 2d4:	86 95       	lsr	r24
+ 2d6:	80 93 18 01 	sts	0x0118, r24
+		
+		//Message 5
+		gyro |= (message5<<2) & 0b11100000; //High 3 bits
+ 2da:	20 91 05 01 	lds	r18, 0x0105
+ 2de:	82 2f       	mov	r24, r18
+ 2e0:	90 e0       	ldi	r25, 0x00	; 0
+ 2e2:	40 91 18 01 	lds	r20, 0x0118
+ 2e6:	bc 01       	movw	r22, r24
+ 2e8:	66 0f       	add	r22, r22
+ 2ea:	77 1f       	adc	r23, r23
+ 2ec:	66 0f       	add	r22, r22
+ 2ee:	77 1f       	adc	r23, r23
+ 2f0:	36 2f       	mov	r19, r22
+ 2f2:	30 7e       	andi	r19, 0xE0	; 224
+ 2f4:	34 2b       	or	r19, r20
+ 2f6:	30 93 18 01 	sts	0x0118, r19
+		tapeSensor1 = (message5>>TAPESENSOR1_INDEX) & 0b00000001;
+ 2fa:	08 2e       	mov	r0, r24
+ 2fc:	89 2f       	mov	r24, r25
+ 2fe:	00 0c       	add	r0, r0
+ 300:	88 1f       	adc	r24, r24
+ 302:	99 0b       	sbc	r25, r25
+ 304:	00 0c       	add	r0, r0
+ 306:	88 1f       	adc	r24, r24
+ 308:	99 1f       	adc	r25, r25
+ 30a:	81 70       	andi	r24, 0x01	; 1
+ 30c:	80 93 1f 01 	sts	0x011F, r24
+		tapeSensor2 = (message5>>TAPESENSOR2_INDEX) & 0b00000001;
+ 310:	22 1f       	adc	r18, r18
+ 312:	22 27       	eor	r18, r18
+ 314:	22 1f       	adc	r18, r18
+ 316:	20 93 1e 01 	sts	0x011E, r18
+		
+		//enable interrupts
+		sei();
+ 31a:	78 94       	sei
+		
+		if((PINB>>PINB2) == 0){
+ 31c:	83 b1       	in	r24, 0x03	; 3
+ 31e:	90 e0       	ldi	r25, 0x00	; 0
+ 320:	95 95       	asr	r25
+ 322:	87 95       	ror	r24
+ 324:	95 95       	asr	r25
+ 326:	87 95       	ror	r24
+ 328:	89 2b       	or	r24, r25
+ 32a:	09 f0       	breq	.+2      	; 0x32e <main+0x142>
+ 32c:	9c c0       	rjmp	.+312    	; 0x466 <main+0x27a>
+			//##################
+			//## Tävlingsläge ##
+			//##################
+			
+			// If we are rotating
+			if (rotating) {
+ 32e:	80 91 14 01 	lds	r24, 0x0114
+ 332:	88 23       	and	r24, r24
+ 334:	a9 f0       	breq	.+42     	; 0x360 <main+0x174>
+				// THIS IS JUST PLACEHOLDER, NOT THE ACTUAL CODE, WE NEED TO DO SOMETHING MORE WITH THE GYRO VALUE
+				currentRotationValue += gyro;
+ 336:	20 91 18 01 	lds	r18, 0x0118
+ 33a:	80 91 12 01 	lds	r24, 0x0112
+ 33e:	90 91 13 01 	lds	r25, 0x0113
+ 342:	82 0f       	add	r24, r18
+ 344:	91 1d       	adc	r25, r1
+ 346:	90 93 13 01 	sts	0x0113, r25
+ 34a:	80 93 12 01 	sts	0x0112, r24
+				if (currentRotationValue >= targetRotation) {
+ 34e:	20 91 10 01 	lds	r18, 0x0110
+ 352:	30 91 11 01 	lds	r19, 0x0111
+ 356:	82 17       	cp	r24, r18
+ 358:	93 07       	cpc	r25, r19
+ 35a:	14 f0       	brlt	.+4      	; 0x360 <main+0x174>
+					nextOrder = STOP_MOVING;
+ 35c:	60 92 17 01 	sts	0x0117, r6
+				}
+			}
+		
+			// If we are scaning for opponents
+			if (scaning) {
+ 360:	80 91 15 01 	lds	r24, 0x0115
+ 364:	88 23       	and	r24, r24
+ 366:	51 f0       	breq	.+20     	; 0x37c <main+0x190>
+				if (ultraSonicSensor1 <= 15 || ultraSonicSensor2 <= 15) {
+ 368:	80 91 1d 01 	lds	r24, 0x011D
+ 36c:	80 31       	cpi	r24, 0x10	; 16
+ 36e:	20 f0       	brcs	.+8      	; 0x378 <main+0x18c>
+ 370:	80 91 1c 01 	lds	r24, 0x011C
+ 374:	80 31       	cpi	r24, 0x10	; 16
+ 376:	10 f4       	brcc	.+4      	; 0x37c <main+0x190>
+					nextOrder = STOP_MOVING;
+ 378:	60 92 17 01 	sts	0x0117, r6
+				}
+			}
+		
+			// If something is in front of the robot and the IR-signature is active
+			if (ultraSonicSensor1 <= 15 && activeIRsignature) {
+ 37c:	80 91 1d 01 	lds	r24, 0x011D
+ 380:	80 31       	cpi	r24, 0x10	; 16
+ 382:	40 f4       	brcc	.+16     	; 0x394 <main+0x1a8>
+ 384:	80 91 1b 01 	lds	r24, 0x011B
+ 388:	81 11       	cpse	r24, r1
+ 38a:	f9 c0       	rjmp	.+498    	; 0x57e <main+0x392>
+ 38c:	03 c0       	rjmp	.+6      	; 0x394 <main+0x1a8>
+				if (canShoot) {
+					foundSomethingToDo = true;
+ 38e:	70 92 0a 01 	sts	0x010A, r7
+					Shoot();
+ 392:	d7 de       	rcall	.-594    	; 0x142 <_Z5Shootv>
+				}
+			
+			}
+		
+			if (tapeSensor1 == 1 && tapeSensor2 == 1) {
+ 394:	80 91 1f 01 	lds	r24, 0x011F
+ 398:	81 30       	cpi	r24, 0x01	; 1
+ 39a:	29 f4       	brne	.+10     	; 0x3a6 <main+0x1ba>
+ 39c:	80 91 1e 01 	lds	r24, 0x011E
+ 3a0:	81 30       	cpi	r24, 0x01	; 1
+ 3a2:	09 f4       	brne	.+2      	; 0x3a6 <main+0x1ba>
+ 3a4:	f2 c0       	rjmp	.+484    	; 0x58a <main+0x39e>
+				Rotate(180, true);
+			}
+		
+			// If the Left line sensor detects tape, turn right
+			if(tapeSensor1 == 1){ 
+ 3a6:	80 91 1f 01 	lds	r24, 0x011F
+ 3aa:	81 30       	cpi	r24, 0x01	; 1
+ 3ac:	41 f4       	brne	.+16     	; 0x3be <main+0x1d2>
+	IR_TIMER &= ~(1 << CS30);
+	TCNT3 = 0;
+}
+
+void Rotate(int degrees, bool leftTurn) {
+	rotating = true;
+ 3ae:	70 92 14 01 	sts	0x0114, r7
+	targetRotation = degrees;
+ 3b2:	f0 92 11 01 	sts	0x0111, r15
+ 3b6:	e0 92 10 01 	sts	0x0110, r14
+	
+	if (leftTurn) {
+		nextOrder = TURN_LEFT;
+	}
+	else {
+		nextOrder = TURN_RIGHT;
+ 3ba:	20 92 17 01 	sts	0x0117, r2
+			if(tapeSensor1 == 1){ 
+				Rotate(90, false);
+			}
+		
+			// If the Right line sensor detects tape, turn left
+			if(tapeSensor2 == 1){ 
+ 3be:	80 91 1e 01 	lds	r24, 0x011E
+ 3c2:	81 30       	cpi	r24, 0x01	; 1
+ 3c4:	41 f4       	brne	.+16     	; 0x3d6 <main+0x1ea>
+	IR_TIMER &= ~(1 << CS30);
+	TCNT3 = 0;
+}
+
+void Rotate(int degrees, bool leftTurn) {
+	rotating = true;
+ 3c6:	70 92 14 01 	sts	0x0114, r7
+	targetRotation = degrees;
+ 3ca:	f0 92 11 01 	sts	0x0111, r15
+ 3ce:	e0 92 10 01 	sts	0x0110, r14
+	
+	if (leftTurn) {
+		nextOrder = TURN_LEFT;
+ 3d2:	40 92 17 01 	sts	0x0117, r4
+				Rotate(90, true);
+			}
+		
+	
+			// If the IR-sensor sees an enemy signature ONLY
+			if(activeIRsignature == 1 ){
+ 3d6:	80 91 1b 01 	lds	r24, 0x011B
+ 3da:	81 30       	cpi	r24, 0x01	; 1
+ 3dc:	19 f4       	brne	.+6      	; 0x3e4 <main+0x1f8>
+				foundSomethingToDo = true;
+ 3de:	70 92 0a 01 	sts	0x010A, r7
+				Scan();
+ 3e2:	f5 de       	rcall	.-534    	; 0x1ce <_Z4Scanv>
+			}
+		
+			// If we are hit
+			if(laserSensor == 1){
+ 3e4:	80 91 19 01 	lds	r24, 0x0119
+ 3e8:	81 30       	cpi	r24, 0x01	; 1
+ 3ea:	19 f4       	brne	.+6      	; 0x3f2 <main+0x206>
+				foundSomethingToDo = true;
+ 3ec:	70 92 0a 01 	sts	0x010A, r7
+				WeAreHit();
+ 3f0:	cc de       	rcall	.-616    	; 0x18a <_Z8WeAreHitv>
+			// If something is behind the robot, do something else
+			if(ultraSonicSensor2 == 10){}		
+			*/
+		
+			// If there is nothing else to do, move forward
+			if (!foundSomethingToDo) {
+ 3f2:	80 91 0a 01 	lds	r24, 0x010A
+ 3f6:	81 11       	cpse	r24, r1
+ 3f8:	02 c0       	rjmp	.+4      	; 0x3fe <main+0x212>
+				nextOrder = MOVE_FORWARD;
+ 3fa:	70 92 17 01 	sts	0x0117, r7
+			}
+
+			// IR timer stuff
+			if (IR_TIMER_COUNTER >= ONE_SECOND) {
+ 3fe:	f8 01       	movw	r30, r16
+ 400:	80 81       	ld	r24, Z
+ 402:	91 81       	ldd	r25, Z+1	; 0x01
+ 404:	80 35       	cpi	r24, 0x50	; 80
+ 406:	96 44       	sbci	r25, 0x46	; 70
+ 408:	70 f0       	brcs	.+28     	; 0x426 <main+0x23a>
+				IRCTR++;
+ 40a:	80 91 0b 01 	lds	r24, 0x010B
+ 40e:	90 91 0c 01 	lds	r25, 0x010C
+ 412:	01 96       	adiw	r24, 0x01	; 1
+ 414:	90 93 0c 01 	sts	0x010C, r25
+ 418:	80 93 0b 01 	sts	0x010B, r24
+				if (IRCTR >= 5) {
+ 41c:	05 97       	sbiw	r24, 0x05	; 5
+ 41e:	1c f0       	brlt	.+6      	; 0x426 <main+0x23a>
+					StopIRTimer();
+ 420:	c9 de       	rcall	.-622    	; 0x1b4 <_Z11StopIRTimerv>
+					nextOrder = TURN_ON_IR_SIG;
+ 422:	30 92 17 01 	sts	0x0117, r3
+				}
+			}
+		
+			// LASER timer stuff
+			if (LASER_TIMER_COUNTER >= ONE_SECOND) {
+ 426:	88 81       	ld	r24, Y
+ 428:	99 81       	ldd	r25, Y+1	; 0x01
+ 42a:	80 35       	cpi	r24, 0x50	; 80
+ 42c:	96 44       	sbci	r25, 0x46	; 70
+ 42e:	d8 f0       	brcs	.+54     	; 0x466 <main+0x27a>
+				CDCTR++;
+ 430:	80 91 0e 01 	lds	r24, 0x010E
+ 434:	90 91 0f 01 	lds	r25, 0x010F
+ 438:	01 96       	adiw	r24, 0x01	; 1
+ 43a:	90 93 0f 01 	sts	0x010F, r25
+ 43e:	80 93 0e 01 	sts	0x010E, r24
+				if (laserActive) {
+ 442:	20 91 0d 01 	lds	r18, 0x010D
+ 446:	22 23       	and	r18, r18
+ 448:	49 f0       	breq	.+18     	; 0x45c <main+0x270>
+					canShoot = false;
+ 44a:	10 92 02 01 	sts	0x0102, r1
+					nextOrder = DEACTIVATE_LASER;
+ 44e:	50 92 17 01 	sts	0x0117, r5
+					LASER_TIMER_COUNTER = 0;
+ 452:	19 82       	std	Y+1, r1	; 0x01
+ 454:	18 82       	st	Y, r1
+					laserActive = false;
+ 456:	10 92 0d 01 	sts	0x010D, r1
+ 45a:	05 c0       	rjmp	.+10     	; 0x466 <main+0x27a>
+				
+				}
+				else {
+					if (CDCTR >= 3) {
+ 45c:	03 97       	sbiw	r24, 0x03	; 3
+ 45e:	1c f0       	brlt	.+6      	; 0x466 <main+0x27a>
+						canShoot = true;
+ 460:	70 92 02 01 	sts	0x0102, r7
+						StopLaserTimer();
+ 464:	7d de       	rcall	.-774    	; 0x160 <_Z14StopLaserTimerv>
+		//#######################
+		//## UART Transmission ##
+		//#######################
+
+		//check if transmit buffer is empty
+		if((UCSR1A & (1<<UDRE1))){
+ 466:	f4 01       	movw	r30, r8
+ 468:	80 81       	ld	r24, Z
+ 46a:	85 ff       	sbrs	r24, 5
+ 46c:	5e c0       	rjmp	.+188    	; 0x52a <main+0x33e>
+			//mux through messages
+			//may need to disable interrupts
+			switch(messageNumber){
+ 46e:	80 91 03 01 	lds	r24, 0x0103
+ 472:	83 30       	cpi	r24, 0x03	; 3
+ 474:	b1 f0       	breq	.+44     	; 0x4a2 <main+0x2b6>
+ 476:	28 f4       	brcc	.+10     	; 0x482 <main+0x296>
+ 478:	81 30       	cpi	r24, 0x01	; 1
+ 47a:	49 f0       	breq	.+18     	; 0x48e <main+0x2a2>
+ 47c:	82 30       	cpi	r24, 0x02	; 2
+ 47e:	61 f0       	breq	.+24     	; 0x498 <main+0x2ac>
+ 480:	31 c0       	rjmp	.+98     	; 0x4e4 <main+0x2f8>
+ 482:	85 30       	cpi	r24, 0x05	; 5
+ 484:	c1 f0       	breq	.+48     	; 0x4b6 <main+0x2ca>
+ 486:	90 f0       	brcs	.+36     	; 0x4ac <main+0x2c0>
+ 488:	86 30       	cpi	r24, 0x06	; 6
+ 48a:	d1 f0       	breq	.+52     	; 0x4c0 <main+0x2d4>
+ 48c:	2b c0       	rjmp	.+86     	; 0x4e4 <main+0x2f8>
+				case 1:
+					UDR1 = message1;
+ 48e:	80 91 20 01 	lds	r24, 0x0120
+ 492:	f5 01       	movw	r30, r10
+ 494:	80 83       	st	Z, r24
+					break;
+ 496:	26 c0       	rjmp	.+76     	; 0x4e4 <main+0x2f8>
+				case 2:
+					UDR1 = message2;
+ 498:	80 91 08 01 	lds	r24, 0x0108
+ 49c:	f5 01       	movw	r30, r10
+ 49e:	80 83       	st	Z, r24
+					break;
+ 4a0:	21 c0       	rjmp	.+66     	; 0x4e4 <main+0x2f8>
+				case 3:
+					UDR1 = message3;
+ 4a2:	80 91 07 01 	lds	r24, 0x0107
+ 4a6:	f5 01       	movw	r30, r10
+ 4a8:	80 83       	st	Z, r24
+					break;
+ 4aa:	1c c0       	rjmp	.+56     	; 0x4e4 <main+0x2f8>
+				case 4:
+					UDR1 = message4;
+ 4ac:	80 91 06 01 	lds	r24, 0x0106
+ 4b0:	f5 01       	movw	r30, r10
+ 4b2:	80 83       	st	Z, r24
+					break;
+ 4b4:	17 c0       	rjmp	.+46     	; 0x4e4 <main+0x2f8>
+				case 5: 
+					UDR1 = message5;
+ 4b6:	80 91 05 01 	lds	r24, 0x0105
+ 4ba:	f5 01       	movw	r30, r10
+ 4bc:	80 83       	st	Z, r24
+					break;
+ 4be:	12 c0       	rjmp	.+36     	; 0x4e4 <main+0x2f8>
+				case 6:
+					if(nextOrder != DO_NOTHING){ //Only send order if something is to be done
+ 4c0:	80 91 17 01 	lds	r24, 0x0117
+ 4c4:	88 23       	and	r24, r24
+ 4c6:	a9 f0       	breq	.+42     	; 0x4f2 <main+0x306>
+						message6 &= 0b00000111; //reset everything except message ID
+ 4c8:	20 91 04 01 	lds	r18, 0x0104
+ 4cc:	27 70       	andi	r18, 0x07	; 7
+ 4ce:	20 93 04 01 	sts	0x0104, r18
+						UDR1 = (nextOrder<<3) | message6;
+ 4d2:	f8 e0       	ldi	r31, 0x08	; 8
+ 4d4:	8f 9f       	mul	r24, r31
+ 4d6:	c0 01       	movw	r24, r0
+ 4d8:	11 24       	eor	r1, r1
+ 4da:	82 2b       	or	r24, r18
+ 4dc:	f5 01       	movw	r30, r10
+ 4de:	80 83       	st	Z, r24
+						nextOrder = 0;
+ 4e0:	10 92 17 01 	sts	0x0117, r1
+					}
+					break;
+			}
+			//next mux
+			messageNumber++;
+ 4e4:	80 91 03 01 	lds	r24, 0x0103
+ 4e8:	8f 5f       	subi	r24, 0xFF	; 255
+ 4ea:	80 93 03 01 	sts	0x0103, r24
+			if(messageNumber>NUMBER_OF_MESSAGES+1) messageNumber=1;
+ 4ee:	87 30       	cpi	r24, 0x07	; 7
+ 4f0:	50 f0       	brcs	.+20     	; 0x506 <main+0x31a>
+ 4f2:	81 e0       	ldi	r24, 0x01	; 1
+ 4f4:	80 93 03 01 	sts	0x0103, r24
+					laserActive = false;
+				
+				}
+				else {
+					if (CDCTR >= 3) {
+						canShoot = true;
+ 4f8:	77 24       	eor	r7, r7
+ 4fa:	73 94       	inc	r7
+					break;
+				case 2:
+					UDR1 = message2;
+					break;
+				case 3:
+					UDR1 = message3;
+ 4fc:	0f 2e       	mov	r0, r31
+ 4fe:	fe ec       	ldi	r31, 0xCE	; 206
+ 500:	af 2e       	mov	r10, r31
+ 502:	b1 2c       	mov	r11, r1
+ 504:	f0 2d       	mov	r31, r0
+			// LASER timer stuff
+			if (LASER_TIMER_COUNTER >= ONE_SECOND) {
+				CDCTR++;
+				if (laserActive) {
+					canShoot = false;
+					nextOrder = DEACTIVATE_LASER;
+ 506:	0f 2e       	mov	r0, r31
+ 508:	f5 e0       	ldi	r31, 0x05	; 5
+ 50a:	5f 2e       	mov	r5, r31
+ 50c:	f0 2d       	mov	r31, r0
+			// IR timer stuff
+			if (IR_TIMER_COUNTER >= ONE_SECOND) {
+				IRCTR++;
+				if (IRCTR >= 5) {
+					StopIRTimer();
+					nextOrder = TURN_ON_IR_SIG;
+ 50e:	0f 2e       	mov	r0, r31
+ 510:	f7 e0       	ldi	r31, 0x07	; 7
+ 512:	3f 2e       	mov	r3, r31
+ 514:	f0 2d       	mov	r31, r0
+void Rotate(int degrees, bool leftTurn) {
+	rotating = true;
+	targetRotation = degrees;
+	
+	if (leftTurn) {
+		nextOrder = TURN_LEFT;
+ 516:	68 94       	set
+ 518:	44 24       	eor	r4, r4
+ 51a:	41 f8       	bld	r4, 1
+	}
+	else {
+		nextOrder = TURN_RIGHT;
+ 51c:	0f 2e       	mov	r0, r31
+ 51e:	f3 e0       	ldi	r31, 0x03	; 3
+ 520:	2f 2e       	mov	r2, r31
+ 522:	f0 2d       	mov	r31, r0
+			}
+		
+			// If we are scaning for opponents
+			if (scaning) {
+				if (ultraSonicSensor1 <= 15 || ultraSonicSensor2 <= 15) {
+					nextOrder = STOP_MOVING;
+ 524:	68 94       	set
+ 526:	66 24       	eor	r6, r6
+ 528:	63 f8       	bld	r6, 3
+	UCSR1C = (1<<UCSZ10) | (1<<UCSZ11);
+	//#UART INITS END#//
+	
+	waitForActivation();
+	
+    while(!dead)
+ 52a:	80 91 16 01 	lds	r24, 0x0116
+ 52e:	88 23       	and	r24, r24
+ 530:	09 f4       	brne	.+2      	; 0x534 <main+0x348>
+ 532:	9f ce       	rjmp	.-706    	; 0x272 <main+0x86>
+			if(messageNumber>NUMBER_OF_MESSAGES+1) messageNumber=1;
+		}
+    }
+	
+	// Reset the laser timers count variable and start the laser timer (used to get a blinking LEDs)
+	StartLaserTimer();
+ 534:	0d de       	rcall	.-998    	; 0x150 <_Z15StartLaserTimerv>
+	// This loop blinks the LEDs to show that we are dead
+	while (dead) {
+		if (LASER_TIMER_COUNTER >= ONE_SECOND) {
+ 536:	e4 e8       	ldi	r30, 0x84	; 132
+ 538:	f0 e0       	ldi	r31, 0x00	; 0
+			LASER_TIMER_COUNTER = 0;
+			CDCTR++;
+			nextOrder = DECREMENT_LED_LIVES;
+ 53a:	29 e0       	ldi	r18, 0x09	; 9
+			if (CDCTR == 3) {
+				nextOrder = RESET_SE;
+ 53c:	34 e1       	ldi	r19, 0x14	; 20
+    }
+	
+	// Reset the laser timers count variable and start the laser timer (used to get a blinking LEDs)
+	StartLaserTimer();
+	// This loop blinks the LEDs to show that we are dead
+	while (dead) {
+ 53e:	1a c0       	rjmp	.+52     	; 0x574 <main+0x388>
+		if (LASER_TIMER_COUNTER >= ONE_SECOND) {
+ 540:	80 81       	ld	r24, Z
+ 542:	91 81       	ldd	r25, Z+1	; 0x01
+ 544:	80 35       	cpi	r24, 0x50	; 80
+ 546:	96 44       	sbci	r25, 0x46	; 70
+ 548:	d8 f3       	brcs	.-10     	; 0x540 <main+0x354>
+			LASER_TIMER_COUNTER = 0;
+ 54a:	11 82       	std	Z+1, r1	; 0x01
+ 54c:	10 82       	st	Z, r1
+			CDCTR++;
+ 54e:	80 91 0e 01 	lds	r24, 0x010E
+ 552:	90 91 0f 01 	lds	r25, 0x010F
+ 556:	01 96       	adiw	r24, 0x01	; 1
+ 558:	90 93 0f 01 	sts	0x010F, r25
+ 55c:	80 93 0e 01 	sts	0x010E, r24
+			nextOrder = DECREMENT_LED_LIVES;
+ 560:	20 93 17 01 	sts	0x0117, r18
+			if (CDCTR == 3) {
+ 564:	03 97       	sbiw	r24, 0x03	; 3
+ 566:	31 f4       	brne	.+12     	; 0x574 <main+0x388>
+				nextOrder = RESET_SE;
+ 568:	30 93 17 01 	sts	0x0117, r19
+				CDCTR = 0;
+ 56c:	10 92 0f 01 	sts	0x010F, r1
+ 570:	10 92 0e 01 	sts	0x010E, r1
+    }
+	
+	// Reset the laser timers count variable and start the laser timer (used to get a blinking LEDs)
+	StartLaserTimer();
+	// This loop blinks the LEDs to show that we are dead
+	while (dead) {
+ 574:	80 91 16 01 	lds	r24, 0x0116
+ 578:	88 23       	and	r24, r24
+ 57a:	81 f0       	breq	.+32     	; 0x59c <main+0x3b0>
+ 57c:	e1 cf       	rjmp	.-62     	; 0x540 <main+0x354>
+				}
+			}
+		
+			// If something is in front of the robot and the IR-signature is active
+			if (ultraSonicSensor1 <= 15 && activeIRsignature) {
+				if (canShoot) {
+ 57e:	80 91 02 01 	lds	r24, 0x0102
+ 582:	88 23       	and	r24, r24
+ 584:	09 f4       	brne	.+2      	; 0x588 <main+0x39c>
+ 586:	06 cf       	rjmp	.-500    	; 0x394 <main+0x1a8>
+ 588:	02 cf       	rjmp	.-508    	; 0x38e <main+0x1a2>
+	IR_TIMER &= ~(1 << CS30);
+	TCNT3 = 0;
+}
+
+void Rotate(int degrees, bool leftTurn) {
+	rotating = true;
+ 58a:	70 92 14 01 	sts	0x0114, r7
+	targetRotation = degrees;
+ 58e:	d0 92 11 01 	sts	0x0111, r13
+ 592:	c0 92 10 01 	sts	0x0110, r12
+	
+	if (leftTurn) {
+		nextOrder = TURN_LEFT;
+ 596:	40 92 17 01 	sts	0x0117, r4
+ 59a:	05 cf       	rjmp	.-502    	; 0x3a6 <main+0x1ba>
+				nextOrder = RESET_SE;
+				CDCTR = 0;
+			}
+		}
+	}
+}
+ 59c:	80 e0       	ldi	r24, 0x00	; 0
+ 59e:	90 e0       	ldi	r25, 0x00	; 0
+ 5a0:	df 91       	pop	r29
+ 5a2:	cf 91       	pop	r28
+ 5a4:	1f 91       	pop	r17
+ 5a6:	0f 91       	pop	r16
+ 5a8:	ff 90       	pop	r15
+ 5aa:	ef 90       	pop	r14
+ 5ac:	df 90       	pop	r13
+ 5ae:	cf 90       	pop	r12
+ 5b0:	bf 90       	pop	r11
+ 5b2:	af 90       	pop	r10
+ 5b4:	9f 90       	pop	r9
+ 5b6:	8f 90       	pop	r8
+ 5b8:	7f 90       	pop	r7
+ 5ba:	6f 90       	pop	r6
+ 5bc:	5f 90       	pop	r5
+ 5be:	4f 90       	pop	r4
+ 5c0:	3f 90       	pop	r3
+ 5c2:	2f 90       	pop	r2
+ 5c4:	08 95       	ret
+
+000005c6 <_exit>:
+ 5c6:	f8 94       	cli
+
+000005c8 <__stop_program>:
+ 5c8:	ff cf       	rjmp	.-2      	; 0x5c8 <__stop_program>
