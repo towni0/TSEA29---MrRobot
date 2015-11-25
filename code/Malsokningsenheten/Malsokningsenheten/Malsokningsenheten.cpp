@@ -82,6 +82,9 @@ bool foundSomethingToDo = false;
 
 int orders[10];
 
+//gyro
+uint8_t sampleTimeInSeconds = 0.1; //Since the gyro gives us degrees/sec
+uint16_t gyroSum;
 
 int main(void)
 {
@@ -336,6 +339,20 @@ ISR(USART0_RX_vect){
 			//message5 = 0b11000100; //Temp test:
 			break;
 	}
+}
+
+//Called once every sampleTimeInSeconds
+uint16_t CalcGyro(uint16_t gyroData){
+   gyroSum += gyroData;
+   return (gyroSum * sampleTimeInSeconds);
+}
+
+int Abs(int value) {
+	if (value < 0) {
+		value *= -1;
+	}
+	
+	return value;
 }
 	
 void SetPriority(int priority) {
