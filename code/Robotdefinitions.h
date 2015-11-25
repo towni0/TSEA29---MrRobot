@@ -64,8 +64,8 @@ const uint8_t TAPE_ERROR_MARGIN = 100;
 
 #define PWM1 PIND5
 #define PWM2 PIND4
-#define DIR1 PIND3
-#define DIR2 PIND2
+#define DIR1 PINB5
+#define DIR2 PINB7
 #define DIR_PWM_PORT PORTD
 
 #define LASER_PIN PINB4
@@ -97,8 +97,8 @@ const uint8_t TAPE_ERROR_MARGIN = 100;
 
 #define RESET_SE						20
 
-#define MOVEMENT_SPEED 128
-#define ROTATION_SPEED 64
+#define MOVEMENT_SPEED					2350
+#define ROTATION_SPEED					1175
 
 
 //## Målsökning definitions ##
