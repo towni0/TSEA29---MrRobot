@@ -43,6 +43,7 @@ bool canShoot = true;
 int health = 3;
 bool dead = false;
 
+
 bool scaning = false;
 
 // Rotation stuff
@@ -56,6 +57,8 @@ int targetRotation;
 #define LASER_TIMER_COUNTER TCNT1
 int CDCTR = 0;
 bool laserActive = false;
+
+bool laserSensorHit = false;
 
 #define IR_TIMER TCCR3B
 #define IR_TIMER_COUNTER TCNT3
@@ -159,116 +162,6 @@ int main(void)
 		//enable interrupts
 		sei();
 		
-		if((PINB>>PINB2) == 0){
-			//##################
-			//## Tävlingsläge ##
-			//##################
-			
-			// If we are rotating
-			if (rotating) {
-				if(timervalue >= sampleticks){
-					int angularVelocity = gyro - ANGULAR_RATE_IDLE; 
-					if (CalcGyro(abs(angularVelocity)) >= targetRotation) {
-						gyroSum = 0;
-						rotatation = false;
-						nextOrder = STOP_MOVING;
-						TCCR2B &= ~((1 << CS20) | (1 << CS21) | (1 << CS22));
-					}
-				}
-			}
-		
-		/* 	// If we are scaning for opponents
-			if (scaning) {
-				if (ultraSonicSensor1 <= 15 || ultraSonicSensor2 <= 15) {
-					nextOrder = STOP_MOVING;
-				}
-			}
-		
-			// If something is in front of the robot and the IR-signature is active
-			if (ultraSonicSensor1 <= 15 && activeIRsignature) {
-				if (canShoot) {
-					foundSomethingToDo = true;
-					Shoot();
-				}
-			
-			}
-		
-			if (tapeSensor1 == 1 && tapeSensor2 == 1) {
-				Rotate(180, true);
-			}
-		
-			// If the Left line sensor detects tape, turn right
-			if(tapeSensor1 == 1){ 
-				Rotate(90, false);
-			}
-		
-			// If the Right line sensor detects tape, turn left
-			if(tapeSensor2 == 1){ 
-				Rotate(90, true);
-			}
-		
-	
-			// If the IR-sensor sees an enemy signature ONLY
-			if(activeIRsignature == 1 ){
-				foundSomethingToDo = true;
-				Scan();
-			}
-		
-			// If we are hit
-			if(laserSensor == 1){
-				foundSomethingToDo = true;
-				WeAreHit();
-			} */
-		
-			/*
-			// If something is in front of the robot, do something
-			if(ultraSonicSensor1 == 10){}
-	
-			// If something is behind the robot, do something else
-			if(ultraSonicSensor2 == 10){}		
-			*/
-		
-			/* // If there is nothing else to do, move forward
-			if (!foundSomethingToDo) {
-				nextOrder = MOVE_FORWARD;
-			}
-
-			// IR timer stuff
-			if (IR_TIMER_COUNTER >= ONE_SECOND) {
-				IRCTR++;
-				if (IRCTR >= 5) {
-					StopIRTimer();
-					nextOrder = TURN_ON_IR_SIG;
-				}
-			}
-		
-			// LASER timer stuff
-			if (LASER_TIMER_COUNTER >= ONE_SECOND) {
-				CDCTR++;
-				if (laserActive) {
-					canShoot = false;
-					nextOrder = DEACTIVATE_LASER;
-					LASER_TIMER_COUNTER = 0;
-					laserActive = false;
-				
-				}
-				else {
-					if (CDCTR >= 3) {
-						canShoot = true;
-						StopLaserTimer();
-					}
-				}
-			
-			}
-		}
-		else{
-			//##############
-			//## Testläge ##
-			//##############
-		} */
-	
-
-
 		//#######################
 		//## UART Transmission ##
 		//#######################
@@ -305,6 +198,141 @@ int main(void)
 			messageNumber++;
 			if(messageNumber>NUMBER_OF_MESSAGES+1) messageNumber=1;
 		}
+		
+		if((PINB>>PINB2) == 0){
+			//##################
+			//## Tävlingsläge ##
+			//##################
+			
+			// IR timer stuff
+			if (IR_TIMER_COUNTER >= ONE_SECOND) {
+				IRCTR++;
+				if (IRCTR >= 5) {
+					StopIRTimer();
+					nextOrder = TURN_ON_IR_SIG;
+					continue;
+				}
+			}
+		
+			// LASER timer stuff
+			if (LASER_TIMER_COUNTER >= ONE_SECOND) {
+				CDCTR++;
+				if (laserActive) {
+					canShoot = false;
+					nextOrder = DEACTIVATE_LASER;
+					LASER_TIMER_COUNTER = 0;
+					laserActive = false;
+					continue;
+				}
+				else {
+					if (CDCTR >= 3) {
+						canShoot = true;
+						StopLaserTimer();
+					}
+				}
+			
+			}
+			
+			// If we are hit
+			if(laserSensor == 1 && !laserSensorHit ){
+				foundSomethingToDo = true;
+				laserSensorHit = true;
+				WeAreHit();
+				continue;
+				
+			}
+			else if (laserSensor == 0 && laserSensorHit ) {
+				laserSensorHit = false;
+			}
+			
+			
+			if (tapeSensor1 == 1 && tapeSensor2 == 1) {
+				Rotate(180, true);
+				continue;
+			}
+		
+			// If the Left line sensor detects tape, turn right
+			if(tapeSensor1 == 1){ 
+				Rotate(90, false);
+				continue;
+
+			}
+		
+			// If the Right line sensor detects tape, turn left
+			if(tapeSensor2 == 1){ 
+				Rotate(90, true);
+				continue;
+
+			}
+		
+			
+			
+			// If we are rotating
+			if (rotating) {
+				if(timervalue >= sampleticks){
+					int angularVelocity = gyro - ANGULAR_RATE_IDLE; 
+					if (CalcGyro(abs(angularVelocity)) >= targetRotation) {
+						gyroSum = 0;
+						rotatation = false;
+						nextOrder = STOP_MOVING;
+						TCCR2B &= ~((1 << CS20) | (1 << CS21) | (1 << CS22));
+					}
+					//Send how many degrees we have rotated over uart
+					message4 &= 0b00000111; //Reset bits
+					message4 |= (gyroSum<<LOWERBITSGYRO_INDEX);
+					message5 &= 0b11000111; //Reset bits
+					message5 |= ((gyroSum>>2) & 0b00111000);
+				}
+			}
+		
+		 	// If we are scaning for opponents
+			if (scaning) {
+				if (ultraSonicSensor1 <= 15 || ultraSonicSensor2 <= 15) {
+					nextOrder = STOP_MOVING;
+				}
+			}
+		
+			// If something is in front of the robot and the IR-signature is active
+			if (ultraSonicSensor1 <= 15 && activeIRsignature) {
+				if (canShoot) {
+					foundSomethingToDo = true;
+					Shoot();
+				}
+			
+			}
+		
+			// If the IR-sensor sees an enemy signature ONLY
+			if(activeIRsignature == 1 ){
+				foundSomethingToDo = true;
+				Scan();
+			}
+		
+
+		
+			
+			// If something is in front of the robot, do something
+			if(ultraSonicSensor1 == 10){}
+	
+			// If something is behind the robot, do something else
+			if(ultraSonicSensor2 == 10){}		
+			
+		
+			 // If there is nothing else to do, move forward
+			if (!foundSomethingToDo) {
+				nextOrder = MOVE_FORWARD;
+			}
+
+
+		}
+		else{
+			//##############
+			//## Testläge ##
+			//##############
+		}
+	
+
+
+
     }
 	
 	// Reset the laser timers count variable and start the laser timer (used to get a blinking LEDs)
@@ -341,14 +369,16 @@ ISR(USART0_RX_vect){
 			message3 = buffer;
 			break;
 		case 3:
-			message4 = buffer;
+			//message4 = buffer;
 			break;
 		case 4:
-			message5 = buffer;
+			message5 &= 0b00111000; //We set the gyro bits elsewhere
+			message5 |= (buffer & 0b11000111);
 			//message5 = 0b11000100; //Temp test:
 			break;
 	}
 }
+
 
 //Called once every sampleTimeInSeconds
 float CalcGyro(int gyroData){
@@ -393,6 +423,7 @@ void WeAreHit() {
 void Shoot() {
 	laserActive = true;
 	nextOrder = ACTIVATE_LASER;
+	
 }
 
 
