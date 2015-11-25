@@ -26,7 +26,7 @@ void InitPWM();
 void InitLEDs();
 
 // VARIABLES
-int period = 255; // Period time
+int period = 4700; // Period time
 int dutyCycle = period* 0.5; // 50% duty cycle to start
 
 // Health stuff
@@ -62,9 +62,11 @@ int main(void){
 	//#UART INITS END#//
 	
 	// Call all Init functions in this module
-	Init();
-	
 	waitForActivation();
+	Init();
+	//StopMove(); //temp
+	//PORTD &= ~(1<<PIND4);
+	
 
     while(1)
     {
@@ -130,7 +132,7 @@ int main(void){
     }
 }
 
-// Reset all neccesary data
+// Reset all necessary data
 void ResetSE() {
 	// Reset health
 	health = 3;
@@ -138,7 +140,7 @@ void ResetSE() {
 	// Make sure that we dont move when we have restarted this module
 	MoveForward(0);
 	
-	// Set all heath LEDs activte
+	// Set all heath LEDs activate
 	LED_PORT |= (1<<LED1_PIN) | (1<<LED2_PIN) | (1<<LED3_PIN);
 }
 
@@ -157,19 +159,26 @@ void Init() {
 // Set all LED pins as output and light them up!
 void InitLEDs() {
 	DDRB |= (1<<LED1_PIN) | (1<<LED2_PIN) | (1<<LED3_PIN) | (1<<INVISIBLE_LED_PIN) | (1<<LASER_LED_PIN);
-	// Set all heath LEDs activte
+	// Set all heath LEDs activate
 	LED_PORT |= (1<<LED1_PIN) | (1<<LED2_PIN) | (1<<LED3_PIN);
 }
 
 // Setup of PWM and DIR
 void InitPWM() {
 	// PWM setup
-	TCCR1A |= 1<<WGM11 | 1<<COM1A1 | 1<<COM1A0 |1<<COM1B0 | 1<<COM1B1;
-	TCCR1B |= 1<<WGM12 | 1<<WGM13 | 1<<CS10;
-	ICR1 = period;
+	TCCR1A |= (1<<WGM11) | (1<<COM1A1) | (1<<COM1A0) | (1<<COM1B0) | (1<<COM1B1);
+ 	TCCR1B |= (1<<WGM12) | (1<<WGM13) | (1<<CS10);
 
+
+	ICR1 = period;
+	
+	// make sure motor is off.
+	OCR1A = ICR1;
+	OCR1B = ICR1;
+	
 	// DIR setup
-	DIR_PWM_PORT |= (1<<DIR1) | (1<<DIR2) | (1<<PWM1) | (1<<PWM2);
+	
+	DDRD |= (1<<DIR1) | (1<<DIR2) | (1<<PWM1) | (1<<PWM2);
 }
 
 // Set PWM1 and PWM2 to HIGH(set dutyCycle)
@@ -177,8 +186,8 @@ void InitPWM() {
 void MoveForward(int speed) {
 	dutyCycle = speed;
 	SetPWM();
-	DIR_PWM_PORT &= ~(1<<DIR1);
-	DIR_PWM_PORT &= ~(1<<DIR2);
+	PORTB |= (1<<DIR1);
+	PORTB |= (1<<DIR2);
 }
 
 // Set PWM1 and PWM2 to HIGH(set dutyCycle)
@@ -186,8 +195,8 @@ void MoveForward(int speed) {
 void TurnLeft(int speed) {
 	dutyCycle = speed;
 	SetPWM();
-	DIR_PWM_PORT &= ~(1<<DIR1);
-	DIR_PWM_PORT |= (1<<DIR2);
+	PORTB &= ~(1<<DIR1);
+	PORTB |= (1<<DIR2);
 }
 
 // Set PWM1 and PWM2 to HIGH(set dutyCycle)
@@ -195,8 +204,8 @@ void TurnLeft(int speed) {
 void TurnRight(int speed) {
 	dutyCycle = speed;
 	SetPWM();
-	DIR_PWM_PORT &= ~(1<<DIR2);
-	DIR_PWM_PORT |= (1<<DIR1);
+	PORTB &= ~(1<<DIR2);
+	PORTB |= (1<<DIR1);
 }
 
 // Activates the laser pointer and the Laser lED
