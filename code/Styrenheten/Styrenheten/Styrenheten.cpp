@@ -71,16 +71,17 @@ int main(void){
     while(1)
     {
 		//Do command
-		uint8_t snapshotOrder = currentOrder & 0xF8;
-		snapshotOrder = snapshotOrder >> 3;
+		uint8_t snapshotOrder = currentOrder;
 		//Reset order so that its not executed more than once
 		currentOrder = DO_NOTHING;
-		
+
+		//snapshotOrder = TURN_RIGHT;
 		switch (snapshotOrder) {
 			case DO_NOTHING:
 				break;
 			
 			case MOVE_FORWARD:
+				PORTB |= (1<<PINB4);
 				MoveForward(MOVEMENT_SPEED);
 				break;
 			
@@ -178,7 +179,8 @@ void InitPWM() {
 	
 	// DIR setup
 	
-	DDRD |= (1<<DIR1) | (1<<DIR2) | (1<<PWM1) | (1<<PWM2);
+	DDRD |= (1<<PWM1) | (1<<PWM2);
+	DDRB |= (1<<DIR1) | (1<<DIR2);
 }
 
 // Set PWM1 and PWM2 to HIGH(set dutyCycle)
@@ -258,5 +260,7 @@ ISR(USART0_RX_vect){
 	//only look at ORDERS
 	if(messageID == ORDER_ID){
 		currentOrder = (UDR0>>3) & 0b00011111; //Mask out the order
+		//test
+		if(currentOrder==TURN_RIGHT) PORTB |= (1<<PINB3);
 	}
 }

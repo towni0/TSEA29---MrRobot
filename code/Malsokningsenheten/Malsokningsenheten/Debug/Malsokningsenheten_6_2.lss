@@ -1,0 +1,616 @@
+
+Malsokningsenheten_6_2.elf:     file format elf32-avr
+
+Sections:
+Idx Name          Size      VMA       LMA       File off  Algn
+  0 .data         00000006  00800100  0000034e  000003e2  2**0
+                  CONTENTS, ALLOC, LOAD, DATA
+  1 .text         0000034e  00000000  00000000  00000094  2**1
+                  CONTENTS, ALLOC, LOAD, READONLY, CODE
+  2 .bss          00000010  00800106  00800106  000003e8  2**0
+                  ALLOC
+  3 .comment      00000030  00000000  00000000  000003e8  2**0
+                  CONTENTS, READONLY
+  4 .note.gnu.avr.deviceinfo 00000040  00000000  00000000  00000418  2**2
+                  CONTENTS, READONLY
+  5 .debug_aranges 000000a0  00000000  00000000  00000458  2**0
+                  CONTENTS, READONLY, DEBUGGING
+  6 .debug_info   00000721  00000000  00000000  000004f8  2**0
+                  CONTENTS, READONLY, DEBUGGING
+  7 .debug_abbrev 0000023e  00000000  00000000  00000c19  2**0
+                  CONTENTS, READONLY, DEBUGGING
+  8 .debug_line   00000550  00000000  00000000  00000e57  2**0
+                  CONTENTS, READONLY, DEBUGGING
+  9 .debug_frame  00000138  00000000  00000000  000013a8  2**2
+                  CONTENTS, READONLY, DEBUGGING
+ 10 .debug_str    00000613  00000000  00000000  000014e0  2**0
+                  CONTENTS, READONLY, DEBUGGING
+ 11 .debug_loc    00000152  00000000  00000000  00001af3  2**0
+                  CONTENTS, READONLY, DEBUGGING
+ 12 .debug_ranges 00000090  00000000  00000000  00001c45  2**0
+                  CONTENTS, READONLY, DEBUGGING
+
+Disassembly of section .text:
+
+00000000 <__vectors>:
+   0:	45 c0       	rjmp	.+138    	; 0x8c <__ctors_end>
+   2:	00 00       	nop
+   4:	60 c0       	rjmp	.+192    	; 0xc6 <__bad_interrupt>
+   6:	00 00       	nop
+   8:	5e c0       	rjmp	.+188    	; 0xc6 <__bad_interrupt>
+   a:	00 00       	nop
+   c:	5c c0       	rjmp	.+184    	; 0xc6 <__bad_interrupt>
+   e:	00 00       	nop
+  10:	5a c0       	rjmp	.+180    	; 0xc6 <__bad_interrupt>
+  12:	00 00       	nop
+  14:	58 c0       	rjmp	.+176    	; 0xc6 <__bad_interrupt>
+  16:	00 00       	nop
+  18:	56 c0       	rjmp	.+172    	; 0xc6 <__bad_interrupt>
+  1a:	00 00       	nop
+  1c:	54 c0       	rjmp	.+168    	; 0xc6 <__bad_interrupt>
+  1e:	00 00       	nop
+  20:	52 c0       	rjmp	.+164    	; 0xc6 <__bad_interrupt>
+  22:	00 00       	nop
+  24:	50 c0       	rjmp	.+160    	; 0xc6 <__bad_interrupt>
+  26:	00 00       	nop
+  28:	4e c0       	rjmp	.+156    	; 0xc6 <__bad_interrupt>
+  2a:	00 00       	nop
+  2c:	4c c0       	rjmp	.+152    	; 0xc6 <__bad_interrupt>
+  2e:	00 00       	nop
+  30:	4a c0       	rjmp	.+148    	; 0xc6 <__bad_interrupt>
+  32:	00 00       	nop
+  34:	48 c0       	rjmp	.+144    	; 0xc6 <__bad_interrupt>
+  36:	00 00       	nop
+  38:	46 c0       	rjmp	.+140    	; 0xc6 <__bad_interrupt>
+  3a:	00 00       	nop
+  3c:	44 c0       	rjmp	.+136    	; 0xc6 <__bad_interrupt>
+  3e:	00 00       	nop
+  40:	42 c0       	rjmp	.+132    	; 0xc6 <__bad_interrupt>
+  42:	00 00       	nop
+  44:	40 c0       	rjmp	.+128    	; 0xc6 <__bad_interrupt>
+  46:	00 00       	nop
+  48:	3e c0       	rjmp	.+124    	; 0xc6 <__bad_interrupt>
+  4a:	00 00       	nop
+  4c:	3c c0       	rjmp	.+120    	; 0xc6 <__bad_interrupt>
+  4e:	00 00       	nop
+  50:	4b c0       	rjmp	.+150    	; 0xe8 <__vector_20>
+  52:	00 00       	nop
+  54:	38 c0       	rjmp	.+112    	; 0xc6 <__bad_interrupt>
+  56:	00 00       	nop
+  58:	36 c0       	rjmp	.+108    	; 0xc6 <__bad_interrupt>
+  5a:	00 00       	nop
+  5c:	34 c0       	rjmp	.+104    	; 0xc6 <__bad_interrupt>
+  5e:	00 00       	nop
+  60:	32 c0       	rjmp	.+100    	; 0xc6 <__bad_interrupt>
+  62:	00 00       	nop
+  64:	30 c0       	rjmp	.+96     	; 0xc6 <__bad_interrupt>
+  66:	00 00       	nop
+  68:	2e c0       	rjmp	.+92     	; 0xc6 <__bad_interrupt>
+  6a:	00 00       	nop
+  6c:	2c c0       	rjmp	.+88     	; 0xc6 <__bad_interrupt>
+  6e:	00 00       	nop
+  70:	2a c0       	rjmp	.+84     	; 0xc6 <__bad_interrupt>
+  72:	00 00       	nop
+  74:	28 c0       	rjmp	.+80     	; 0xc6 <__bad_interrupt>
+  76:	00 00       	nop
+  78:	26 c0       	rjmp	.+76     	; 0xc6 <__bad_interrupt>
+  7a:	00 00       	nop
+  7c:	24 c0       	rjmp	.+72     	; 0xc6 <__bad_interrupt>
+  7e:	00 00       	nop
+  80:	22 c0       	rjmp	.+68     	; 0xc6 <__bad_interrupt>
+  82:	00 00       	nop
+  84:	20 c0       	rjmp	.+64     	; 0xc6 <__bad_interrupt>
+  86:	00 00       	nop
+  88:	1e c0       	rjmp	.+60     	; 0xc6 <__bad_interrupt>
+	...
+
+0000008c <__ctors_end>:
+  8c:	11 24       	eor	r1, r1
+  8e:	1f be       	out	0x3f, r1	; 63
+  90:	cf ef       	ldi	r28, 0xFF	; 255
+  92:	d0 e4       	ldi	r29, 0x40	; 64
+  94:	de bf       	out	0x3e, r29	; 62
+  96:	cd bf       	out	0x3d, r28	; 61
+
+00000098 <__do_copy_data>:
+  98:	11 e0       	ldi	r17, 0x01	; 1
+  9a:	a0 e0       	ldi	r26, 0x00	; 0
+  9c:	b1 e0       	ldi	r27, 0x01	; 1
+  9e:	ee e4       	ldi	r30, 0x4E	; 78
+  a0:	f3 e0       	ldi	r31, 0x03	; 3
+  a2:	00 e0       	ldi	r16, 0x00	; 0
+  a4:	0b bf       	out	0x3b, r16	; 59
+  a6:	02 c0       	rjmp	.+4      	; 0xac <__do_copy_data+0x14>
+  a8:	07 90       	elpm	r0, Z+
+  aa:	0d 92       	st	X+, r0
+  ac:	a6 30       	cpi	r26, 0x06	; 6
+  ae:	b1 07       	cpc	r27, r17
+  b0:	d9 f7       	brne	.-10     	; 0xa8 <__do_copy_data+0x10>
+
+000000b2 <__do_clear_bss>:
+  b2:	21 e0       	ldi	r18, 0x01	; 1
+  b4:	a6 e0       	ldi	r26, 0x06	; 6
+  b6:	b1 e0       	ldi	r27, 0x01	; 1
+  b8:	01 c0       	rjmp	.+2      	; 0xbc <.do_clear_bss_start>
+
+000000ba <.do_clear_bss_loop>:
+  ba:	1d 92       	st	X+, r1
+
+000000bc <.do_clear_bss_start>:
+  bc:	a6 31       	cpi	r26, 0x16	; 22
+  be:	b2 07       	cpc	r27, r18
+  c0:	e1 f7       	brne	.-8      	; 0xba <.do_clear_bss_loop>
+  c2:	5a d0       	rcall	.+180    	; 0x178 <main>
+  c4:	42 c1       	rjmp	.+644    	; 0x34a <_exit>
+
+000000c6 <__bad_interrupt>:
+  c6:	9c cf       	rjmp	.-200    	; 0x0 <__vectors>
+
+000000c8 <_Z17waitForActivationv>:
+}
+
+void StopIRTimer() {
+	IR_TIMER &= ~(1 << CS32);
+	IR_TIMER &= ~(1 << CS30);
+	TCNT3 = 0;
+  c8:	57 98       	cbi	0x0a, 7	; 10
+  ca:	8f ef       	ldi	r24, 0xFF	; 255
+  cc:	93 eb       	ldi	r25, 0xB3	; 179
+  ce:	01 97       	sbiw	r24, 0x01	; 1
+  d0:	f1 f7       	brne	.-4      	; 0xce <_Z17waitForActivationv+0x6>
+  d2:	00 c0       	rjmp	.+0      	; 0xd4 <_Z17waitForActivationv+0xc>
+  d4:	00 00       	nop
+  d6:	89 b1       	in	r24, 0x09	; 9
+  d8:	90 e0       	ldi	r25, 0x00	; 0
+  da:	88 0f       	add	r24, r24
+  dc:	89 2f       	mov	r24, r25
+  de:	88 1f       	adc	r24, r24
+  e0:	99 0b       	sbc	r25, r25
+  e2:	89 2b       	or	r24, r25
+  e4:	c1 f3       	breq	.-16     	; 0xd6 <_Z17waitForActivationv+0xe>
+  e6:	08 95       	ret
+
+000000e8 <__vector_20>:
+  e8:	1f 92       	push	r1
+  ea:	0f 92       	push	r0
+  ec:	0f b6       	in	r0, 0x3f	; 63
+  ee:	0f 92       	push	r0
+  f0:	11 24       	eor	r1, r1
+  f2:	8f 93       	push	r24
+  f4:	9f 93       	push	r25
+  f6:	90 91 c6 00 	lds	r25, 0x00C6
+  fa:	89 2f       	mov	r24, r25
+  fc:	87 70       	andi	r24, 0x07	; 7
+  fe:	81 30       	cpi	r24, 0x01	; 1
+ 100:	49 f0       	breq	.+18     	; 0x114 <__vector_20+0x2c>
+ 102:	28 f0       	brcs	.+10     	; 0x10e <__vector_20+0x26>
+ 104:	82 30       	cpi	r24, 0x02	; 2
+ 106:	49 f0       	breq	.+18     	; 0x11a <__vector_20+0x32>
+ 108:	84 30       	cpi	r24, 0x04	; 4
+ 10a:	51 f0       	breq	.+20     	; 0x120 <__vector_20+0x38>
+ 10c:	10 c0       	rjmp	.+32     	; 0x12e <__vector_20+0x46>
+ 10e:	90 93 15 01 	sts	0x0115, r25
+ 112:	0d c0       	rjmp	.+26     	; 0x12e <__vector_20+0x46>
+ 114:	90 93 05 01 	sts	0x0105, r25
+ 118:	0a c0       	rjmp	.+20     	; 0x12e <__vector_20+0x46>
+ 11a:	90 93 04 01 	sts	0x0104, r25
+ 11e:	07 c0       	rjmp	.+14     	; 0x12e <__vector_20+0x46>
+ 120:	80 91 02 01 	lds	r24, 0x0102
+ 124:	88 73       	andi	r24, 0x38	; 56
+ 126:	97 7c       	andi	r25, 0xC7	; 199
+ 128:	98 2b       	or	r25, r24
+ 12a:	90 93 02 01 	sts	0x0102, r25
+ 12e:	9f 91       	pop	r25
+ 130:	8f 91       	pop	r24
+ 132:	0f 90       	pop	r0
+ 134:	0f be       	out	0x3f, r0	; 63
+ 136:	0f 90       	pop	r0
+ 138:	1f 90       	pop	r1
+ 13a:	18 95       	reti
+
+0000013c <_Z15StartLaserTimerv>:
+ 13c:	10 92 85 00 	sts	0x0085, r1
+ 140:	10 92 84 00 	sts	0x0084, r1
+ 144:	85 e0       	ldi	r24, 0x05	; 5
+ 146:	80 93 81 00 	sts	0x0081, r24
+ 14a:	08 95       	ret
+
+0000014c <_Z6Rotateib>:
+}
+
+void Rotate(int degrees, bool leftTurn) {
+	rotating = true;
+ 14c:	21 e0       	ldi	r18, 0x01	; 1
+ 14e:	20 93 0a 01 	sts	0x010A, r18
+	targetRotation = degrees;
+ 152:	90 93 09 01 	sts	0x0109, r25
+ 156:	80 93 08 01 	sts	0x0108, r24
+	
+	if (leftTurn) {
+ 15a:	66 23       	and	r22, r22
+ 15c:	21 f0       	breq	.+8      	; 0x166 <_Z6Rotateib+0x1a>
+		nextOrder = TURN_LEFT;
+ 15e:	82 e0       	ldi	r24, 0x02	; 2
+ 160:	80 93 0c 01 	sts	0x010C, r24
+ 164:	03 c0       	rjmp	.+6      	; 0x16c <_Z6Rotateib+0x20>
+	}
+	else {
+		nextOrder = TURN_RIGHT;
+ 166:	83 e0       	ldi	r24, 0x03	; 3
+ 168:	80 93 0c 01 	sts	0x010C, r24
+	}
+	//start timer
+	TCCR2B |= (1 << CS20) | (1 << CS21) | (1 << CS22);
+ 16c:	e1 eb       	ldi	r30, 0xB1	; 177
+ 16e:	f0 e0       	ldi	r31, 0x00	; 0
+ 170:	80 81       	ld	r24, Z
+ 172:	87 60       	ori	r24, 0x07	; 7
+ 174:	80 83       	st	Z, r24
+ 176:	08 95       	ret
+
+00000178 <main>:
+const int sampleticks = 180 ;
+uint16_t gyroSum;
+
+int main(void)
+{
+	DDRB = 0b11111011;
+ 178:	8b ef       	ldi	r24, 0xFB	; 251
+ 17a:	84 b9       	out	0x04, r24	; 4
+	
+	//enable global interrupts
+	sei();
+ 17c:	78 94       	sei
+	//################
+	
+	//initiate UART målsökning from sensor
+	//set baud rate
+	uint16_t UBRR_val = UBRR_SENSOR_MALSOKNING;
+	UBRR0H = (unsigned char) (UBRR_val >> 8);
+ 17e:	10 92 c5 00 	sts	0x00C5, r1
+	UBRR0L = (unsigned char) UBRR_val;
+ 182:	87 e7       	ldi	r24, 0x77	; 119
+ 184:	80 93 c4 00 	sts	0x00C4, r24
+	//enable receive + set frame 8 bits
+	UCSR0B = (1<<RXEN0);
+ 188:	e1 ec       	ldi	r30, 0xC1	; 193
+ 18a:	f0 e0       	ldi	r31, 0x00	; 0
+ 18c:	80 e1       	ldi	r24, 0x10	; 16
+ 18e:	80 83       	st	Z, r24
+	UCSR0C = (1<<UCSZ00) | (1<<UCSZ01);
+ 190:	96 e0       	ldi	r25, 0x06	; 6
+ 192:	90 93 c2 00 	sts	0x00C2, r25
+
+	//enable receive interrupt
+	UCSR0B |= (1<<RXCIE0);
+ 196:	80 81       	ld	r24, Z
+ 198:	80 68       	ori	r24, 0x80	; 128
+ 19a:	80 83       	st	Z, r24
+	
+	//initiate UART målsökning to styr
+	//set baud rate
+	//115200
+	uint16_t UBRR_val1 = UBRR_STYR_MALSOKNING;
+	UBRR1H = (unsigned char) (UBRR_val1 >> 8);
+ 19c:	10 92 cd 00 	sts	0x00CD, r1
+	UBRR1L = (unsigned char) UBRR_val1;
+ 1a0:	89 e0       	ldi	r24, 0x09	; 9
+ 1a2:	80 93 cc 00 	sts	0x00CC, r24
+	
+	//enable transmit + set frame 8 bits
+	UCSR1B = (1<<TXEN1);
+ 1a6:	88 e0       	ldi	r24, 0x08	; 8
+ 1a8:	80 93 c9 00 	sts	0x00C9, r24
+	UCSR1C = (1<<UCSZ10) | (1<<UCSZ11);
+ 1ac:	90 93 ca 00 	sts	0x00CA, r25
+	//#UART INITS END#//
+	
+	waitForActivation();
+ 1b0:	8b df       	rcall	.-234    	; 0xc8 <_Z17waitForActivationv>
+	
+	Rotate(90, false);
+ 1b2:	60 e0       	ldi	r22, 0x00	; 0
+ 1b4:	8a e5       	ldi	r24, 0x5A	; 90
+ 1b6:	90 e0       	ldi	r25, 0x00	; 0
+ 1b8:	c9 df       	rcall	.-110    	; 0x14c <_Z6Rotateib>
+		//#######################
+		//## UART Transmission ##
+		//#######################
+
+		//check if transmit buffer is empty
+		if((UCSR1A & (1<<UDRE1))){
+ 1ba:	e8 ec       	ldi	r30, 0xC8	; 200
+ 1bc:	f0 e0       	ldi	r31, 0x00	; 0
+					break;
+				case 2:
+					UDR1 = message2;
+					break;
+				case 3:
+					UDR1 = message3;
+ 1be:	ae ec       	ldi	r26, 0xCE	; 206
+ 1c0:	b0 e0       	ldi	r27, 0x00	; 0
+					}
+					break;
+			}
+			//next mux
+			messageNumber++;
+			if(messageNumber>NUMBER_OF_MESSAGES+1) messageNumber=1;
+ 1c2:	51 e0       	ldi	r21, 0x01	; 1
+	
+	waitForActivation();
+	
+	Rotate(90, false);
+	
+    while(!dead)
+ 1c4:	96 c0       	rjmp	.+300    	; 0x2f2 <main+0x17a>
+    {
+		
+		//disable interrupts
+		cli();
+ 1c6:	f8 94       	cli
+		
+		//############################
+		//## Snapshot sensor values ##
+		//############################
+		//Message 1
+		IRSignature = (message1>>IRSIGNATURE_INDEX) & 0b00000111;
+ 1c8:	20 91 15 01 	lds	r18, 0x0115
+ 1cc:	82 2f       	mov	r24, r18
+ 1ce:	90 e0       	ldi	r25, 0x00	; 0
+ 1d0:	bc 01       	movw	r22, r24
+ 1d2:	75 95       	asr	r23
+ 1d4:	67 95       	ror	r22
+ 1d6:	75 95       	asr	r23
+ 1d8:	67 95       	ror	r22
+ 1da:	75 95       	asr	r23
+ 1dc:	67 95       	ror	r22
+ 1de:	67 70       	andi	r22, 0x07	; 7
+ 1e0:	60 93 0f 01 	sts	0x010F, r22
+		laserSensor = (message1>>LASER_INDEX) & 0b00000001;
+ 1e4:	08 2e       	mov	r0, r24
+ 1e6:	89 2f       	mov	r24, r25
+ 1e8:	00 0c       	add	r0, r0
+ 1ea:	88 1f       	adc	r24, r24
+ 1ec:	99 0b       	sbc	r25, r25
+ 1ee:	00 0c       	add	r0, r0
+ 1f0:	88 1f       	adc	r24, r24
+ 1f2:	99 1f       	adc	r25, r25
+ 1f4:	81 70       	andi	r24, 0x01	; 1
+ 1f6:	80 93 0e 01 	sts	0x010E, r24
+		activeIRsignature = (message1>>IRSENSOR_INDEX) & 0b00000001;
+ 1fa:	22 1f       	adc	r18, r18
+ 1fc:	22 27       	eor	r18, r18
+ 1fe:	22 1f       	adc	r18, r18
+ 200:	20 93 10 01 	sts	0x0110, r18
+		
+		//Message 2
+		ultraSonicSensor1 = (message2>>ULTRASONICSENSOR1_INDEX) & 0b00011111;
+ 204:	80 91 05 01 	lds	r24, 0x0105
+ 208:	86 95       	lsr	r24
+ 20a:	86 95       	lsr	r24
+ 20c:	86 95       	lsr	r24
+ 20e:	80 93 12 01 	sts	0x0112, r24
+		
+		//Message 3
+		ultraSonicSensor2 = (message3>>ULTRASONICSENSOR2_INDEX) & 0b00011111;
+ 212:	80 91 04 01 	lds	r24, 0x0104
+ 216:	86 95       	lsr	r24
+ 218:	86 95       	lsr	r24
+ 21a:	86 95       	lsr	r24
+ 21c:	80 93 11 01 	sts	0x0111, r24
+		
+		//Message 4
+		gyro = (message4>>LOWERBITSGYRO_INDEX) & 0b00011111; //Low 5 bits
+ 220:	80 91 03 01 	lds	r24, 0x0103
+ 224:	86 95       	lsr	r24
+ 226:	86 95       	lsr	r24
+ 228:	86 95       	lsr	r24
+ 22a:	80 93 0d 01 	sts	0x010D, r24
+		
+		//Message 5
+		gyro |= (message5<<2) & 0b11100000; //High 3 bits
+ 22e:	20 91 02 01 	lds	r18, 0x0102
+ 232:	82 2f       	mov	r24, r18
+ 234:	90 e0       	ldi	r25, 0x00	; 0
+ 236:	40 91 0d 01 	lds	r20, 0x010D
+ 23a:	bc 01       	movw	r22, r24
+ 23c:	66 0f       	add	r22, r22
+ 23e:	77 1f       	adc	r23, r23
+ 240:	66 0f       	add	r22, r22
+ 242:	77 1f       	adc	r23, r23
+ 244:	36 2f       	mov	r19, r22
+ 246:	30 7e       	andi	r19, 0xE0	; 224
+ 248:	34 2b       	or	r19, r20
+ 24a:	30 93 0d 01 	sts	0x010D, r19
+		tapeSensor1 = (message5>>TAPESENSOR1_INDEX) & 0b00000001;
+ 24e:	08 2e       	mov	r0, r24
+ 250:	89 2f       	mov	r24, r25
+ 252:	00 0c       	add	r0, r0
+ 254:	88 1f       	adc	r24, r24
+ 256:	99 0b       	sbc	r25, r25
+ 258:	00 0c       	add	r0, r0
+ 25a:	88 1f       	adc	r24, r24
+ 25c:	99 1f       	adc	r25, r25
+ 25e:	81 70       	andi	r24, 0x01	; 1
+ 260:	80 93 14 01 	sts	0x0114, r24
+		tapeSensor2 = (message5>>TAPESENSOR2_INDEX) & 0b00000001;
+ 264:	22 1f       	adc	r18, r18
+ 266:	22 27       	eor	r18, r18
+ 268:	22 1f       	adc	r18, r18
+ 26a:	20 93 13 01 	sts	0x0113, r18
+		
+		//enable interrupts
+		sei();
+ 26e:	78 94       	sei
+		//#######################
+		//## UART Transmission ##
+		//#######################
+
+		//check if transmit buffer is empty
+		if((UCSR1A & (1<<UDRE1))){
+ 270:	80 81       	ld	r24, Z
+ 272:	85 ff       	sbrs	r24, 5
+ 274:	3e c0       	rjmp	.+124    	; 0x2f2 <main+0x17a>
+			//mux through messages
+			//may need to disable interrupts
+			switch(messageNumber){
+ 276:	80 91 00 01 	lds	r24, 0x0100
+ 27a:	83 30       	cpi	r24, 0x03	; 3
+ 27c:	a1 f0       	breq	.+40     	; 0x2a6 <main+0x12e>
+ 27e:	28 f4       	brcc	.+10     	; 0x28a <main+0x112>
+ 280:	81 30       	cpi	r24, 0x01	; 1
+ 282:	49 f0       	breq	.+18     	; 0x296 <main+0x11e>
+ 284:	82 30       	cpi	r24, 0x02	; 2
+ 286:	59 f0       	breq	.+22     	; 0x29e <main+0x126>
+ 288:	2b c0       	rjmp	.+86     	; 0x2e0 <main+0x168>
+ 28a:	85 30       	cpi	r24, 0x05	; 5
+ 28c:	a1 f0       	breq	.+40     	; 0x2b6 <main+0x13e>
+ 28e:	78 f0       	brcs	.+30     	; 0x2ae <main+0x136>
+ 290:	86 30       	cpi	r24, 0x06	; 6
+ 292:	a9 f0       	breq	.+42     	; 0x2be <main+0x146>
+ 294:	25 c0       	rjmp	.+74     	; 0x2e0 <main+0x168>
+				case 1:
+					UDR1 = message1;
+ 296:	80 91 15 01 	lds	r24, 0x0115
+ 29a:	8c 93       	st	X, r24
+					break;
+ 29c:	21 c0       	rjmp	.+66     	; 0x2e0 <main+0x168>
+				case 2:
+					UDR1 = message2;
+ 29e:	80 91 05 01 	lds	r24, 0x0105
+ 2a2:	8c 93       	st	X, r24
+					break;
+ 2a4:	1d c0       	rjmp	.+58     	; 0x2e0 <main+0x168>
+				case 3:
+					UDR1 = message3;
+ 2a6:	80 91 04 01 	lds	r24, 0x0104
+ 2aa:	8c 93       	st	X, r24
+					break;
+ 2ac:	19 c0       	rjmp	.+50     	; 0x2e0 <main+0x168>
+				case 4:
+					UDR1 = message4;
+ 2ae:	80 91 03 01 	lds	r24, 0x0103
+ 2b2:	8c 93       	st	X, r24
+					break;
+ 2b4:	15 c0       	rjmp	.+42     	; 0x2e0 <main+0x168>
+				case 5: 
+					UDR1 = message5;
+ 2b6:	80 91 02 01 	lds	r24, 0x0102
+ 2ba:	8c 93       	st	X, r24
+					break;
+ 2bc:	11 c0       	rjmp	.+34     	; 0x2e0 <main+0x168>
+				case 6:
+					if(nextOrder != DO_NOTHING){ //Only send order if something is to be done
+ 2be:	80 91 0c 01 	lds	r24, 0x010C
+ 2c2:	88 23       	and	r24, r24
+ 2c4:	a1 f0       	breq	.+40     	; 0x2ee <main+0x176>
+						message6 &= 0b00000111; //reset everything except message ID
+ 2c6:	20 91 01 01 	lds	r18, 0x0101
+ 2ca:	27 70       	andi	r18, 0x07	; 7
+ 2cc:	20 93 01 01 	sts	0x0101, r18
+						UDR1 = (nextOrder<<3) | message6;
+ 2d0:	38 e0       	ldi	r19, 0x08	; 8
+ 2d2:	83 9f       	mul	r24, r19
+ 2d4:	c0 01       	movw	r24, r0
+ 2d6:	11 24       	eor	r1, r1
+ 2d8:	82 2b       	or	r24, r18
+ 2da:	8c 93       	st	X, r24
+						nextOrder = 0;
+ 2dc:	10 92 0c 01 	sts	0x010C, r1
+					}
+					break;
+			}
+			//next mux
+			messageNumber++;
+ 2e0:	80 91 00 01 	lds	r24, 0x0100
+ 2e4:	8f 5f       	subi	r24, 0xFF	; 255
+ 2e6:	80 93 00 01 	sts	0x0100, r24
+			if(messageNumber>NUMBER_OF_MESSAGES+1) messageNumber=1;
+ 2ea:	87 30       	cpi	r24, 0x07	; 7
+ 2ec:	10 f0       	brcs	.+4      	; 0x2f2 <main+0x17a>
+ 2ee:	50 93 00 01 	sts	0x0100, r21
+	
+	waitForActivation();
+	
+	Rotate(90, false);
+	
+    while(!dead)
+ 2f2:	80 91 0b 01 	lds	r24, 0x010B
+ 2f6:	88 23       	and	r24, r24
+ 2f8:	09 f4       	brne	.+2      	; 0x2fc <main+0x184>
+ 2fa:	65 cf       	rjmp	.-310    	; 0x1c6 <main+0x4e>
+
+
+    }
+	
+	// Reset the laser timers count variable and start the laser timer (used to get a blinking LEDs)
+	StartLaserTimer();
+ 2fc:	1f df       	rcall	.-450    	; 0x13c <_Z15StartLaserTimerv>
+	// This loop blinks the LEDs to show that we are dead
+	while (dead) {
+		if (LASER_TIMER_COUNTER >= ONE_SECOND) {
+ 2fe:	e4 e8       	ldi	r30, 0x84	; 132
+ 300:	f0 e0       	ldi	r31, 0x00	; 0
+			LASER_TIMER_COUNTER = 0;
+			CDCTR++;
+			nextOrder = DECREMENT_LED_LIVES;
+ 302:	29 e0       	ldi	r18, 0x09	; 9
+			if (CDCTR == 3) {
+				nextOrder = RESET_SE;
+ 304:	34 e1       	ldi	r19, 0x14	; 20
+    }
+	
+	// Reset the laser timers count variable and start the laser timer (used to get a blinking LEDs)
+	StartLaserTimer();
+	// This loop blinks the LEDs to show that we are dead
+	while (dead) {
+ 306:	1a c0       	rjmp	.+52     	; 0x33c <main+0x1c4>
+		if (LASER_TIMER_COUNTER >= ONE_SECOND) {
+ 308:	80 81       	ld	r24, Z
+ 30a:	91 81       	ldd	r25, Z+1	; 0x01
+ 30c:	80 35       	cpi	r24, 0x50	; 80
+ 30e:	96 44       	sbci	r25, 0x46	; 70
+ 310:	d8 f3       	brcs	.-10     	; 0x308 <main+0x190>
+			LASER_TIMER_COUNTER = 0;
+ 312:	11 82       	std	Z+1, r1	; 0x01
+ 314:	10 82       	st	Z, r1
+			CDCTR++;
+ 316:	80 91 06 01 	lds	r24, 0x0106
+ 31a:	90 91 07 01 	lds	r25, 0x0107
+ 31e:	01 96       	adiw	r24, 0x01	; 1
+ 320:	90 93 07 01 	sts	0x0107, r25
+ 324:	80 93 06 01 	sts	0x0106, r24
+			nextOrder = DECREMENT_LED_LIVES;
+ 328:	20 93 0c 01 	sts	0x010C, r18
+			if (CDCTR == 3) {
+ 32c:	03 97       	sbiw	r24, 0x03	; 3
+ 32e:	31 f4       	brne	.+12     	; 0x33c <main+0x1c4>
+				nextOrder = RESET_SE;
+ 330:	30 93 0c 01 	sts	0x010C, r19
+				CDCTR = 0;
+ 334:	10 92 07 01 	sts	0x0107, r1
+ 338:	10 92 06 01 	sts	0x0106, r1
+    }
+	
+	// Reset the laser timers count variable and start the laser timer (used to get a blinking LEDs)
+	StartLaserTimer();
+	// This loop blinks the LEDs to show that we are dead
+	while (dead) {
+ 33c:	80 91 0b 01 	lds	r24, 0x010B
+ 340:	81 11       	cpse	r24, r1
+ 342:	e2 cf       	rjmp	.-60     	; 0x308 <main+0x190>
+				nextOrder = RESET_SE;
+				CDCTR = 0;
+			}
+		}
+	}
+}
+ 344:	80 e0       	ldi	r24, 0x00	; 0
+ 346:	90 e0       	ldi	r25, 0x00	; 0
+ 348:	08 95       	ret
+
+0000034a <_exit>:
+ 34a:	f8 94       	cli
+
+0000034c <__stop_program>:
+ 34c:	ff cf       	rjmp	.-2      	; 0x34c <__stop_program>

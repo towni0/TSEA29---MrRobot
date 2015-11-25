@@ -198,7 +198,7 @@ int main(void)
 			messageNumber++;
 			if(messageNumber>NUMBER_OF_MESSAGES+1) messageNumber=1;
 		}
-		
+		/*
 		if((PINB>>PINB2) == 0){
 			//##################
 			//## Tävlingsläge ##
@@ -329,7 +329,7 @@ int main(void)
 			//##############
 			//## Testläge ##
 			//##############
-		}
+		}*/
 	
 
 
