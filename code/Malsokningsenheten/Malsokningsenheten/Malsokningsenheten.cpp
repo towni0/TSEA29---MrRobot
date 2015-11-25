@@ -269,7 +269,7 @@ int main(void)
 			
 			// If we are rotating
 			if (rotating) {
-				if(timervalue >= sampleticks){
+				if(TCNT2 >= sampleticks){
 					int angularVelocity = gyro - ANGULAR_RATE_IDLE; 
 					if (CalcGyro(abs(angularVelocity)) >= targetRotation) {
 						gyroSum = 0;
@@ -282,6 +282,7 @@ int main(void)
 					message4 |= (gyroSum<<LOWERBITSGYRO_INDEX);
 					message5 &= 0b11000111; //Reset bits
 					message5 |= ((gyroSum>>2) & 0b00111000);
+					TCNT2 = 0;
 				}
 			}
 		
