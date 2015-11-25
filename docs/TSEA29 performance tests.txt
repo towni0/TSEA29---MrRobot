@@ -1,0 +1,48 @@
+Robot Tester
+	+ Sensorenhet
+		- Skickar IR-sensorn rätt värden?
+		- Skickar avståndssensorerna rätt värden?
+		- Skickar Tejpsensorerna rätt värden?
+		- Skickar gyro rätt värden?
+		- Skickar laser sensorn rätt värden?
+		- Kalibreras avståndssensorerna rätt?
+		
+	+ Styrenhet
+		- Kan styrenheten tolka UART data till korrekta orders?
+		- Kan roboten skjuta/aktivera lasern?
+		- Kan roboten deaktivera lasern?
+		- Kan roboten indikera om lasern är aktiv mha en LED?
+		- Skickar IR-fyren ut en korrekt signatur?
+		- Kan roboten stänga av IR-fyren?
+		- Kan styrenheten släcka en liv LED itaget?
+		- Kan roboten skjuta medan den är osynligt?
+		
+	+ Målsökningsenhet
+		- Kan MS ta emot sensordata och använda den som stöd för AI?
+		- Kan vi visa att vi är döda?
+		- Kan vi stänga av/lamslå roboten så den inte gör något om den är död?
+		- Kan MS skicka data via Bluetooth till en persondator?
+	
+	+ Persondator programmet
+		- Visar programmet rätt data för varje sensor?
+		- Går det bra att ansluta FireFly och Bluetooth dongle med programmet?
+	
+	+ Allt tillsammans
+		- Håller roboten sig inom en tejpad bana?
+		- Kan roboten lokalisera en fiende och skjuta mot den?
+		- Skjuter roboten bara på robotar/fyrar som skickar ut en IR-signatur som inte är samma som robotens?
+		- Står roboten stilla mindre än fem sekunder max under test och tävling?
+		- Visar roboten att den blivit träffad på något sätt (vi tänkte bara släcka en LED?)
+		- Är lasern aktiv i en sekund och inte mer?
+		- Skjuter roboten med ett intervall som är större än tre sekunder(cooldown)?
+		- Vid träff är roboten osynlig i fem sekunder och inte mer?
+		- Fungerar Bluetooth ordentligt?
+		
+	+ Övrigt
+		- Fungerar aktiveringsknappen?
+		- Kan vi växla mellan test och tävlingsläge?
+
+		
+		
+		
+		
