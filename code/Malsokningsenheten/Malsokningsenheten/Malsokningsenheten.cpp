@@ -77,13 +77,16 @@ void StartLaserTimer();
 void StopLaserTimer();
 void Scan();
 int Priority(int operation);
+float CalcGyro(int gyroData);
+
 int	currentPriority = -1;
 bool foundSomethingToDo = false;
 
 int orders[10];
 
 //gyro
-uint8_t sampleTimeInSeconds = 0.1; //Since the gyro gives us degrees/sec
+const float sampleTimeInSeconds = 0.01; //Since the gyro gives us degrees/sec
+const int sampleticks = 180 ;
 uint16_t gyroSum;
 
 int main(void)
@@ -123,6 +126,8 @@ int main(void)
 	
 	waitForActivation();
 	
+	Rotate(90, false);
+	
     while(!dead)
     {
 		
@@ -161,14 +166,18 @@ int main(void)
 			
 			// If we are rotating
 			if (rotating) {
-				// THIS IS JUST PLACEHOLDER, NOT THE ACTUAL CODE, WE NEED TO DO SOMETHING MORE WITH THE GYRO VALUE
-				currentRotationValue += gyro;
-				if (currentRotationValue >= targetRotation) {
-					nextOrder = STOP_MOVING;
+				if(timervalue >= sampleticks){
+					int angularVelocity = gyro - ANGULAR_RATE_IDLE; 
+					if (CalcGyro(abs(angularVelocity)) >= targetRotation) {
+						gyroSum = 0;
+						rotatation = false;
+						nextOrder = STOP_MOVING;
+						TCCR2B &= ~((1 << CS20) | (1 << CS21) | (1 << CS22));
+					}
 				}
 			}
 		
-			// If we are scaning for opponents
+		/* 	// If we are scaning for opponents
 			if (scaning) {
 				if (ultraSonicSensor1 <= 15 || ultraSonicSensor2 <= 15) {
 					nextOrder = STOP_MOVING;
@@ -209,7 +218,7 @@ int main(void)
 			if(laserSensor == 1){
 				foundSomethingToDo = true;
 				WeAreHit();
-			}
+			} */
 		
 			/*
 			// If something is in front of the robot, do something
@@ -219,7 +228,7 @@ int main(void)
 			if(ultraSonicSensor2 == 10){}		
 			*/
 		
-			// If there is nothing else to do, move forward
+			/* // If there is nothing else to do, move forward
 			if (!foundSomethingToDo) {
 				nextOrder = MOVE_FORWARD;
 			}
@@ -256,7 +265,7 @@ int main(void)
 			//##############
 			//## Testläge ##
 			//##############
-		}
+		} */
 	
 
 
@@ -342,7 +351,7 @@ ISR(USART0_RX_vect){
 }
 
 //Called once every sampleTimeInSeconds
-uint16_t CalcGyro(uint16_t gyroData){
+float CalcGyro(int gyroData){
    gyroSum += gyroData;
    return (gyroSum * sampleTimeInSeconds);
 }
@@ -419,7 +428,8 @@ void Rotate(int degrees, bool leftTurn) {
 	else {
 		nextOrder = TURN_RIGHT;
 	}
-	
+	//start timer
+	TCCR2B |= (1 << CS20) | (1 << CS21) | (1 << CS22);
 }
 
 int Priority(int operation) {
