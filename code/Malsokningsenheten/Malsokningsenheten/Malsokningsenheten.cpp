@@ -11,6 +11,24 @@
 #include <avr/interrupt.h>
 //#include <util/delay.h>
 
+
+// Function headers
+void SetPriority(int priority);
+void ClearPriority();
+void BlinkLEDs();
+void WeAreHit();
+void Shoot();
+void Rotate(int degrees, bool leftTurn);
+void StopIRTimer();
+void StartIRTimer();
+void StartLaserTimer();
+void StopLaserTimer();
+void Scan();
+int Priority(int operation);
+float CalcGyro(int gyroData);
+void testTAPEsensors();
+
+
 //initial values are set to their IDs from design spec. (these bits are never changed)
 uint8_t message1 = 0;
 uint8_t message2 = 1;
@@ -30,19 +48,24 @@ volatile uint8_t laserSensor = 0; //1 if hit
 volatile uint8_t gyro = 0; //Rotation speed
 
 uint8_t nextOrder = 0;
-
 uint8_t testChange = 0;
-
 uint8_t messageNumber = 1;
 
-void testTAPEsensors();
+
 
 //##### AI #####
+
+#define LASER_TIMER TCCR1B
+#define LASER_TIMER_COUNTER TCNT1
+#define IR_TIMER TCCR3B
+#define IR_TIMER_COUNTER TCNT3
+
+#define ONE_SECOND 18000
+
 // Data
 bool canShoot = true;
 int health = 3;
 bool dead = false;
-
 
 bool scaning = false;
 
@@ -50,41 +73,18 @@ bool scaning = false;
 bool rotating = false;
 int currentRotationValue;
 int targetRotation;
-#define ROTATION_PRIORITY 5
 
 // Laser stuff
-#define LASER_TIMER TCCR1B
-#define LASER_TIMER_COUNTER TCNT1
-int CDCTR = 0;
+int coolDownCTR = 0;
 bool laserActive = false;
 
 bool laserSensorHit = false;
 
-#define IR_TIMER TCCR3B
-#define IR_TIMER_COUNTER TCNT3
-
-#define ONE_SECOND 18000
-
 // Used to count up to 3
 int IRCTR = 0;
-
-void SetPriority(int priority);
-void ClearPriority();
-void BlinkLEDs();
-void WeAreHit();
-void Shoot();
-void Rotate(int degrees, bool leftTurn);
-void StopIRTimer();
-void StartIRTimer();
-void StartLaserTimer();
-void StopLaserTimer();
-void Scan();
-int Priority(int operation);
-float CalcGyro(int gyroData);
-
 int	currentPriority = -1;
 bool foundSomethingToDo = false;
-
+bool shooting = false;
 int orders[10];
 
 //gyro
@@ -198,7 +198,7 @@ int main(void)
 			messageNumber++;
 			if(messageNumber>NUMBER_OF_MESSAGES+1) messageNumber=1;
 		}
-		/*
+		
 		if((PINB>>PINB2) == 0){
 			//##################
 			//## Tävlingsläge ##
@@ -216,7 +216,7 @@ int main(void)
 		
 			// LASER timer stuff
 			if (LASER_TIMER_COUNTER >= ONE_SECOND) {
-				CDCTR++;
+				coolDownCTR++;
 				if (laserActive) {
 					canShoot = false;
 					nextOrder = DEACTIVATE_LASER;
@@ -225,7 +225,7 @@ int main(void)
 					continue;
 				}
 				else {
-					if (CDCTR >= 3) {
+					if (coolDownCTR >= 3) {
 						canShoot = true;
 						StopLaserTimer();
 					}
@@ -233,7 +233,7 @@ int main(void)
 			
 			}
 			
-			// If we are hit
+			// If we are hit, we turn invisible and decrement our live pool
 			if(laserSensor == 1 && !laserSensorHit ){
 				foundSomethingToDo = true;
 				laserSensorHit = true;
@@ -245,21 +245,21 @@ int main(void)
 				laserSensorHit = false;
 			}
 			
-			
-			if (tapeSensor1 == 1 && tapeSensor2 == 1) {
+			// If both line sensor detects tape and we havn't startet rotating, turn around (180 degrees)
+			if ((tapeSensor1 == 1 && tapeSensor2 == 1) && !rotating) {
 				Rotate(180, true);
 				continue;
 			}
 		
-			// If the Left line sensor detects tape, turn right
-			if(tapeSensor1 == 1){ 
+			// If the Left line sensor detects tape and we havn't startet rotating, turn right
+			if((tapeSensor1 == 1) && !rotating){ 
 				Rotate(90, false);
 				continue;
 
 			}
 		
-			// If the Right line sensor detects tape, turn left
-			if(tapeSensor2 == 1){ 
+			// If the Right line sensor detects tape and we havn't startet rotating, turn left
+			if((tapeSensor2 == 1) && !rotating){ 
 				Rotate(90, true);
 				continue;
 
@@ -273,7 +273,7 @@ int main(void)
 					int angularVelocity = gyro - ANGULAR_RATE_IDLE; 
 					if (CalcGyro(abs(angularVelocity)) >= targetRotation) {
 						gyroSum = 0;
-						rotatation = false;
+						rotating = false;
 						nextOrder = STOP_MOVING;
 						TCCR2B &= ~((1 << CS20) | (1 << CS21) | (1 << CS22));
 					}
@@ -286,10 +286,13 @@ int main(void)
 				}
 			}
 		
-		 	// If we are scaning for opponents
-			if (scaning) {
+		 	// If we are scaning for opponents and we find something within 1,5 meters, stop move, 
+			if (scaning && rotating) {
 				if (ultraSonicSensor1 <= 15 || ultraSonicSensor2 <= 15) {
+					rotating = false;
+					scaning = false;
 					nextOrder = STOP_MOVING;
+					continue;
 				}
 			}
 		
@@ -306,19 +309,10 @@ int main(void)
 			if(activeIRsignature == 1 ){
 				foundSomethingToDo = true;
 				Scan();
+				continue
 			}
-		
-
-		
-			
-			// If something is in front of the robot, do something
-			if(ultraSonicSensor1 == 10){}
-	
-			// If something is behind the robot, do something else
-			if(ultraSonicSensor2 == 10){}		
-			
-		
-			 // If there is nothing else to do, move forward
+		 
+			 // If there is nothing else to do, move forward, KEEP THIS??
 			if (!foundSomethingToDo) {
 				nextOrder = MOVE_FORWARD;
 			}
@@ -329,7 +323,7 @@ int main(void)
 			//##############
 			//## Testläge ##
 			//##############
-		}*/
+		}
 	
 
 
@@ -342,11 +336,11 @@ int main(void)
 	while (dead) {
 		if (LASER_TIMER_COUNTER >= ONE_SECOND) {
 			LASER_TIMER_COUNTER = 0;
-			CDCTR++;
+			coolDownCTR++;
 			nextOrder = DECREMENT_LED_LIVES;
-			if (CDCTR == 3) {
+			if (coolDownCTR == 3) {
 				nextOrder = RESET_SE;
-				CDCTR = 0;
+				coolDownCTR = 0;
 			}
 		}
 	}
@@ -380,6 +374,24 @@ ISR(USART0_RX_vect){
 	}
 }
 
+void Scan() {
+	scaning = true;
+	Rotate(360, true);
+}
+
+void Rotate(int degrees, bool leftTurn) {
+	rotating = true;
+	targetRotation = degrees;
+	
+	if (leftTurn) {
+		nextOrder = TURN_LEFT;
+	}
+	else {
+		nextOrder = TURN_RIGHT;
+	}
+	//start timer
+	TCCR2B |= (1 << CS20) | (1 << CS21) | (1 << CS22);
+}
 
 //Called once every sampleTimeInSeconds
 float CalcGyro(int gyroData){
@@ -395,17 +407,6 @@ int Abs(int value) {
 	return value;
 }
 	
-void SetPriority(int priority) {
-	currentPriority = priority;
-}
-
-void ClearPriority() {
-	currentPriority = -1;
-}
-
-void BlinkLEDs() {
-	
-}
 
 void WeAreHit() {
 	health--;
@@ -450,19 +451,20 @@ void StopIRTimer() {
 	TCNT3 = 0;
 }
 
-void Rotate(int degrees, bool leftTurn) {
-	rotating = true;
-	targetRotation = degrees;
-	
-	if (leftTurn) {
-		nextOrder = TURN_LEFT;
-	}
-	else {
-		nextOrder = TURN_RIGHT;
-	}
-	//start timer
-	TCCR2B |= (1 << CS20) | (1 << CS21) | (1 << CS22);
+
+
+void SetPriority(int priority) {
+	currentPriority = priority;
 }
+
+void ClearPriority() {
+	currentPriority = -1;
+}
+
+void BlinkLEDs() {
+	
+}
+
 
 int Priority(int operation) {
 	switch(operation){
@@ -497,10 +499,7 @@ int Priority(int operation) {
 
 
 
-void Scan() {
-	scaning = true;
-	Rotate(360, true);
-}
+
 
 /* NEW SCHEME
 Meddelande 1:

@@ -7,6 +7,25 @@
 #define LowSpeed 64
 
 
+// Function headers
+int Priority(int operation);
+void SetPriority(int priority);
+void ClearPriority();
+void BlinkLEDs();
+void WeAreHit();
+void Shoot();
+void StartLaserTimer();
+void StopLaserTimer();
+void StartIRTimer();
+void StopIRTimer();
+void Rotate(int degrees, bool leftTurn);
+int Priority(int operation);
+void Scan();
+int Abs(int value);
+
+
+
+
 //Variables for storing sensor values
 volatile uint8_t tapeSensor1 = 0; //1 for tape, 0 for floor
 volatile uint8_t tapeSensor2 = 0; //1 for tape, 0 for floor
@@ -15,7 +34,7 @@ volatile uint8_t ultraSonicSensor2 = 0; //distance in dm
 volatile uint8_t activeIRsignature = 0; //1 if enemy in front
 volatile uint8_t IRSignature = 0; //the active IR signature
 volatile uint8_t laserSensor = 0; //1 if hit
-volatile uint8_t gyro = 0; //Rotation speed
+volatile uint8_t gyro = 0; //Angular velocity
 
 // Data
 bool canShoot = true;
@@ -28,11 +47,13 @@ bool scaning = false;
 bool rotating = false;
 int currentRotationValue;
 int targetRotation;
+#define IDLE_ANGULAR_VELOCITY 128
 #define ROTATION_PRIORITY 5
 
 // Laser stuff
 #define LASER_TIMER TCCR1B
 #define LASER_TIMER_COUNTER TCNT1
+// Use to count up to 3 (cool down time)
 int CDCTR = 0;
 bool laserActive = false;
 
@@ -41,34 +62,27 @@ bool laserActive = false;
 
 #define ONE_SECOND 18000
 
-// Used to count up to 3 
+// Used to count up to 5 (invisibilty time)
 int IRCTR = 0; 
 
 
-int Priority(int operation);
+
 int	currentPriority = -1;
 bool foundSomethingToDo = false;
 
-// ACTIVATION STUFF HERE
-#define ACTIVATION_PIN PINB7
 
 int [] orders = int[10];
 
 int main(void){
-	
-	// Actitave LOOP, we are inside here until we press the activate button
-	while (PINB & (1<<ACTIVATION_PIN) == 0) {
-	// Do nothing
-	
-	}
-	
-
-	
+		
+	// If we arent dead (hit three times) we continue our search for enemies
 	while(!dead){
 		
 		// If we are rotating
 		if (rotating) {
-			// THIS IS JUST PLACEHOLDER, NOT THE ACTUAL CODE, WE NEED TO DO SOMETHING MORE WITH THE GYRO VALUE
+
+			angularVelocity = gyro; - IDLE_ANGULAR_VELOCITY;
+			
 			currentRotationValue += gyro;
 			if (currentRotationValue >= targetRotation) {
 				nextORder = STOP_MOVING;
@@ -184,6 +198,13 @@ int main(void){
 	
 }
 
+int Abs(int value) {
+	if (value < 0) {
+		value *= -1;
+	}
+	
+	return value;
+}
 
 void SetPriority(int priority) {
 	currentPriority = priority;
