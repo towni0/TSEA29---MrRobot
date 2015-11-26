@@ -128,7 +128,8 @@ int main(void)
 	
 	waitForActivation();
 	
-	Rotate(90, false);
+	//Rotate(90, false);
+	nextOrder = MOVE_FORWARD;
 	
     while(!dead)
     {
@@ -332,6 +333,18 @@ int main(void)
 			//##############
 			//## Testläge ##
 			//##############
+			
+		
+		
+			// If the Right line sensor detects tape and we havn't startet rotating, turn left
+			if((tapeSensor2 == 1) && !rotating){ 
+				nextOrder = STOP_MOVING;
+				continue;
+			}
+			
+			
+			
+			
 		}
 	
 
