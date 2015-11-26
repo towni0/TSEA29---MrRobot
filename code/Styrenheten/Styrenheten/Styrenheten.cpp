@@ -124,6 +124,9 @@ int main(void){
 				DecrementLEDLives();
 				TurnOffIRSignature();
 				break;
+			case ACTIVATE_LASER_AND_TURN_RIGHT:
+				ActivateLaser();
+				TurnRight();
 			
 			case RESET_SE:
 				ResetSE();
