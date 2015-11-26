@@ -84,7 +84,6 @@ bool laserSensorHit = false;
 int IRCTR = 0;
 int	currentPriority = -1;
 bool foundSomethingToDo = false;
-bool shooting = false;
 int orders[10];
 
 //gyro
@@ -217,18 +216,18 @@ int main(void)
 			// LASER timer stuff
 			if (LASER_TIMER_COUNTER >= ONE_SECOND) {
 				coolDownCTR++;
-				if (laserActive) {
-					canShoot = false;
-					nextOrder = DEACTIVATE_LASER;
-					LASER_TIMER_COUNTER = 0;
+				LASER_TIMER_COUNTER = 0;
+				
+				// Lasers been active for 1 sec, turn it off
+				if (coolDownCTR == 1) {
+					nextOrder = DEACTIVATE_LASER;					
 					laserActive = false;
 					continue;
 				}
-				else {
-					if (coolDownCTR >= 3) {
-						canShoot = true;
-						StopLaserTimer();
-					}
+				// cooldown is over
+				else if (coolDownCTR == 4) {
+					canShoot = true;
+					StopLaserTimer();				
 				}
 			
 			}
@@ -262,7 +261,6 @@ int main(void)
 			if((tapeSensor2 == 1) && !rotating){ 
 				Rotate(90, true);
 				continue;
-
 			}
 		
 			
@@ -276,6 +274,12 @@ int main(void)
 						rotating = false;
 						nextOrder = STOP_MOVING;
 						TCCR2B &= ~((1 << CS20) | (1 << CS21) | (1 << CS22));
+						
+						// If we reached the end of the first turn, turn to the oppisite way
+						if (laserActive ) {
+							Rotate(SHOOT_SWEEP_DEGREES, true);
+						}
+						
 					}
 					//Send how many degrees we have rotated over uart
 					message4 &= 0b00000111; //Reset bits
@@ -301,8 +305,13 @@ int main(void)
 				if (canShoot) {
 					foundSomethingToDo = true;
 					Shoot();
+					continue;
 				}
 			
+			}
+			
+			if (laserActive) {
+				
 			}
 		
 			// If the IR-sensor sees an enemy signature ONLY
@@ -424,109 +433,45 @@ void WeAreHit() {
 
 void Shoot() {
 	laserActive = true;
-	nextOrder = ACTIVATE_LASER;
+	canShoot = false;
+	rotating = true;
+	targetRotation = SHOOT_SWEEP_DEGREES / 2;
+	
+	//start timer
+	TCCR2B |= (1 << CS20) | (1 << CS21) | (1 << CS22);
+	
+	nextOrder = ACTIVATE_LASER_AND_TURN_RIGHT;
+	StartLaserTimer();
 	
 }
 
 
 void StartLaserTimer() {
-	TCNT1 = 0;
+	LASER_TIMER_COUNTER = 0;
 	LASER_TIMER = (1<< CS12) | (1<< CS10);
 }
 
 void StopLaserTimer() {
 	LASER_TIMER &= ~(1 << CS12);
 	LASER_TIMER &= ~(1 << CS10);
-	TCNT1 = 0;
+	LASER_TIMER_COUNTER = 0;
 }
 
 void StartIRTimer() {
-	TCNT3 = 0;
+	IR_TIMER_COUNTER = 0;
 	IR_TIMER = (1<< CS32) | (1<< CS30);
 }
 
 void StopIRTimer() {
 	IR_TIMER &= ~(1 << CS32);
 	IR_TIMER &= ~(1 << CS30);
-	TCNT3 = 0;
+	IR_TIMER_COUNTER = 0;
+	IRCTR = 0;
 }
 
-
-
-void SetPriority(int priority) {
-	currentPriority = priority;
-}
-
-void ClearPriority() {
-	currentPriority = -1;
-}
 
 void BlinkLEDs() {
 	
 }
 
 
-int Priority(int operation) {
-	switch(operation){
-		case DO_NOTHING:
-			return 0;
-		case MOVE_FORWARD:
-			return 1;
-		case TURN_LEFT:
-			return 1;
-		case TURN_RIGHT:
-			return 1;
-		case ACTIVATE_LASER:
-			return 2;
-		case DEACTIVATE_LASER:
-			return 2;
-		case TURN_OFF_IR_SIG:
-			return 2;
-		case TURN_ON_IR_SIG:
-			return 2;
-		case STOP_MOVING:
-			return 10;
-		case DECREMENT_LED_LIVES:
-			return 20;
-		case TURN_INVISIBLE_AND_DEC_LIFE_LED:
-			return 21;
-		case ACTIVATE_LASER_AND_TURN_RIGHT:
-			return 21;
-		default :
-			return 0;
-	}
-}
-
-
-
-
-
-/* NEW SCHEME
-Meddelande 1:
-Bit 0-2:	Meddelande ID (000)
-Bit 3-5:	IR-signaturen
-Bit 6:      Laser (1 för träff)
-Bit 7:		Aktiv IR-signatur (robot framför oss)
-
-Meddelande 2:
-Bit 0-2:	Meddelande ID (001)
-Bit 3-7:	Främre avståndssensorn (ca 1 dm precision)
-
-Meddelande 3:
-Bit 0-2:	Meddelande ID (010)
-Bit 3-7:	Bakre avståndssensorn (ca 1 dm precision)
-
-Meddelande 4:
-Bit 0-2:	Meddelande ID (011)
-Bit 3-7:	5 LSB Gyro (grader rotatation)
-
-Meddelande 5:
-Bit 0-2:	Meddelande ID (100)
-Bit 3-5:	3 MSB Gyro (grader rotatation)
-Bit 6:		Tejpsensor 1 (vänster, 1 för tejp)
-Bit 7:		Tejpsensor 2 (höger, 1 för tejp)
-
-Meddelande 6:
-Bit 0-2:	Meddelande ID (101)(ORDER)
-Bit 3-7		ORDERID
-*/

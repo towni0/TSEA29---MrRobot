@@ -41,18 +41,6 @@ const uint8_t TAPE_ERROR_MARGIN = 100;
 //message 6
 #define ORDER_INDEX 3
 
-//Orders
-#define DO_NOTHING			0
-#define MOVE_FORWARD		1
-#define TURN_LEFT			2
-#define TURN_RIGHT			3
-#define ACTIVATE_LASER		4
-#define DEACTIVATE_LASER	5
-#define TURN_INVISIBLE		6
-#define TURN_VISIBLE		7
-#define STOP_MOVING			8
-#define DEC_LIFE_LED		9
-
 //Ultrasonic
 #define ECHO_PIN1 PINB0
 #define PULSE_TRIGGER_PIN1 PINB1
@@ -81,6 +69,8 @@ const uint8_t TAPE_ERROR_MARGIN = 100;
 #define LASER_LED_PIN PINB4
 #define LED_PORT PORTB
 
+#define SHOOT_SWEEP_DEGREES 46
+
 //Orders
 #define DO_NOTHING 						0
 #define MOVE_FORWARD 					1
@@ -94,6 +84,7 @@ const uint8_t TAPE_ERROR_MARGIN = 100;
 #define DECREMENT_LED_LIVES				9
 #define TURN_INVISIBLE_AND_DEC_LIFE_LED 10
 #define ACTIVATE_LASER_AND_TURN_RIGHT 	11
+
 
 #define RESET_SE						20
 
