@@ -62,8 +62,9 @@ int main(void){
 	//#UART INITS END#//
 	
 	// Call all Init functions in this module
-	waitForActivation();
 	Init();
+	
+	waitForActivation();
 	//StopMove(); //temp
 	//PORTD &= ~(1<<PIND4);
 	
@@ -71,7 +72,9 @@ int main(void){
     while(1)
     {
 		//Do command
+		cli();
 		uint8_t snapshotOrder = currentOrder;
+		sei();
 		//Reset order so that its not executed more than once
 		currentOrder = DO_NOTHING;
 
@@ -81,7 +84,6 @@ int main(void){
 				break;
 			
 			case MOVE_FORWARD:
-				PORTB |= (1<<PINB4);
 				MoveForward(MOVEMENT_SPEED);
 				break;
 			
@@ -90,6 +92,7 @@ int main(void){
 				break;
 			
 			case TURN_RIGHT:
+				PORTB |= (1<<PINB3);
 				TurnRight(ROTATION_SPEED);
 				break;
 			
@@ -128,6 +131,7 @@ int main(void){
 			
 			default:
 				// Error
+				PORTB |= (1<<PINB4);
 				break;
 		}
     }
@@ -256,11 +260,10 @@ void StopMove() {
 
 //UART ISR which sets the "currentOrder" variable
 ISR(USART0_RX_vect){
-	uint8_t messageID = UDR0 & 0x07; //Mask out message ID
+	uint8_t snapbuffer = UDR0;
+	uint8_t messageID = snapbuffer & 0x07; //Mask out message ID
 	//only look at ORDERS
 	if(messageID == ORDER_ID){
-		currentOrder = (UDR0>>3) & 0b00011111; //Mask out the order
-		//test
-		if(currentOrder==TURN_RIGHT) PORTB |= (1<<PINB3);
+		currentOrder = (snapbuffer>>3) & 0b00011111; //Mask out the order
 	}
 }
