@@ -97,7 +97,7 @@ const uint8_t TAPE_ERROR_MARGIN = 100;
 #define HighSpeed 255
 #define MediumSpeed 128
 #define LowSpeed 64
-#define ANGULAR_RATE_IDLE = 128
+#define ANGULAR_RATE_IDLE 128
 
 
 //UBRR constants for UART

@@ -27,7 +27,7 @@ void Scan();
 int Priority(int operation);
 float CalcGyro(int gyroData);
 void testTAPEsensors();
-
+int Abs(int value);
 
 //initial values are set to their IDs from design spec. (these bits are never changed)
 uint8_t message1 = 0;
@@ -129,7 +129,8 @@ int main(void)
 	waitForActivation();
 	
 	//Rotate(90, false);
-	nextOrder = MOVE_FORWARD;
+	//nextOrder = MOVE_FORWARD;
+	//nextOrder = DECREMENT_LED_LIVES;
 	
     while(!dead)
     {
@@ -270,7 +271,7 @@ int main(void)
 			if (rotating) {
 				if(TCNT2 >= sampleticks){
 					int angularVelocity = gyro - ANGULAR_RATE_IDLE; 
-					if (CalcGyro(abs(angularVelocity)) >= targetRotation) {
+					if (CalcGyro(Abs(angularVelocity)) >= targetRotation) {
 						gyroSum = 0;
 						rotating = false;
 						nextOrder = STOP_MOVING;
@@ -319,7 +320,7 @@ int main(void)
 			if(activeIRsignature == 1 ){
 				foundSomethingToDo = true;
 				Scan();
-				continue
+				continue;
 			}
 		 
 			 // If there is nothing else to do, move forward, KEEP THIS??
@@ -337,12 +338,13 @@ int main(void)
 		
 		
 			// If the Right line sensor detects tape and we havn't startet rotating, turn left
-			if((tapeSensor2 == 1) && !rotating){ 
-				nextOrder = STOP_MOVING;
-				continue;
-			}
+			//if((tapeSensor2 == 1) && !rotating){ 
+			//	nextOrder = STOP_MOVING;
+			//	continue;
+			//}
 			
-			
+			_delay_ms(1000);
+			//nextOrder = DECREMENT_LED_LIVES;
 			
 			
 		}
