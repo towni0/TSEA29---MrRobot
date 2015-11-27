@@ -211,6 +211,7 @@ int main(void)
 				if (IRCTR >= 5) {
 					StopIRTimer();
 					nextOrder = TURN_ON_IR_SIG;
+					foundSomethingToDo = true;
 					continue;
 				}
 			}
@@ -224,6 +225,7 @@ int main(void)
 				if (coolDownCTR == 1) {
 					nextOrder = DEACTIVATE_LASER;					
 					laserActive = false;
+					foundSomethingToDo = true;
 					continue;
 				}
 				// cooldown is over
@@ -239,6 +241,7 @@ int main(void)
 				foundSomethingToDo = true;
 				laserSensorHit = true;
 				WeAreHit();
+				foundSomethingToDo = true;
 				continue;
 				
 			}
@@ -249,12 +252,14 @@ int main(void)
 			// If both line sensor detects tape and we havn't startet rotating, turn around (180 degrees)
 			if ((tapeSensor1 == 1 && tapeSensor2 == 1) && !rotating) {
 				Rotate(180, true);
+				foundSomethingToDo = true;
 				continue;
 			}
 		
 			// If the Left line sensor detects tape and we havn't startet rotating, turn right
 			if((tapeSensor1 == 1) && !rotating){ 
 				Rotate(90, false);
+				foundSomethingToDo = true;
 				continue;
 
 			}
@@ -262,6 +267,7 @@ int main(void)
 			// If the Right line sensor detects tape and we havn't startet rotating, turn left
 			if((tapeSensor2 == 1) && !rotating){ 
 				Rotate(90, true);
+				foundSomethingToDo = true;
 				continue;
 			}
 		
@@ -276,6 +282,7 @@ int main(void)
 						rotating = false;
 						nextOrder = STOP_MOVING;
 						TCCR2B &= ~((1 << CS20) | (1 << CS21) | (1 << CS22));
+						foundSomethingToDo = true;
 						
 						// If we reached the end of the first turn, turn to the oppisite way
 						if (laserActive ) {
@@ -298,6 +305,7 @@ int main(void)
 					rotating = false;
 					scaning = false;
 					nextOrder = STOP_MOVING;
+					foundSomethingToDo = true;
 					continue;
 				}
 			}
@@ -335,7 +343,124 @@ int main(void)
 			//## Testläge ##
 			//##############
 			
+			// IR timer stuff
+			if (IR_TIMER_COUNTER >= ONE_SECOND) {
+				IRCTR++;
+				if (IRCTR >= 5) {
+					StopIRTimer();
+					nextOrder = TURN_ON_IR_SIG;
+					foundSomethingToDo = true;
+					continue;
+				}
+			}
 		
+			// LASER timer stuff
+			if (LASER_TIMER_COUNTER >= ONE_SECOND) {
+				coolDownCTR++;
+				LASER_TIMER_COUNTER = 0;
+				
+				// Lasers been active for 1 sec, turn it off
+				if (coolDownCTR == 1) {
+					nextOrder = DEACTIVATE_LASER;					
+					laserActive = false;
+					foundSomethingToDo = true;
+					continue;
+				}
+				// cooldown is over
+				else if (coolDownCTR == 4) {
+					canShoot = true;
+					StopLaserTimer();				
+				}
+			
+			}
+			
+			
+			// If both line sensor detects tape and we havn't startet rotating, turn around (180 degrees)
+			if ((tapeSensor1 == 1 && tapeSensor2 == 1) && !rotating) {
+				Rotate(120, true);
+				foundSomethingToDo = true;
+				continue;
+			}
+		
+			// If the Left line sensor detects tape and we havn't startet rotating, turn right
+			if((tapeSensor1 == 1) && !rotating){ 
+				Rotate(45, false);
+				foundSomethingToDo = true;
+				continue;
+
+			}
+		
+			// If the Right line sensor detects tape and we havn't startet rotating, turn left
+			if((tapeSensor2 == 1) && !rotating){ 
+				Rotate(45, true);
+				foundSomethingToDo = true;
+				continue;
+			}
+		
+			
+			
+			// If we are rotating
+			if (rotating) {
+				if(TCNT2 >= sampleticks){
+					int angularVelocity = gyro - ANGULAR_RATE_IDLE; 
+					if (CalcGyro(Abs(angularVelocity)) >= targetRotation) {
+						gyroSum = 0;
+						rotating = false;
+						nextOrder = STOP_MOVING;
+						TCCR2B &= ~((1 << CS20) | (1 << CS21) | (1 << CS22));
+						foundSomethingToDo = true;
+						
+						// If we reached the end of the first turn, turn to the oppisite way
+						if (laserActive ) {
+							Rotate(SHOOT_SWEEP_DEGREES, true);
+						}
+						
+					}
+					//Send how many degrees we have rotated over uart
+					message4 &= 0b00000111; //Reset bits
+					message4 |= (gyroSum<<LOWERBITSGYRO_INDEX);
+					message5 &= 0b11000111; //Reset bits
+					message5 |= ((gyroSum>>2) & 0b00111000);
+					TCNT2 = 0;
+				}
+			}
+		
+		 	// If we are scaning for opponents and we find something within 1,5 meters, stop move, 
+			if (scaning && rotating) {
+				if (ultraSonicSensor1 <= 10) {
+					rotating = false;
+					scaning = false;
+					foundSomethingToDo = true;
+					nextOrder = STOP_MOVING;
+					continue;
+				}
+			}
+		
+			// If something is in front of the robot and the IR-signature is active
+			if (ultraSonicSensor1 <= 10 && activeIRsignature) {
+				if (canShoot) {
+					foundSomethingToDo = true;
+					Shoot();
+					continue;
+				}
+			
+			}
+			
+			if (laserActive) {
+				
+			}
+		
+			// If the IR-sensor sees an enemy signature ONLY
+			if(activeIRsignature == 1 ){
+				foundSomethingToDo = true;
+				Scan();
+				continue;
+			}
+		 
+			 // If there is nothing else to do, move forward, KEEP THIS??
+			if (!foundSomethingToDo) {
+				nextOrder = MOVE_FORWARD;
+			}
 		
 			// If the Right line sensor detects tape and we havn't startet rotating, turn left
 			//if((tapeSensor2 == 1) && !rotating){ 
