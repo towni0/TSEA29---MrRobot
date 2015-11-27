@@ -25,7 +25,7 @@ void StartLaserTimer();
 void StopLaserTimer();
 void Scan();
 int Priority(int operation);
-float CalcGyro(int gyroData);
+unsigned long CalcGyro(int gyroData);
 void testTAPEsensors();
 int Abs(int value);
 
@@ -36,6 +36,9 @@ uint8_t message3 = 2;
 uint8_t message4 = 3;
 uint8_t message5 = 4;
 uint8_t message6 = 5;
+
+uint8_t messageout4 = 3;
+uint8_t messageout5 = 4;
 
 //Variables for storing sensor values
 volatile uint8_t tapeSensor1 = 0; //1 for tape, 0 for floor
@@ -72,7 +75,7 @@ bool scaning = false;
 // Rotation stuff
 bool rotating = false;
 int currentRotationValue;
-int targetRotation;
+uint16_t targetRotation;
 
 // Laser stuff
 int coolDownCTR = 0;
@@ -87,9 +90,10 @@ bool foundSomethingToDo = false;
 int orders[10];
 
 //gyro
-const float sampleTimeInSeconds = 0.01; //Since the gyro gives us degrees/sec
+const uint8_t sampleTimeInMS = 10; // the gyro gives us degrees/sec
 const int sampleticks = 180 ;
-uint16_t gyroSum;
+unsigned long gyroSum = 0;
+uint8_t degreesTurned = 0;
 
 int main(void)
 {
@@ -129,7 +133,7 @@ int main(void)
 	
 	waitForActivation();
 	
-	//Rotate(90, false);
+	Rotate(90, false);
 	//nextOrder = MOVE_FORWARD;
 	//nextOrder = DECREMENT_LED_LIVES;
 	
@@ -183,10 +187,10 @@ int main(void)
 					UDR1 = message3;
 					break;
 				case 4:
-					UDR1 = message4;
+					UDR1 = messageout4;
 					break;
 				case 5: 
-					UDR1 = message5;
+					UDR1 = messageout5;
 					break;
 				case 6:
 					if(nextOrder != DO_NOTHING){ //Only send order if something is to be done
@@ -352,6 +356,8 @@ int main(void)
 			//## Testläge ##
 			//##############
 			
+			
+			/*
 			// IR timer stuff
 			if (IR_TIMER_COUNTER >= ONE_SECOND) {
 				IRCTR++;
@@ -406,34 +412,42 @@ int main(void)
 				continue;
 			}
 		
-			
+			*/
 			
 			// If we are rotating
 			if (rotating) {
 				if(TCNT2 >= sampleticks){
-					int angularVelocity = gyro - ANGULAR_RATE_IDLE; 
-					if (CalcGyro(Abs(angularVelocity)) >= targetRotation) {
+					int angularVelocity = Abs(gyro - ANGULAR_RATE_IDLE);
+					if (angularVelocity < 3) {continue;	}
+					
+					degreesTurned += CalcGyro(angularVelocity) / 1000;
+					PORTB ^= (1 << PINB0);
+					if (degreesTurned >= targetRotation) {
 						gyroSum = 0;
 						rotating = false;
 						nextOrder = STOP_MOVING;
 						TCCR2B &= ~((1 << CS20) | (1 << CS21) | (1 << CS22));
 						foundSomethingToDo = true;
 						
-						// If we reached the end of the first turn, turn to the oppisite way
+						// If we reached the end of the first turn, turn to the opposite way
+						/*
 						if (laserActive ) {
 							Rotate(SHOOT_SWEEP_DEGREES, true);
 						}
-						
+						*/
 					}
 					//Send how many degrees we have rotated over uart
-					message4 &= 0b00000111; //Reset bits
-					message4 |= (gyroSum<<LOWERBITSGYRO_INDEX);
-					message5 &= 0b11000111; //Reset bits
-					message5 |= ((gyroSum>>2) & 0b00111000);
+					messageout4 &= 0b00000000; //Reset bits
+					messageout4 |= (degreesTurned<<LOWERBITSGYRO_INDEX);
+					messageout4 |= (message4 & 0b00000111);
+					messageout5 &= 0b00000000; //Reset bits
+					messageout5 |= ((degreesTurned>>2) & 0b00111011);
+					messageout5 |= (message5 & 0b11000111);
+					//messageout5 = gyro;
 					TCNT2 = 0;
 				}
 			}
-		
+		/*
 		 	// If we are scaning for opponents and we find something within 1,5 meters, stop move, 
 			if (scaning && rotating) {
 				if (ultraSonicSensor1 <= 10) {
@@ -470,7 +484,7 @@ int main(void)
 			if (!foundSomethingToDo) {
 				nextOrder = MOVE_FORWARD;
 			}
-		
+		*/
 		}
 	
 
@@ -492,6 +506,7 @@ int main(void)
 			}
 		}
 	}
+	
 }
 
 ISR(USART0_RX_vect){
@@ -512,11 +527,12 @@ ISR(USART0_RX_vect){
 			message3 = buffer;
 			break;
 		case 3:
-			//message4 = buffer;
+			message4 = buffer;
 			break;
 		case 4:
-			message5 &= 0b00111000; //We set the gyro bits elsewhere
-			message5 |= (buffer & 0b11000111);
+			message5 = buffer;
+			//message5 &= 0b00111000; //We set the gyro bits elsewhere
+			//message5 |= (buffer & 0b11000111);
 			//message5 = 0b11000100; //Temp test:
 			break;
 	}
@@ -542,10 +558,17 @@ void Rotate(int degrees, bool leftTurn) {
 }
 
 //Called once every sampleTimeInSeconds
-float CalcGyro(int gyroData){
-   gyroSum += gyroData;
-   return (gyroSum * sampleTimeInSeconds);
+unsigned long CalcGyro(int gyroData){
+
+	//gyroSum += gyroData;
+	return (gyroData * sampleTimeInMS);
 }
+/*
+sampleTimeSecs = 1;
+unsigned long CalcGyro(int gyroData){
+	gyroSum += gyroData;
+	return (gyroSum * sampleTimeSecs);
+}*/
 
 int Abs(int value) {
 	if (value < 0) {
