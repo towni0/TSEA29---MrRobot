@@ -315,7 +315,8 @@ void CalculateTime1() {
 	//when echo output is low, stop timer. (save time)
 	if (!timeTaken && triggerSend && timerStarted && !(PINB & (1<<ECHO_PIN1))) {
 		//set timer variables ot zero.
-		distance1 = calculateDistance();
+		// CalculateDistance returns a value in cm we need it in dm
+		distance1 = calculateDistance() / 10;
 		message2 &= ~(0b11111<<3); //Reset distance bits
 		message2 |= (distance1<<3); //Set UART message with new distance
 		
@@ -337,7 +338,9 @@ void CalculateTime2() {
 	//when echo output is low, stop timer. (save time)
 	if (!timeTaken && triggerSend && timerStarted && !(PINB & (1<<ECHO_PIN2))) {
 		//set timer variables ot zero.
-		distance2 = calculateDistance();
+		// CalculateDistance returns a value in cm we need it in dm
+
+		distance2 = calculateDistance() / 10;
 		message3 &= ~(0b11111<<3); //Reset distance bits
 		message3 |= (distance2<<3); //Set UART msg with new distance
 		
