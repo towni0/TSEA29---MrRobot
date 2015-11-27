@@ -9,7 +9,7 @@
 #include "../../Robotdefinitions.h"
 #include <avr/io.h>
 #include <avr/interrupt.h>
-//#include <util/delay.h>
+#include <util/delay.h>
 
 
 // Function headers
@@ -94,6 +94,7 @@ uint16_t gyroSum;
 int main(void)
 {
 	DDRB = 0b11111011;
+	DDRC = 0xFF;
 	
 	//enable global interrupts
 	sei();
@@ -134,7 +135,6 @@ int main(void)
 	
     while(!dead)
     {
-		
 		//disable interrupts
 		cli();
 		
@@ -168,6 +168,7 @@ int main(void)
 		//#######################
 
 		//check if transmit buffer is empty
+		//(UCSR1A & (1<<TXC1)) && 
 		if((UCSR1A & (1<<UDRE1))){
 			//mux through messages
 			//may need to disable interrupts
@@ -194,10 +195,18 @@ int main(void)
 						nextOrder = 0;
 					}
 					break;
+				default:
+					//
+					//PORTC |= (1 << PINC0);
+					//_delay_us(300);
+					//PORTC &= ~(1 << PINC0);
+					break;
 			}
 			//next mux
 			messageNumber++;
 			if(messageNumber>NUMBER_OF_MESSAGES+1) messageNumber=1;
+			//UCSR1A |= (1<<TXC1);
+			//_delay_us(300);
 		}
 		
 		if((PINB>>PINB2) == 0){
@@ -462,16 +471,6 @@ int main(void)
 				nextOrder = MOVE_FORWARD;
 			}
 		
-			// If the Right line sensor detects tape and we havn't startet rotating, turn left
-			//if((tapeSensor2 == 1) && !rotating){ 
-			//	nextOrder = STOP_MOVING;
-			//	continue;
-			//}
-			
-			_delay_ms(1000);
-			//nextOrder = DECREMENT_LED_LIVES;
-			
-			
 		}
 	
 

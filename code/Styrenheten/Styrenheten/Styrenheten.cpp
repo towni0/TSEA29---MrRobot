@@ -126,7 +126,7 @@ int main(void){
 				break;
 			case ACTIVATE_LASER_AND_TURN_RIGHT:
 				ActivateLaser();
-				TurnRight();
+				//TurnRight();
 			
 			case RESET_SE:
 				ResetSE();

@@ -12,12 +12,14 @@
 
 #define LASER_AKTIVERA_PORT 4
 
-uint16_t tape1Threshold = 500; //Limit that determines what's tape and what's not
+//left 800
+uint16_t tape1Threshold = 800; //Limit that determines what's tape and what's not
 uint16_t tape1CurrentValue = 0;
+//right 500
 uint16_t tape2Threshold = 500; //Limit that determines what's tape and what's not
 uint16_t tape2CurrentValue = 0;
 
-const uint8_t TAPE_ERROR_MARGIN = 100;
+const uint8_t TAPE_ERROR_MARGIN = 200;
 
 //message 1
 #define IRSIGNATURE_INDEX 3

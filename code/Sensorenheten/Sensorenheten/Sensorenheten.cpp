@@ -93,7 +93,7 @@ int main(void)
 	*/
 	
 	DDRD &= ~(1<<PIND7); //Aktiveringsknapp (in)
-	DDRB = 0b10011010;
+	DDRB = 0b00011010;
 		
 	//enable global interrupt
 	sei();
@@ -140,12 +140,12 @@ int main(void)
 	//## IR Sensor ##
 	TCCR1B |= 1 << CS10;
 	
+	//Start 1st ADC conversion
+	ADCSRA |= (1 << ADSC);
 	waitForActivationSensor();
 	
 	//start first UART transmission
 	UDR0 = 0x00;
-	//Start 1st ADC conversion
-	ADCSRA |= (1 << ADSC);
 	
     while(1)
     {
@@ -220,7 +220,7 @@ ISR(ADC_vect){
 		case TAPESENSOR1:
 			//clear TAPESENSOR1_INDEX bit
 			message5 &= 0b10111111;
-			tape2CurrentValue = message; //Save current value, used for calibration
+			tape1CurrentValue = message; //Save current value, used for calibration
 			//mask in actual value
 			message5 |= (tapeCheck(message, 1)<<TAPESENSOR1_INDEX);
 			//next muxed ADC
@@ -446,7 +446,6 @@ void laserSensorFunction(){
 	laser = (PINB>>5);
 	laser &= 0b00000001;
 	if(laser == 0b00000001){
-		PORTB |= (1<<PINB7);
 		message1 &= 0b10111111; //Reset laser bit
 		message1 |= (laser<<LASER_INDEX); //Mask in new laser bit
 		//Start timer with pre-scaler 1024
@@ -455,7 +454,6 @@ void laserSensorFunction(){
 	else{
 		//no hit
 		message1 &= 0b10111111;
-		PORTB &= ~(1<<PINB7);
 	}
 }
 
@@ -491,10 +489,14 @@ void ultrasonicFunction(){
 void waitForActivationSensor(){
 	while((PIND>>PIND7) == 0){
 		//Do nothing, wait for activation
-		if((PINB>>PINB7) == 1){
-			tape1Threshold = tape1CurrentValue - TAPE_ERROR_MARGIN; //Should possibly be +, not -
-			tape2Threshold = tape2CurrentValue - TAPE_ERROR_MARGIN; //Should possibly be +, not -
+		
+		if((PINB>>PINB7) == 0){
+			cli();
+			tape1Threshold = tape1CurrentValue - TAPE_ERROR_MARGIN; 
+			tape2Threshold = tape2CurrentValue - TAPE_ERROR_MARGIN; 
+			sei();
 		}
+		
 	}
 	return;
 }
@@ -506,25 +508,20 @@ Bit 0-2:	Meddelande ID (000)
 Bit 3-5:	IR-signaturen
 Bit 6:      Laser (1 för träff)
 Bit 7:		Aktiv IR-signatur (robot framför oss)
-
 Meddelande 2:
 Bit 0-2:	Meddelande ID (001)
 Bit 3-7:	Främre avståndssensorn (ca 1 dm precision)
-
 Meddelande 3:
 Bit 0-2:	Meddelande ID (010)
 Bit 3-7:	Bakre avståndssensorn (ca 1 dm precision)
-
 Meddelande 4:
 Bit 0-2:	Meddelande ID (011)
 Bit 3-7:	5 LSB Gyro (grader rotatation)
-
 Meddelande 5:
 Bit 0-2:	Meddelande ID (100)
 Bit 3-5:	3 MSB Gyro (grader rotatation)
 Bit 6:		Tejpsensor 1 (vänster, 1 för tejp)
 Bit 7:		Tejpsensor 2 (höger, 1 för tejp)
-
 Meddelande 6:
 Bit 0-2:	Meddelande ID (101)(ORDER)
 Bit 3-7		ORDERID
