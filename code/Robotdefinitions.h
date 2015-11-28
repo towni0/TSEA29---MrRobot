@@ -91,7 +91,8 @@ const uint8_t TAPE_ERROR_MARGIN = 200;
 #define RESET_SE						20
 
 #define MOVEMENT_SPEED					2350
-#define ROTATION_SPEED					1175
+//1175
+#define ROTATION_SPEED					2350
 
 
 //## Målsökning definitions ##
@@ -101,6 +102,14 @@ const uint8_t TAPE_ERROR_MARGIN = 200;
 #define LowSpeed 64
 #define ANGULAR_RATE_IDLE 128
 
+
+//Rotation offset
+// offset seems to be linear with y(t) = x*333.333 + 2500
+#define OFFSET_ROTATE_22POINT5	10000
+#define OFFSET_ROTATE_45		17000
+#define OFFSET_ROTATE_90		33000
+#define OFFSET_ROTATE_135		48000
+#define OFFSET_ROTATE_180		62000
 
 //UBRR constants for UART
 const uint8_t UBRR_SENSOR_MALSOKNING = 119;
