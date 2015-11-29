@@ -24,8 +24,27 @@ void ResetSE();
 void Init();
 void InitPWM();
 void InitLEDs();
+void InitIRSender();
+void InitUART();
+void IR-sender();
+
+#define LOW 6
+#define PAUSE 6
+#define HEADER 24
+#define HIGH 12
+#define ENDPAUSE 24
 
 // VARIABLES
+int dutyCycle = 240;
+int period = 480;
+
+int pauseTimes[] = {HEADER, PAUSE, HIGH, PAUSE, HIGH, PAUSE, LOW, ENDPAUSE};
+int ptIndex = 0;
+int ctr = 0;
+
+bool isHigh = true;
+
+
 int period = 4700; // Period time
 int dutyCycle = period* 0.5; // 50% duty cycle to start
 
@@ -38,28 +57,10 @@ bool IRisActivive = true;
 uint8_t currentOrder = 0;
 
 int main(void){
-
 	DDRB = 0b11111111;
 
 	//enable global interrupts
 	sei();
-
-	//#UART INITS#//
-
-	//initiate UART målsökning to styr
-	//set baud rate
-	//115200
-	uint16_t UBRR_val = UBRR_STYR_MALSOKNING;
-	UBRR0H = (unsigned char) (UBRR_val >> 8);
-	UBRR0L = (unsigned char) UBRR_val;
-
-	//enable receive + set frame 8 bits
-	UCSR0B = (1<<RXEN0);
-	UCSR0C = (1<<UCSZ00) | (1<<UCSZ01);
-	
-	//enable receive interrupt
-	UCSR0B |= (1<<RXCIE0);
-	//#UART INITS END#//
 	
 	// Call all Init functions in this module
 	Init();
@@ -137,7 +138,41 @@ int main(void){
 				PORTB |= (1<<PINB4);
 				break;
 		}
+		
+		// IR-sender
+		if (IRisActivive) {
+			IR-sender();
+		}
+		
+		
+		
     }
+}
+
+// Code that send out our signature
+void IR-sender() {
+	if (isHigh) {
+		OCR3A = ICR3 - dutyCycle; // duty cycle on 50% of length 26 for PINB6
+	}
+	else {
+		OCR3A = ICR3; // duty cycle on 50% of length 26 for PINB6
+	}
+	
+	if (TCNT0 > 225) {
+		ctr++;
+		TCNT0 = 0;
+		PORTB ^= (1 << PINB0);
+	}
+	
+	if (ctr == pauseTimes[ptIndex]) {
+		ctr = 0;
+		ptIndex++;
+		
+		if (ptIndex == 8) {
+			ptIndex = 0;
+		}
+		isHigh = !isHigh;			
+	}
 }
 
 // Reset all necessary data
@@ -160,8 +195,30 @@ void SetPWM() {
 
 // Calls all Init functions
 void Init() {
+	InitUART();
 	InitPWM();
 	InitLEDs();
+	InitIRSender();
+}
+
+void InitUART() {
+
+	//#UART INITS#//
+
+	//initiate UART målsökning to styr
+	//set baud rate
+	//115200
+	uint16_t UBRR_val = UBRR_STYR_MALSOKNING;
+	UBRR0H = (unsigned char) (UBRR_val >> 8);
+	UBRR0L = (unsigned char) UBRR_val;
+
+	//enable receive + set frame 8 bits
+	UCSR0B = (1<<RXEN0);
+	UCSR0C = (1<<UCSZ00) | (1<<UCSZ01);
+	
+	//enable receive interrupt
+	UCSR0B |= (1<<RXCIE0);
+	//#UART INITS END#//
 }
 
 // Set all LED pins as output and light them up!
@@ -188,6 +245,17 @@ void InitPWM() {
 	
 	DDRD |= (1<<PWM1) | (1<<PWM2);
 	DDRB |= (1<<DIR1) | (1<<DIR2);
+}
+
+
+void InitIRSender() {
+	DDRB|= (1<<PINB6);
+	TCCR3A |= 1<<WGM31 | 1<<COM3A1 | 1<<COM3A0 |1<<COM3B0 | 1<<COM3B1;
+	TCCR3B |= 1<<WGM32 | 1<<WGM33 | 1<<CS30;
+	
+	ICR3 = period;		// period length in us
+	OCR3A = ICR3;
+	TCCR0B |= 1<<CS01;	// Starta 8-bit ctr
 }
 
 // Set PWM1 and PWM2 to HIGH(set dutyCycle)
@@ -227,14 +295,17 @@ void DeactivateLaser() {
 	LASER_PORT &= ~(1<<LASER_PIN);
 }
 
-// Turns the IR-sender off (invisible)
+// Turns the IR-sender off (invisible) and turn on Invisible LED
 void TurnOffIRSignature() {
 	IRisActivive = false;
+	LED_PORT |= (1 << INVISIBLE_LED_PIN);
 }
 
-// Turns the IR-sender on (not invisible)
+// Turns the IR-sender on (not invisible) and turn off Invisible LED
 void TurnOnIRSignature() {
 	IRisActivive = true;
+	LED_PORT &= ~(1 << INVISIBLE_LED_PIN);
+
 }
 
 // Decrement the amount of lives we have (show on less LED)
