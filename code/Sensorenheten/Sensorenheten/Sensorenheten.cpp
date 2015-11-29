@@ -66,6 +66,7 @@ int calculateDistance();
 
 int timer = 0;
 
+uint8_t distancecm1 = 0; //Ultrasonic sensor 1 distance [cm]
 // Variables
 uint8_t distance1 = 0; //Ultrasonic sensor 1 distance [dm]
 uint8_t distance2 = 0; //Ultrasonic sensor 2 distance [dm]
@@ -94,12 +95,15 @@ int main(void)
 	
 	DDRD &= ~(1<<PIND7); //Aktiveringsknapp (in)
 	DDRB = 0b00011010;
+	
+	//debugging
+	DDRC |= (1<< PINC0) | (1<<PINC1);
 		
 	//enable global interrupt
 	sei();
 	
 	//Ultrasonic
-	TCCR2B |= 1 << CS20; // Start timer
+	TCCR2B |= 1 << CS21; // Start timer
 	TCNT2 = 0;
 	
 	//###############
@@ -108,8 +112,8 @@ int main(void)
 		
 	//turn on ADC
 	ADCSRA |= (1 << ADEN);
-	//Set ADC clock to 1000 000 / 16 Hz
-	ADCSRA |= (1 << ADPS2);
+	//Set ADC clock to 1000 000 / 128 Hz
+	ADCSRA |= (1 << ADPS2) | (1 << ADPS1) | (1 << ADPS0) ;
 	//ADC interrupt enabled
 	ADCSRA |= (1 << ADIE);
 	//mux PINA0, start with TAPE
@@ -167,6 +171,13 @@ int main(void)
 		
 		ultrasonicFunction();
 		
+		if(distancecm1 >= 10){
+			PORTC |= (1 << PINC0);
+		}
+		else{
+			PORTC &= ~(1<< PINC0);
+		}
+
 	}
 	
 }
@@ -174,7 +185,6 @@ int main(void)
 ISR(USART0_TX_vect){
 	//disable interrupts (might not be necessary?) interrupts get queued?
 	cli();
-	
 	//mux through messages
 	switch(messageNumber){
 		case 1:
@@ -204,6 +214,7 @@ ISR(USART0_TX_vect){
 
 
 ISR(ADC_vect){
+	
 	uint8_t lowbits = ADCL;
 	uint16_t message = ADCH <<8 | lowbits;
 	
@@ -286,6 +297,7 @@ void StartPulse1() {
 	if (triggerStarted && timer == 2) { // and atleast 15 us has passed.
 		triggerSend = true;
 		PORTB &= ~(1 << PULSE_TRIGGER_PIN1);
+		resetTimerValues();
 	}
 }
 
@@ -301,6 +313,7 @@ void StartPulse2() {
 	if (triggerStarted && timer == 2) { // and atleast 15 us has passed.
 		triggerSend = true;
 		PORTB &= ~(1 << PULSE_TRIGGER_PIN2);
+		resetTimerValues();
 	}
 }
 
@@ -309,20 +322,21 @@ void CalculateTime1() {
 	//when echo output is high, start timer.
 	if (!timeTaken && triggerSend && !timerStarted && (PINB & (1<<ECHO_PIN1))) {
 		timerStarted = true;
-		resetTimerValues();
+		
 	}
 	
 	//when echo output is low, stop timer. (save time)
 	if (!timeTaken && triggerSend && timerStarted && !(PINB & (1<<ECHO_PIN1))) {
 		//set timer variables ot zero.
 		// CalculateDistance returns a value in cm we need it in dm
-		distance1 = calculateDistance() / 10;
+		distancecm1 = calculateDistance();
+		distance1 = distancecm1/10;
 		message2 &= ~(0b11111<<3); //Reset distance bits
 		message2 |= (distance1<<3); //Set UART message with new distance
 		
 		resetTimerValues();
 		timeTaken = true;
-		useSensor1 = false;
+		//useSensor1 = false;
 		//reset trigger variables.
 	}
 }
@@ -332,7 +346,7 @@ void CalculateTime2() {
 	if (!timeTaken && triggerSend && !timerStarted && (PINB & (1<<ECHO_PIN2))) {
 		timerStarted = true;
 		
-		resetTimerValues();
+	
 	}
 	
 	//when echo output is low, stop timer. (save time)
@@ -458,7 +472,8 @@ void laserSensorFunction(){
 }
 
 void ultrasonicFunction(){
-	if (TCNT2 > 184) {
+	if (TCNT2 > 230) {
+		PORTC ^= (1<<PINC1);
 		TCNT2 = 0;
 		timer++;
 	}

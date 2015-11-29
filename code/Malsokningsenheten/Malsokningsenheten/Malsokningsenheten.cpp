@@ -136,11 +136,10 @@ int main(void)
 	
 	waitForActivation();
 	
-	//Rotate(90000, true);
-	//nextOrder = DECREMENT_LED_LIVES;
 	
-	//first order!
-	nextOrder = MOVE_FORWARD;
+	//###first order!###
+	//nextOrder = MOVE_FORWARD;
+	
     while(!dead)
     {
 		//disable interrupts
@@ -157,6 +156,13 @@ int main(void)
 		//Message 2
 		ultraSonicSensor1 = (message2>>ULTRASONICSENSOR1_INDEX) & 0b00011111;
 		
+		//debugging
+		if(ultraSonicSensor1 < 1){
+			PORTC |= (1 << PINC0);
+		}
+		else{
+			PORTC &= ~(1 << PINC0);
+		}
 		//Message 3
 		ultraSonicSensor2 = (message3>>ULTRASONICSENSOR2_INDEX) & 0b00011111;
 		
@@ -260,74 +266,76 @@ int main(void)
 			}
 			
 			*/
-			// If both line sensor detects tape and we havn't startet rotating, turn around (180 degrees)
-			if ((tapeSensor1 == 1 && tapeSensor2 == 1 && !bothTapeSensors)) {
-				Rotate(135000, true);
-				bothTapeSensors = true;
-				millidegreesTurned = 0;
-
-				
-			}
-		
-			// If the Left line sensor detects tape and we havn't startet rotating, turn right
-			if((tapeSensor1 == 1) && !rotating){ 
-				Rotate(90000, false);
-				
-
-			}
-		
-			// If the Right line sensor detects tape and we havn't startet rotating, turn left
-			if((tapeSensor2 == 1) && !rotating){ 
-				Rotate(90000, true);
-				
-			}
-		
 			
 			
-			// If we are rotating
-			if (rotating) {
-				if(TCNT2 >= sampleticks){
-					//300 is max angular rate from gyro
-					//calculate how much we rotate per sample in millidegrees/second and add it total total millidegreesturned
-					float degreesPerPart = 300/128;
-					int parts = Abs(gyro - ANGULAR_RATE_IDLE);
-					float angularVelocity = parts*degreesPerPart;
-					millidegreesTurned += angularVelocity*sampleTimeInMS;
-					
-
-					if (millidegreesTurned >= targetRotation) {
-						rotating = false;
-						nextOrder = MOVE_FORWARD;
-						millidegreesTurned = 0;
-						//reset case of 2 tapesensors
-						bothTapeSensors = false;
-						//stop counter
-						TCCR2B &= ~((1 << CS20) | (1 << CS21) | (1 << CS22));
-						
-						// If we reached the end of the first turn, turn to the opposite way
-						/*
-						if (laserActive ) {
-							Rotate(SHOOT_SWEEP_DEGREES, true);
-						}
-						*/
-					}
-					//Send how many degrees we have rotated over uart
-					/*
-					uint8_t degreesTurned = millidegreesTurned/1000;
-					messageout4 &= 0b00000000; //Reset bits
-					messageout4 |= (degreesTurned<<LOWERBITSGYRO_INDEX);
-					messageout4 |= (message4 & 0b00000111);
-					messageout5 &= 0b00000000; //Reset bits
-					messageout5 |= (degreesTurned>>2);
-					messageout5 |= (message5 & 0b11000111);
-					*/
-					//messageout5 = gyro;
-					
-					//reset counter
-					TCNT2 = 0;
-				}
-				continue;
-			}
+// 			// If both line sensor detects tape and we havn't startet rotating, turn around (180 degrees)
+// 			if ((tapeSensor1 == 1 && tapeSensor2 == 1 && !bothTapeSensors)) {
+// 				Rotate(135000, true);
+// 				bothTapeSensors = true;
+// 				millidegreesTurned = 0;
+// 
+// 				
+// 			}
+// 		
+// 			// If the Left line sensor detects tape and we havn't startet rotating, turn right
+// 			if((tapeSensor1 == 1) && !rotating){ 
+// 				Rotate(90000, false);
+// 				
+// 
+// 			}
+// 		
+// 			// If the Right line sensor detects tape and we havn't startet rotating, turn left
+// 			if((tapeSensor2 == 1) && !rotating){ 
+// 				Rotate(90000, true);
+// 				
+// 			}
+// 		
+// 			
+// 			
+// 			// If we are rotating
+// 			if (rotating) {
+// 				if(TCNT2 >= sampleticks){
+// 					//300 is max angular rate from gyro
+// 					//calculate how much we rotate per sample in millidegrees/second and add it total total millidegreesturned
+// 					float degreesPerPart = 300/128;
+// 					int parts = Abs(gyro - ANGULAR_RATE_IDLE);
+// 					float angularVelocity = parts*degreesPerPart;
+// 					millidegreesTurned += angularVelocity*sampleTimeInMS;
+// 					
+// 
+// 					if (millidegreesTurned >= targetRotation) {
+// 						rotating = false;
+// 						nextOrder = MOVE_FORWARD;
+// 						millidegreesTurned = 0;
+// 						//reset case of 2 tapesensors
+// 						bothTapeSensors = false;
+// 						//stop counter
+// 						TCCR2B &= ~((1 << CS20) | (1 << CS21) | (1 << CS22));
+// 						
+// 						// If we reached the end of the first turn, turn to the opposite way
+// 						/*
+// 						if (laserActive ) {
+// 							Rotate(SHOOT_SWEEP_DEGREES, true);
+// 						}
+// 						*/
+// 					}
+// 					//Send how many degrees we have rotated over uart
+// 					/*
+// 					uint8_t degreesTurned = millidegreesTurned/1000;
+// 					messageout4 &= 0b00000000; //Reset bits
+// 					messageout4 |= (degreesTurned<<LOWERBITSGYRO_INDEX);
+// 					messageout4 |= (message4 & 0b00000111);
+// 					messageout5 &= 0b00000000; //Reset bits
+// 					messageout5 |= (degreesTurned>>2);
+// 					messageout5 |= (message5 & 0b11000111);
+// 					*/
+// 					//messageout5 = gyro;
+// 					
+// 					//reset counter
+// 					TCNT2 = 0;
+// 				}
+// 				continue;
+// 			}
 		/*
 		 	// If we are scaning for opponents and we find something within 1,5 meters, stop move, 
 			if (scaning && rotating) {
