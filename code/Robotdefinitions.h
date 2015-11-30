@@ -50,6 +50,7 @@ const uint8_t TAPE_ERROR_MARGIN = 200;
 #define ECHO_PIN2 PINB2
 #define PULSE_TRIGGER_PIN2 PINB3
 
+#define MICRO_SEC_PER_TICK 42
 // ## Styrenhet definitions ##
 
 #define PWM1 PIND5

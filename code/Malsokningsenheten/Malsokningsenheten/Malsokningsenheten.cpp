@@ -12,7 +12,7 @@
 #include <util/delay.h>
 
 
-// Function headers
+// Function headerss
 void SetPriority(int priority);
 void ClearPriority();
 void BlinkLEDs();

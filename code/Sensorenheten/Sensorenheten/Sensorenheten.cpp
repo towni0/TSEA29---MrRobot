@@ -62,7 +62,7 @@ void CalculateTime2();
 
 void resetTimerValues();
 
-int calculateDistance();
+float calculateDistance();
 
 int timer = 0;
 
@@ -103,7 +103,7 @@ int main(void)
 	sei();
 	
 	//Ultrasonic
-	TCCR2B |= 1 << CS21; // Start timer
+	TCCR2B |= 1 << CS20; // Start timer
 	TCNT2 = 0;
 	
 	//###############
@@ -170,14 +170,6 @@ int main(void)
 		//########################
 		
 		ultrasonicFunction();
-		
-		if(distancecm1 >= 10){
-			PORTC |= (1 << PINC0);
-		}
-		else{
-			PORTC &= ~(1<< PINC0);
-		}
-
 	}
 	
 }
@@ -294,7 +286,7 @@ void StartPulse1() {
 	}
 	
 	//set trigger to low
-	if (triggerStarted && timer == 2) { // and atleast 15 us has passed.
+	if (triggerStarted && timer == 10) { // and atleast 15 us has passed.
 		triggerSend = true;
 		PORTB &= ~(1 << PULSE_TRIGGER_PIN1);
 		resetTimerValues();
@@ -310,7 +302,7 @@ void StartPulse2() {
 	}
 	
 	//set trigger to low
-	if (triggerStarted && timer == 2) { // and atleast 15 us has passed.
+	if (triggerStarted && timer == 10) { // and atleast 15 us has passed.
 		triggerSend = true;
 		PORTB &= ~(1 << PULSE_TRIGGER_PIN2);
 		resetTimerValues();
@@ -322,6 +314,7 @@ void CalculateTime1() {
 	//when echo output is high, start timer.
 	if (!timeTaken && triggerSend && !timerStarted && (PINB & (1<<ECHO_PIN1))) {
 		timerStarted = true;
+		resetTimerValues();
 		
 	}
 	
@@ -330,7 +323,14 @@ void CalculateTime1() {
 		//set timer variables ot zero.
 		// CalculateDistance returns a value in cm we need it in dm
 		distancecm1 = calculateDistance();
-		distance1 = distancecm1/10;
+		//check singular number to do correct round up or down
+		int singular = (distancecm1 % 100) % 10;
+		if(singular >= 5){ 
+			distance1 = distancecm1/10 + 1;
+		}
+		else{
+			distance1 = distancecm1/10;
+		}
 		message2 &= ~(0b11111<<3); //Reset distance bits
 		message2 |= (distance1<<3); //Set UART message with new distance
 		
@@ -354,7 +354,15 @@ void CalculateTime2() {
 		//set timer variables ot zero.
 		// CalculateDistance returns a value in cm we need it in dm
 
-		distance2 = calculateDistance() / 10;
+		distancecm1 = calculateDistance();
+		//check singular number to do correct round up or down
+		int singular = (distancecm1 % 100) % 10;
+		if(singular >= 5){
+			distance2 = distancecm1/10 + 1;
+		}
+		else{
+			distance2 = distancecm1/10;
+		}
 		message3 &= ~(0b11111<<3); //Reset distance bits
 		message3 |= (distance2<<3); //Set UART msg with new distance
 		
@@ -366,17 +374,17 @@ void CalculateTime2() {
 }
 
 //returns value in cm.
-int calculateDistance() {
+float calculateDistance() {
 	// 12 is time per tick.
 	//divide 1000000 to make it to meters.
 	
-	int uTime = timer * 12;
-	float seconds = uTime / 100;
-	int cenitMeters = seconds * 2;
 	
-	if (cenitMeters > 300)
-	return 0;
-	return cenitMeters;
+	
+	int uTime = timer * MICRO_SEC_PER_TICK;
+	//float seconds = uTime / 100;
+	float centiMeters = uTime/58;
+	if (centiMeters > 300) return 0;
+	return centiMeters;
 }
 
 bool compareSignature(uint8_t* oursignature, uint8_t* signature){
@@ -472,10 +480,11 @@ void laserSensorFunction(){
 }
 
 void ultrasonicFunction(){
-	if (TCNT2 > 230) {
+	//in here every 100 us
+	if (TCNT2 > 184) {
 		PORTC ^= (1<<PINC1);
-		TCNT2 = 0;
 		timer++;
+		TCNT2 = 0;
 	}
 	
 	if (useSensor1) {
@@ -492,7 +501,8 @@ void ultrasonicFunction(){
 		CalculateTime2();
 	}
 	
-	if (timeTaken && timer == 1) {
+	//wait atleast 10msec
+	if (timeTaken && timer == 1000) {
 		triggerSend = false;
 		triggerStarted = false;
 		timerStarted = false;

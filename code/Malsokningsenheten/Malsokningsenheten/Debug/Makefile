@@ -58,9 +58,9 @@ Malsokningsenheten.d
 C_DEPS_AS_ARGS +=  \
 Malsokningsenheten.d
 
-OUTPUT_FILE_PATH +=Malsokningsenheten_6_2(2).elf
+OUTPUT_FILE_PATH +=Malsokningsenheten_6_2(3).elf
 
-OUTPUT_FILE_PATH_AS_ARGS +=Malsokningsenheten_6_2(2).elf
+OUTPUT_FILE_PATH_AS_ARGS +=Malsokningsenheten_6_2(3).elf
 
 ADDITIONAL_DEPENDENCIES:=
 
@@ -107,13 +107,13 @@ all: $(OUTPUT_FILE_PATH) $(ADDITIONAL_DEPENDENCIES)
 $(OUTPUT_FILE_PATH): $(OBJS) $(USER_OBJS) $(OUTPUT_FILE_DEP) $(LIB_DEP) $(LINKER_SCRIPT_DEP)
 	@echo Building target: $@
 	@echo Invoking: AVR8/GNU Linker : 4.9.2
-	$(QUOTE)C:\Program Files (x86)\Atmel\Studio\7.0\toolchain\avr8\avr8-gnu-toolchain\bin\avr-g++.exe$(QUOTE) -o$(OUTPUT_FILE_PATH_AS_ARGS) $(OBJS_AS_ARGS) $(USER_OBJS) $(LIBS) -Wl,-Map="Malsokningsenheten_6_2(2).map" -Wl,--start-group -Wl,-lm  -Wl,--end-group -Wl,--gc-sections -mrelax -mmcu=atmega1284p -B "C:\Program Files (x86)\Atmel\Studio\7.0\Packs\atmel\ATmega_DFP\1.0.90\gcc\dev\atmega1284p"  
+	$(QUOTE)C:\Program Files (x86)\Atmel\Studio\7.0\toolchain\avr8\avr8-gnu-toolchain\bin\avr-g++.exe$(QUOTE) -o$(OUTPUT_FILE_PATH_AS_ARGS) $(OBJS_AS_ARGS) $(USER_OBJS) $(LIBS) -Wl,-Map="Malsokningsenheten_6_2(3).map" -Wl,--start-group -Wl,-lm  -Wl,--end-group -Wl,--gc-sections -mrelax -mmcu=atmega1284p -B "C:\Program Files (x86)\Atmel\Studio\7.0\Packs\atmel\ATmega_DFP\1.0.90\gcc\dev\atmega1284p"  
 	@echo Finished building target: $@
-	"C:\Program Files (x86)\Atmel\Studio\7.0\toolchain\avr8\avr8-gnu-toolchain\bin\avr-objcopy.exe" -O ihex -R .eeprom -R .fuse -R .lock -R .signature -R .user_signatures  "Malsokningsenheten_6_2(2).elf" "Malsokningsenheten_6_2(2).hex"
-	"C:\Program Files (x86)\Atmel\Studio\7.0\toolchain\avr8\avr8-gnu-toolchain\bin\avr-objcopy.exe" -j .eeprom  --set-section-flags=.eeprom=alloc,load --change-section-lma .eeprom=0  --no-change-warnings -O ihex "Malsokningsenheten_6_2(2).elf" "Malsokningsenheten_6_2(2).eep" || exit 0
-	"C:\Program Files (x86)\Atmel\Studio\7.0\toolchain\avr8\avr8-gnu-toolchain\bin\avr-objdump.exe" -h -S "Malsokningsenheten_6_2(2).elf" > "Malsokningsenheten_6_2(2).lss"
-	"C:\Program Files (x86)\Atmel\Studio\7.0\toolchain\avr8\avr8-gnu-toolchain\bin\avr-objcopy.exe" -O srec -R .eeprom -R .fuse -R .lock -R .signature -R .user_signatures "Malsokningsenheten_6_2(2).elf" "Malsokningsenheten_6_2(2).srec"
-	"C:\Program Files (x86)\Atmel\Studio\7.0\toolchain\avr8\avr8-gnu-toolchain\bin\avr-size.exe" "Malsokningsenheten_6_2(2).elf"
+	"C:\Program Files (x86)\Atmel\Studio\7.0\toolchain\avr8\avr8-gnu-toolchain\bin\avr-objcopy.exe" -O ihex -R .eeprom -R .fuse -R .lock -R .signature -R .user_signatures  "Malsokningsenheten_6_2(3).elf" "Malsokningsenheten_6_2(3).hex"
+	"C:\Program Files (x86)\Atmel\Studio\7.0\toolchain\avr8\avr8-gnu-toolchain\bin\avr-objcopy.exe" -j .eeprom  --set-section-flags=.eeprom=alloc,load --change-section-lma .eeprom=0  --no-change-warnings -O ihex "Malsokningsenheten_6_2(3).elf" "Malsokningsenheten_6_2(3).eep" || exit 0
+	"C:\Program Files (x86)\Atmel\Studio\7.0\toolchain\avr8\avr8-gnu-toolchain\bin\avr-objdump.exe" -h -S "Malsokningsenheten_6_2(3).elf" > "Malsokningsenheten_6_2(3).lss"
+	"C:\Program Files (x86)\Atmel\Studio\7.0\toolchain\avr8\avr8-gnu-toolchain\bin\avr-objcopy.exe" -O srec -R .eeprom -R .fuse -R .lock -R .signature -R .user_signatures "Malsokningsenheten_6_2(3).elf" "Malsokningsenheten_6_2(3).srec"
+	"C:\Program Files (x86)\Atmel\Studio\7.0\toolchain\avr8\avr8-gnu-toolchain\bin\avr-size.exe" "Malsokningsenheten_6_2(3).elf"
 	
 	
 
@@ -125,5 +125,5 @@ $(OUTPUT_FILE_PATH): $(OBJS) $(USER_OBJS) $(OUTPUT_FILE_DEP) $(LIB_DEP) $(LINKER
 clean:
 	-$(RM) $(OBJS_AS_ARGS) $(EXECUTABLES)  
 	-$(RM) $(C_DEPS_AS_ARGS)   
-	rm -rf "Malsokningsenheten_6_2(2).elf" "Malsokningsenheten_6_2(2).a" "Malsokningsenheten_6_2(2).hex" "Malsokningsenheten_6_2(2).lss" "Malsokningsenheten_6_2(2).eep" "Malsokningsenheten_6_2(2).map" "Malsokningsenheten_6_2(2).srec" "Malsokningsenheten_6_2(2).usersignatures"
+	rm -rf "Malsokningsenheten_6_2(3).elf" "Malsokningsenheten_6_2(3).a" "Malsokningsenheten_6_2(3).hex" "Malsokningsenheten_6_2(3).lss" "Malsokningsenheten_6_2(3).eep" "Malsokningsenheten_6_2(3).map" "Malsokningsenheten_6_2(3).srec" "Malsokningsenheten_6_2(3).usersignatures"
 	
