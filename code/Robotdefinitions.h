@@ -13,10 +13,10 @@
 #define LASER_AKTIVERA_PORT 4
 
 //left 800
-uint16_t tape1Threshold = 800; //Limit that determines what's tape and what's not
+uint16_t tape1Threshold = 650; //Limit that determines what's tape and what's not
 uint16_t tape1CurrentValue = 0;
 //right 500
-uint16_t tape2Threshold = 500; //Limit that determines what's tape and what's not
+uint16_t tape2Threshold = 400; //Limit that determines what's tape and what's not
 uint16_t tape2CurrentValue = 0;
 
 const uint8_t TAPE_ERROR_MARGIN = 200;
@@ -56,14 +56,14 @@ const uint8_t TAPE_ERROR_MARGIN = 200;
 #define PWM1 PIND5
 #define PWM2 PIND4
 #define DIR1 PINB5
-#define DIR2 PINB7
+#define DIR2 PINA0
 #define DIR_PWM_PORT PORTD
 
 #define LASER_PIN PINB4
 #define LASER_PORT PORTB
 
-#define IR_PWM PINB5
-#define IR_PORT PINB
+// #define IR_PWM PINB5
+// #define IR_PORT PINB
 
 #define LED1_PIN PINB0
 #define LED2_PIN PINB1
@@ -87,11 +87,12 @@ const uint8_t TAPE_ERROR_MARGIN = 200;
 #define DECREMENT_LED_LIVES				9
 #define TURN_INVISIBLE_AND_DEC_LIFE_LED 10
 #define ACTIVATE_LASER_AND_TURN_RIGHT 	11
+#define MOVE_BACKWARDS				 	12
 
 
 #define RESET_SE						20
-
-#define MOVEMENT_SPEED					2350
+										
+#define MOVEMENT_SPEED					1175
 //1175
 #define ROTATION_SPEED					2350
 

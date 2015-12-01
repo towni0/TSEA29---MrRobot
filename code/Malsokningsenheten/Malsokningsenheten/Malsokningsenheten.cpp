@@ -28,6 +28,10 @@ int Priority(int operation);
 unsigned long CalcGyro(int gyroData);
 void testTAPEsensors();
 int Abs(int value);
+void SendUART();
+void StartBackwardsTimer();
+void StopBackwardsTimer();
+
 
 //initial values are set to their IDs from design spec. (these bits are never changed)
 uint8_t message1 = 0;
@@ -58,12 +62,17 @@ uint8_t messageNumber = 1;
 
 //##### AI #####
 
+#define BACKWARDS_TIMER TCCR0B
+#define BACKWARDS_TIMER_CTR TCNT0
+
 #define LASER_TIMER TCCR1B
 #define LASER_TIMER_COUNTER TCNT1
 #define IR_TIMER TCCR3B
 #define IR_TIMER_COUNTER TCNT3
 
 #define ONE_SECOND 18000
+#define HALF_SECOND 9000
+#define QUARTER_SECOND 4500
 
 // Data
 bool canShoot = true;
@@ -80,6 +89,12 @@ bool rotating = false;
 int currentRotationValue;
 long targetRotation;
 
+// Backing stuff
+bool backing = false;
+bool leftTapeHit = false;
+bool rightTapeHit = false;
+int backing_ctr = 0;
+const int timeToReachOneHundredth = 180;
 
 // Laser stuff
 int coolDownCTR = 0;
@@ -138,7 +153,15 @@ int main(void)
 	
 	
 	//###first order!###
-	//nextOrder = MOVE_FORWARD;
+	nextOrder = MOVE_FORWARD;
+	//nextOrder = ACTIVATE_LASER;
+	//nextOrder = TURN_OFF_IR_SIG;
+	
+	//WeAreHit();
+	//health = 1;
+	//WeAreHit();
+	
+	
 	
     while(!dead)
     {
@@ -180,51 +203,48 @@ int main(void)
 		//#######################
 		//## UART Transmission ##
 		//#######################
-
-		//check if transmit buffer is empty
-		//(UCSR1A & (1<<TXC1)) && 
-		if((UCSR1A & (1<<UDRE1))){
-			//mux through messages
-			//may need to disable interrupts
-			switch(messageNumber){
-				case 1:
-					UDR1 = message1;
-					break;
-				case 2:
-					UDR1 = message2;
-					break;
-				case 3:
-					UDR1 = message3;
-					break;
-				case 4:
-					UDR1 = message4;
-					break;
-				case 5: 
-					UDR1 = message5;
-					break;
-				case 6:
-					if(nextOrder != DO_NOTHING){ //Only send order if something is to be done
-						message6 &= 0b00000111; //reset everything except message ID
-						UDR1 = (nextOrder<<3) | message6;
-						nextOrder = 0;
-					}
-					break;
-				default:
-					//
-					//PORTC |= (1 << PINC0);
-					//_delay_us(300);
-					//PORTC &= ~(1 << PINC0);
-					break;
-			}
-			//next mux
-			messageNumber++;
-			if(messageNumber>NUMBER_OF_MESSAGES+1) messageNumber=1;
-			//UCSR1A |= (1<<TXC1);
-			//_delay_us(300);
-		}
+		SendUART();
 		
 		if((PINB>>PINB2) == 0){
 			//Tävling
+			
+// 			if (!rotating) {
+// 				Shoot();
+// 			}
+// 			
+// 			// LASER timer stuff
+// 			if (LASER_TIMER_COUNTER >= ONE_SECOND) {
+// 				coolDownCTR++;
+// 				LASER_TIMER_COUNTER = 0;
+// 							
+// 				// Lasers been active for 1 sec, turn it off
+// 				if (coolDownCTR == 1) {
+// 					nextOrder = DEACTIVATE_LASER;
+// 					laserActive = false;
+// 					foundSomethingToDo = true;
+// 					continue;
+// 				}
+// 				// cooldown is over
+// 				else if (coolDownCTR == 4) {
+// 					canShoot = true;
+// 					StopLaserTimer();
+// 				}
+// 							
+// 			}
+
+			// IR timer stuff
+// 			if (IR_TIMER_COUNTER >= ONE_SECOND) {
+// 				IR_TIMER_COUNTER = 0;
+// 				IRCTR++;
+// 				if (IRCTR >= 5) {
+// 					StopIRTimer();
+// 					nextOrder = TURN_ON_IR_SIG;
+// 					continue;
+// 				}
+// 			}
+		
+		
+		
 
 		}
 		else{
@@ -268,7 +288,7 @@ int main(void)
 			*/
 			
 			
-// 			// If both line sensor detects tape and we havn't startet rotating, turn around (180 degrees)
+			// If both line sensor detects tape and we havn't startet rotating, turn around (180 degrees)
 // 			if ((tapeSensor1 == 1 && tapeSensor2 == 1 && !bothTapeSensors)) {
 // 				Rotate(135000, true);
 // 				bothTapeSensors = true;
@@ -276,51 +296,76 @@ int main(void)
 // 
 // 				
 // 			}
-// 		
-// 			// If the Left line sensor detects tape and we havn't startet rotating, turn right
-// 			if((tapeSensor1 == 1) && !rotating){ 
-// 				Rotate(90000, false);
-// 				
-// 
-// 			}
-// 		
-// 			// If the Right line sensor detects tape and we havn't startet rotating, turn left
-// 			if((tapeSensor2 == 1) && !rotating){ 
-// 				Rotate(90000, true);
-// 				
-// 			}
-// 		
-// 			
-// 			
-// 			// If we are rotating
-// 			if (rotating) {
-// 				if(TCNT2 >= sampleticks){
-// 					//300 is max angular rate from gyro
-// 					//calculate how much we rotate per sample in millidegrees/second and add it total total millidegreesturned
-// 					float degreesPerPart = 300/128;
-// 					int parts = Abs(gyro - ANGULAR_RATE_IDLE);
-// 					float angularVelocity = parts*degreesPerPart;
-// 					millidegreesTurned += angularVelocity*sampleTimeInMS;
-// 					
-// 
-// 					if (millidegreesTurned >= targetRotation) {
-// 						rotating = false;
-// 						nextOrder = MOVE_FORWARD;
-// 						millidegreesTurned = 0;
-// 						//reset case of 2 tapesensors
-// 						bothTapeSensors = false;
-// 						//stop counter
-// 						TCCR2B &= ~((1 << CS20) | (1 << CS21) | (1 << CS22));
-// 						
-// 						// If we reached the end of the first turn, turn to the opposite way
-// 						/*
-// 						if (laserActive ) {
-// 							Rotate(SHOOT_SWEEP_DEGREES, true);
-// 						}
-// 						*/
-// 					}
-// 					//Send how many degrees we have rotated over uart
-// 					/*
+		
+			// If the Left line sensor detects tape and we havn't startet rotating, turn right
+			if((tapeSensor1 == 1) && !rotating){ 
+				leftTapeHit = true;
+				StartBackwardsTimer();
+				nextOrder = MOVE_BACKWARDS;
+				continue;
+
+			}
+		
+			// If the Right line sensor detects tape and we havn't startet rotating, turn left
+			if((tapeSensor2 == 1) && !rotating){
+				rightTapeHit = true; 
+				StartBackwardsTimer();
+				nextOrder = MOVE_BACKWARDS;
+				continue;
+			}
+		
+			if (backing) {
+				if(BACKWARDS_TIMER_CTR >= timeToReachOneHundredth){
+					BACKWARDS_TIMER_CTR = 0;
+					backing_ctr++;
+					
+					if (backing_ctr >= 50) {
+						backing = false;
+						StopBackwardsTimer();
+						
+						if (leftTapeHit) {
+							leftTapeHit = false;
+							Rotate(45000, false);
+						}
+						else if (rightTapeHit) {
+							rightTapeHit = false;
+							Rotate(45000, true);
+						}
+					}
+					
+				}
+			}
+			
+			// If we are rotating
+			if (rotating) {
+				if(TCNT2 >= sampleticks){
+					//300 is max angular rate from gyro
+					//calculate how much we rotate per sample in millidegrees/second and add it total total millidegreesturned
+					float degreesPerPart = 300/128;
+					int parts = Abs(gyro - ANGULAR_RATE_IDLE);
+					float angularVelocity = parts*degreesPerPart;
+					millidegreesTurned += angularVelocity*sampleTimeInMS;
+					
+
+					if (millidegreesTurned >= targetRotation) {
+						rotating = false;
+						nextOrder = MOVE_FORWARD;
+						
+						millidegreesTurned = 0;
+						//reset case of 2 tapesensors
+						bothTapeSensors = false;
+						//stop counter
+						TCCR2B &= ~((1 << CS20) | (1 << CS21) | (1 << CS22));
+						
+						// If we reached the end of the first turn, turn to the opposite way
+						/*
+						if (laserActive ) {
+							Rotate(SHOOT_SWEEP_DEGREES, true);
+						}
+						*/
+					}
+					//Send how many degrees we have rotated over uart
+					
 // 					uint8_t degreesTurned = millidegreesTurned/1000;
 // 					messageout4 &= 0b00000000; //Reset bits
 // 					messageout4 |= (degreesTurned<<LOWERBITSGYRO_INDEX);
@@ -328,14 +373,14 @@ int main(void)
 // 					messageout5 &= 0b00000000; //Reset bits
 // 					messageout5 |= (degreesTurned>>2);
 // 					messageout5 |= (message5 & 0b11000111);
-// 					*/
-// 					//messageout5 = gyro;
-// 					
-// 					//reset counter
-// 					TCNT2 = 0;
-// 				}
-// 				continue;
-// 			}
+					
+					//messageout5 = gyro;
+					
+					//reset counter
+					TCNT2 = 0;
+				}
+				continue;
+			}
 		/*
 		 	// If we are scaning for opponents and we find something within 1,5 meters, stop move, 
 			if (scaning && rotating) {
@@ -388,15 +433,62 @@ int main(void)
 	StartLaserTimer();
 	// This loop blinks the LEDs to show that we are dead
 	while (dead) {
-		if (LASER_TIMER_COUNTER >= ONE_SECOND) {
+		SendUART();
+		if (LASER_TIMER_COUNTER >= 2250) {
 			LASER_TIMER_COUNTER = 0;
 			coolDownCTR++;
 			nextOrder = DECREMENT_LED_LIVES;
-			if (coolDownCTR == 3) {
+			if (coolDownCTR == 4) {
 				nextOrder = RESET_SE;
 				coolDownCTR = 0;
 			}
 		}
+	}
+	
+}
+
+
+void SendUART() {
+	//check if transmit buffer is empty
+	//(UCSR1A & (1<<TXC1)) &&
+	if((UCSR1A & (1<<UDRE1))){
+		//mux through messages
+		//may need to disable interrupts
+		switch(messageNumber){
+			case 1:
+			UDR1 = message1;
+			break;
+			case 2:
+			UDR1 = message2;
+			break;
+			case 3:
+			UDR1 = message3;
+			break;
+			case 4:
+			UDR1 = message4;
+			break;
+			case 5:
+			UDR1 = message5;
+			break;
+			case 6:
+			if(nextOrder != DO_NOTHING){ //Only send order if something is to be done
+				message6 &= 0b00000111; //reset everything except message ID
+				UDR1 = (nextOrder<<3) | message6;
+				nextOrder = 0;
+			}
+			break;
+			default:
+			//
+			//PORTC |= (1 << PINC0);
+			//_delay_us(300);
+			//PORTC &= ~(1 << PINC0);
+			break;
+		}
+		//next mux
+		messageNumber++;
+		if(messageNumber>NUMBER_OF_MESSAGES+1) messageNumber=1;
+		//UCSR1A |= (1<<TXC1);
+		//_delay_us(300);
 	}
 	
 }
@@ -423,9 +515,9 @@ ISR(USART0_RX_vect){
 			break;
 		case 4:
 			message5 = buffer;
-			//message5 &= 0b00111000; //We set the gyro bits elsewhere
-			//message5 |= (buffer & 0b11000111);
-			//message5 = 0b11000100; //Temp test:
+// 			message5 &= 0b00111000; //We set the gyro bits elsewhere
+// 			message5 |= (buffer & 0b11000111);
+	
 			break;
 	}
 }
@@ -469,8 +561,10 @@ void Rotate(long milliDegrees, bool leftTurn) {
 	else {
 		nextOrder = TURN_RIGHT;
 	}
+	TCNT2 = 0;
 	//start timer
 	TCCR2B |= (1 << CS20) | (1 << CS21) | (1 << CS22);
+	
 }
 
 /*
@@ -518,6 +612,21 @@ void Shoot() {
 }
 
 
+void StartBackwardsTimer() {
+	backing = true;
+	BACKWARDS_TIMER_CTR = 0;
+	BACKWARDS_TIMER = (1<< CS02) | (1<< CS00);
+	backing_ctr = 0;
+}
+
+void StopBackwardsTimer() {
+	
+	BACKWARDS_TIMER &= ~(1 << CS12);
+	BACKWARDS_TIMER &= ~(1 << CS10);
+	BACKWARDS_TIMER_CTR = 0;
+	backing_ctr = 0;
+}
+
 void StartLaserTimer() {
 	LASER_TIMER_COUNTER = 0;
 	LASER_TIMER = (1<< CS12) | (1<< CS10);
@@ -531,6 +640,7 @@ void StopLaserTimer() {
 
 void StartIRTimer() {
 	IR_TIMER_COUNTER = 0;
+	IRCTR = 0;
 	IR_TIMER = (1<< CS32) | (1<< CS30);
 }
 

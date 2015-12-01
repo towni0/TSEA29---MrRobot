@@ -36,7 +36,7 @@ void testTAPEsensors();
 //###############
 
 #define IRheader 20
-#define IRzerovalue 7
+#define IROneValue 7
 
 bool compareSignature(uint8_t* oursignature, uint8_t* signature);
 void IRSensorFunction();
@@ -95,6 +95,7 @@ int main(void)
 	
 	DDRD &= ~(1<<PIND7); //Aktiveringsknapp (in)
 	DDRB = 0b00011010;
+	//DDRB |= (1<<PIND6);
 	
 	//debugging
 	DDRC |= (1<< PINC0) | (1<<PINC1);
@@ -206,10 +207,12 @@ ISR(USART0_TX_vect){
 
 
 ISR(ADC_vect){
-	
+	//disable interrupts (might not be necessary?) interrupts get queued?
+	cli();
 	uint8_t lowbits = ADCL;
 	uint16_t message = ADCH <<8 | lowbits;
-	
+	//enable interrupts
+	sei();
 	switch(ADCcount){
 		case GYRO:
 			message >>= 2; //Divide by 4
@@ -397,28 +400,41 @@ bool compareSignature(uint8_t* oursignature, uint8_t* signature){
 }
 
 void IRSensorFunction(){
+	// If 100 us have passed
 	if (TCNT1 > 1840){ //Timer counter
 		IRtimer++;
 		TCNT1 = 0;
+		PORTC ^= (1<<PINC0);
+		//PORTC ^= (1<<PINC1);
+		 //(1<< PINC0) | (1<<PINC1);
 	}
 	
+	// If 200*100 us(20 ms) has passed and PINB7 is high
 	if (IRtimer == IRheader * 10 && bit_is_set(PINB, 6)){
 		enemy = false;
+		//Set UART message
+		signatureS = (oursignature[0]<<2) | (oursignature[1]<<1) | oursignature[2];
+		message1 &= ~(0b111<<IRSIGNATURE_INDEX); //Reset signature in message
+		message1 |= (signatureS<<IRSIGNATURE_INDEX); //Set new signature
+		(enemy ? message1 |= (1<<IRSENSOR_INDEX) : message1 &= ~(1<<IRSENSOR_INDEX));
 	}
+	
 	if (!edge && bit_is_clear(PINB, 6)){ // Found edge
 		TCNT1 = 0;
 		IRtimer = 0;
 		edge = true;
 	}
+	
 	if (!header){ // Go into header mode if not in header already
 		if(edge && bit_is_set(PINB, 6) && IRtimer >= IRheader){ // header if equal greater than ~2000uS
 			header = true;
 			index = 0;
 		}
 	}
+	
 	else{
 		if (edge && bit_is_set(PINB, 6)) { //PIND & (1<<PIND7)) {
-			if (IRtimer > IRzerovalue){ // 1 if longer than 700us, else 0
+			if (IRtimer > IROneValue){ // 1 if longer than 1100us, else 0
 				signature[index] = 1;
 			}
 			else{
@@ -442,25 +458,36 @@ void IRSensorFunction(){
 		IRtimer = 0;
 		
 		//Set UART message
-		signatureS = (signature[0]<<0) | (signature[1]<<1) | signature[2];
+		signatureS = (signature[0]<<2) | (signature[1]<<1) | signature[2];
 		message1 &= ~(0b111<<IRSIGNATURE_INDEX); //Reset signature in message
 		message1 |= (signatureS<<IRSIGNATURE_INDEX); //Set new signature
-		(enemy ? message1 |= (1<<IRSENSOR_INDEX) : message1 &= ~(1>>IRSENSOR_INDEX));
+		(enemy ? message1 |= (1<<IRSENSOR_INDEX) : message1 &= ~(1<<IRSENSOR_INDEX));
 	}
+	
+
+	
 }
 
 
+uint8_t secsSinceLaserHit = 0;
+
 void laserSensorFunction(){
 	//Reactivate laser 2 sec after hit
-	if(TCNT3 >= 36000){
+	if(TCNT3 >= 18000){
+		secsSinceLaserHit++;
+	}
+	if(secsSinceLaserHit >= 5){
 		PORTB |= (1<<PINB6);
 		//inactivate
 		PORTB |= (1 << LASER_AKTIVERA_PORT);
-		//activate, might have to wait if this is too fast
-		if(TCNT3 >= 36010){
+		//reset count
+		TCNT3 = 0;
+		//activate, might have to wait if this is too fast here we wait 10 more clock ticks
+		if(TCNT3 >= 10){
 			PORTB &= ~(1 << LASER_AKTIVERA_PORT);
 			TCCR3B &= 0b11111000; //Reset pre-scaler to stop counting
 			TCNT3 = 0; //Reset counter
+			secsSinceLaserHit = 0;
 		}
 	}
 	

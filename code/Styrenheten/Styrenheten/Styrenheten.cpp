@@ -26,7 +26,8 @@ void InitPWM();
 void InitLEDs();
 void InitIRSender();
 void InitUART();
-void IR-sender();
+void IR_sender();
+void MoveBackwards(int speed);
 
 #define LOW 6
 #define PAUSE 6
@@ -35,8 +36,8 @@ void IR-sender();
 #define ENDPAUSE 24
 
 // VARIABLES
-int dutyCycle = 240;
-int period = 480;
+int IRdutyCycle = 240;
+int IRperiod = 480;
 
 int pauseTimes[] = {HEADER, PAUSE, HIGH, PAUSE, HIGH, PAUSE, LOW, ENDPAUSE};
 int ptIndex = 0;
@@ -93,7 +94,6 @@ int main(void){
 				break;
 			
 			case TURN_RIGHT:
-				PORTB |= (1<<PINB3);
 				TurnRight(ROTATION_SPEED);
 				break;
 			
@@ -127,8 +127,13 @@ int main(void){
 				break;
 			case ACTIVATE_LASER_AND_TURN_RIGHT:
 				ActivateLaser();
-				//TurnRight();
-			
+				TurnRight(ROTATION_SPEED);
+				break;
+				
+			case MOVE_BACKWARDS:
+				MoveBackwards(MOVEMENT_SPEED);			
+				break;
+				
 			case RESET_SE:
 				ResetSE();
 				break;
@@ -141,7 +146,7 @@ int main(void){
 		
 		// IR-sender
 		if (IRisActivive) {
-			IR-sender();
+			IR_sender();
 		}
 		
 		
@@ -150,9 +155,9 @@ int main(void){
 }
 
 // Code that send out our signature
-void IR-sender() {
+void IR_sender() {
 	if (isHigh) {
-		OCR3A = ICR3 - dutyCycle; // duty cycle on 50% of length 26 for PINB6
+		OCR3A = ICR3 - IRdutyCycle; // duty cycle on 50% of length 26 for PINB6
 	}
 	else {
 		OCR3A = ICR3; // duty cycle on 50% of length 26 for PINB6
@@ -161,7 +166,7 @@ void IR-sender() {
 	if (TCNT0 > 225) {
 		ctr++;
 		TCNT0 = 0;
-		PORTB ^= (1 << PINB0);
+		
 	}
 	
 	if (ctr == pauseTimes[ptIndex]) {
@@ -244,7 +249,8 @@ void InitPWM() {
 	// DIR setup
 	
 	DDRD |= (1<<PWM1) | (1<<PWM2);
-	DDRB |= (1<<DIR1) | (1<<DIR2);
+	DDRB |= (1<<DIR1);
+	DDRA |= (1<<DIR2);
 }
 
 
@@ -253,7 +259,7 @@ void InitIRSender() {
 	TCCR3A |= 1<<WGM31 | 1<<COM3A1 | 1<<COM3A0 |1<<COM3B0 | 1<<COM3B1;
 	TCCR3B |= 1<<WGM32 | 1<<WGM33 | 1<<CS30;
 	
-	ICR3 = period;		// period length in us
+	ICR3 = IRperiod;		// period length in us
 	OCR3A = ICR3;
 	TCCR0B |= 1<<CS01;	// Starta 8-bit ctr
 }
@@ -264,7 +270,14 @@ void MoveForward(int speed) {
 	dutyCycle = speed;
 	SetPWM();
 	PORTB |= (1<<DIR1);
-	PORTB |= (1<<DIR2);
+	PORTA |= (1<<DIR2);
+}
+
+void MoveBackwards(int speed) {
+	dutyCycle = speed;
+	SetPWM();
+	PORTB &= ~(1<<DIR1);
+	PORTA &= ~(1<<DIR2);
 }
 
 // Set PWM1 and PWM2 to HIGH(set dutyCycle)
@@ -273,7 +286,8 @@ void TurnLeft(int speed) {
 	dutyCycle = speed;
 	SetPWM();
 	PORTB &= ~(1<<DIR1);
-	PORTB |= (1<<DIR2);
+	PORTA |= (1<<DIR2);
+
 }
 
 // Set PWM1 and PWM2 to HIGH(set dutyCycle)
@@ -281,7 +295,7 @@ void TurnLeft(int speed) {
 void TurnRight(int speed) {
 	dutyCycle = speed;
 	SetPWM();
-	PORTB &= ~(1<<DIR2);
+	PORTA &= ~(1<<DIR2);
 	PORTB |= (1<<DIR1);
 }
 
