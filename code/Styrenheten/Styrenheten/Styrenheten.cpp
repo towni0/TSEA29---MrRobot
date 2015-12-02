@@ -28,6 +28,7 @@ void InitIRSender();
 void InitUART();
 void IR_sender();
 void MoveBackwards(int speed);
+void SendUART();
 
 #define LOW 6
 #define PAUSE 6
@@ -57,9 +58,21 @@ bool IRisActivive = true;
 
 uint8_t currentOrder = 0;
 
+//initial values are set to their IDs from design spec. (these bits are never changed)
+uint8_t message1 = 0;
+uint8_t message2 = 1;
+uint8_t message3 = 2;
+uint8_t message4 = 3;
+uint8_t message5 = 4;
+uint8_t message6 = 5;
+
+uint8_t messageNumber = 1;
+
 int main(void){
 	DDRB = 0b11111111;
 
+	//Grace time for bluetooth timer prescale /1024
+	TCCR2B |= (1<<CS20) | (1<<CS22);
 	//enable global interrupts
 	sei();
 	
@@ -73,10 +86,20 @@ int main(void){
 
     while(1)
     {
+
 		//Do command
 		cli();
 		uint8_t snapshotOrder = currentOrder;
 		sei();
+		
+		//Send UART to bluetooth without DC
+ 		if(TCNT2 >= UART_BLUETOOTH_GRACE_PERIOD){
+			//LED_PORT ^= (1 << INVISIBLE_LED_PIN);
+ 			SendUART();
+ 			TCNT2 = 0;	
+ 		}
+
+		
 		//Reset order so that its not executed more than once
 		currentOrder = DO_NOTHING;
 
@@ -223,6 +246,19 @@ void InitUART() {
 	
 	//enable receive interrupt
 	UCSR0B |= (1<<RXCIE0);
+	
+	
+	//FROM STYR TO BLUETOOTH
+	//initiate UART målsökning to styr
+	//set baud rate
+	//115200
+	uint16_t UBRR_val1 = UBRR_STYR_MALSOKNING;
+	UBRR1H = (unsigned char) (UBRR_val1 >> 8);
+	UBRR1L = (unsigned char) UBRR_val1;
+		
+	//enable transmit + set frame 8 bits
+	UCSR1B = (1<<TXEN1);
+	UCSR1C = (1<<UCSZ10) | (1<<UCSZ11);
 	//#UART INITS END#//
 }
 
@@ -350,8 +386,76 @@ void StopMove() {
 ISR(USART0_RX_vect){
 	uint8_t snapbuffer = UDR0;
 	uint8_t messageID = snapbuffer & 0x07; //Mask out message ID
+	
+	//Mux through messages
+	switch(messageID){
+		case 0:
+			message1 = snapbuffer;
+			break;
+		case 1:
+			message2 = snapbuffer;
+			break;
+		case 2:
+			message3 = snapbuffer;
+			break;
+		case 3:
+			message4 = snapbuffer;
+			break;
+		case 4:
+			message5 = snapbuffer;
+			break;
+		case 5:
+			message6 = snapbuffer;
+			break;
+	}
 	//only look at ORDERS
 	if(messageID == ORDER_ID){
 		currentOrder = (snapbuffer>>3) & 0b00011111; //Mask out the order
 	}
+}
+
+void SendUART() {
+	//check if transmit buffer is empty
+	//(UCSR1A & (1<<TXC1)) &&
+	//_delay_us(300);
+	if((UCSR1A & (1<<UDRE1))){
+		//mux through messages
+		//may need to disable interrupts
+		switch(messageNumber){
+			case 1:
+			UDR1 = message1;
+			break;
+			case 2:
+			UDR1 = message2;
+			break;
+			case 3:
+			UDR1 = message3;
+			break;
+			case 4:
+			UDR1 = message4;
+			break;
+			case 5:
+			UDR1 = message5;
+			break;
+			case 6:
+				if(currentOrder != DO_NOTHING){ //Only send order if something is to be done
+					message6 &= 0b00000111; //reset everything except message ID
+					UDR1 = (currentOrder<<3) | message6;
+					//nextOrder = 0;
+				}
+			break;
+			default:
+			//
+			//PORTC |= (1 << PINC0);
+			//_delay_us(300);
+			//PORTC &= ~(1 << PINC0);
+			break;
+		}
+		//next mux
+		messageNumber++;
+		if(messageNumber>NUMBER_OF_MESSAGES+1) messageNumber=1;
+		//UCSR1A |= (1<<TXC1);
+		//_delay_us(300);
+	}
+	
 }

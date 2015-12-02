@@ -5,12 +5,15 @@
 #include <avr/interrupt.h>
 #include <util/delay.h>
 
+#define UART_BLUETOOTH_GRACE_PERIOD 40
 
 #define MESSAGEID_INDEX 0
 
 #define ORDER_ID 0b00000101
 
 #define LASER_AKTIVERA_PORT 4
+
+#define TICKS_TO_WAIT_FOR_ACTIVATE_LASER 1000
 
 //left 800
 uint16_t tape1Threshold = 650; //Limit that determines what's tape and what's not

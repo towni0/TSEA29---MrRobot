@@ -79,6 +79,8 @@ bool timeTaken = false;
 
 bool useSensor1 = true;
 
+//laser
+uint8_t secsSinceLaserHit = 0;
 
 int main(void)
 {
@@ -468,26 +470,30 @@ void IRSensorFunction(){
 	
 }
 
-
-uint8_t secsSinceLaserHit = 0;
+bool waitLaserActivation = false;
+bool laserIniated = false;
 
 void laserSensorFunction(){
 	//Reactivate laser 2 sec after hit
 	if(TCNT3 >= 18000){
 		secsSinceLaserHit++;
+		TCNT3 = 0;
 	}
 	if(secsSinceLaserHit >= 5){
-		PORTB |= (1<<PINB6);
 		//inactivate
 		PORTB |= (1 << LASER_AKTIVERA_PORT);
 		//reset count
-		TCNT3 = 0;
+		if(!waitLaserActivation){
+			TCNT3 = 0;
+			waitLaserActivation = true;
+		}
 		//activate, might have to wait if this is too fast here we wait 10 more clock ticks
-		if(TCNT3 >= 10){
+		if(TCNT3 >= TICKS_TO_WAIT_FOR_ACTIVATE_LASER){
 			PORTB &= ~(1 << LASER_AKTIVERA_PORT);
 			TCCR3B &= 0b11111000; //Reset pre-scaler to stop counting
 			TCNT3 = 0; //Reset counter
 			secsSinceLaserHit = 0;
+			waitLaserActivation = false;
 		}
 	}
 	

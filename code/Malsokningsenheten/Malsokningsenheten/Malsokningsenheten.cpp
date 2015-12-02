@@ -102,6 +102,7 @@ bool laserActive = false;
 
 bool laserSensorHit = false;
 
+
 // Used to count up to 3
 int IRCTR = 0;
 int	currentPriority = -1;
@@ -147,14 +148,19 @@ int main(void)
 	//enable transmit + set frame 8 bits
 	UCSR1B = (1<<TXEN1);
 	UCSR1C = (1<<UCSZ10) | (1<<UCSZ11);
+	
+	//enable transmit interrupt was for testing blueetooth
+	//UCSR1B |= (1<<TXCIE0);
 	//#UART INITS END#//
 	
 	waitForActivation();
 	
+	//start first UART transmission just for testing bluetooth
+	//UDR1 = 0x00;
 	
 	//###first order!###
-	nextOrder = MOVE_FORWARD;
-	//nextOrder = ACTIVATE_LASER;
+	//nextOrder = MOVE_FORWARD;
+	nextOrder = ACTIVATE_LASER;
 	//nextOrder = TURN_OFF_IR_SIG;
 	
 	//WeAreHit();
@@ -253,6 +259,16 @@ int main(void)
 			//##############
 			
 			
+			if(laserSensor == 1 && !laserSensorHit){
+				foundSomethingToDo = true;
+				laserSensorHit = true;
+				WeAreHit();
+				continue;
+
+			}
+			else if (laserSensor == 0 && laserSensorHit) {
+				laserSensorHit = false;
+			}
 			/*
 			// IR timer stuff
 			if (IR_TIMER_COUNTER >= ONE_SECOND) {
@@ -298,90 +314,90 @@ int main(void)
 // 			}
 		
 			// If the Left line sensor detects tape and we havn't startet rotating, turn right
-			if((tapeSensor1 == 1) && !rotating){ 
-				leftTapeHit = true;
-				StartBackwardsTimer();
-				nextOrder = MOVE_BACKWARDS;
-				continue;
-
-			}
-		
-			// If the Right line sensor detects tape and we havn't startet rotating, turn left
-			if((tapeSensor2 == 1) && !rotating){
-				rightTapeHit = true; 
-				StartBackwardsTimer();
-				nextOrder = MOVE_BACKWARDS;
-				continue;
-			}
-		
-			if (backing) {
-				if(BACKWARDS_TIMER_CTR >= timeToReachOneHundredth){
-					BACKWARDS_TIMER_CTR = 0;
-					backing_ctr++;
-					
-					if (backing_ctr >= 50) {
-						backing = false;
-						StopBackwardsTimer();
-						
-						if (leftTapeHit) {
-							leftTapeHit = false;
-							Rotate(45000, false);
-						}
-						else if (rightTapeHit) {
-							rightTapeHit = false;
-							Rotate(45000, true);
-						}
-					}
-					
-				}
-			}
-			
-			// If we are rotating
-			if (rotating) {
-				if(TCNT2 >= sampleticks){
-					//300 is max angular rate from gyro
-					//calculate how much we rotate per sample in millidegrees/second and add it total total millidegreesturned
-					float degreesPerPart = 300/128;
-					int parts = Abs(gyro - ANGULAR_RATE_IDLE);
-					float angularVelocity = parts*degreesPerPart;
-					millidegreesTurned += angularVelocity*sampleTimeInMS;
-					
-
-					if (millidegreesTurned >= targetRotation) {
-						rotating = false;
-						nextOrder = MOVE_FORWARD;
-						
-						millidegreesTurned = 0;
-						//reset case of 2 tapesensors
-						bothTapeSensors = false;
-						//stop counter
-						TCCR2B &= ~((1 << CS20) | (1 << CS21) | (1 << CS22));
-						
-						// If we reached the end of the first turn, turn to the opposite way
-						/*
-						if (laserActive ) {
-							Rotate(SHOOT_SWEEP_DEGREES, true);
-						}
-						*/
-					}
-					//Send how many degrees we have rotated over uart
-					
-// 					uint8_t degreesTurned = millidegreesTurned/1000;
-// 					messageout4 &= 0b00000000; //Reset bits
-// 					messageout4 |= (degreesTurned<<LOWERBITSGYRO_INDEX);
-// 					messageout4 |= (message4 & 0b00000111);
-// 					messageout5 &= 0b00000000; //Reset bits
-// 					messageout5 |= (degreesTurned>>2);
-// 					messageout5 |= (message5 & 0b11000111);
-					
-					//messageout5 = gyro;
-					
-					//reset counter
-					TCNT2 = 0;
-				}
-				continue;
-			}
-		/*
+// 			if((tapeSensor1 == 1) && !rotating){ 
+// 				leftTapeHit = true;
+// 				StartBackwardsTimer();
+// 				nextOrder = MOVE_BACKWARDS;
+// 				continue;
+// 
+// 			}
+// 		
+// 			// If the Right line sensor detects tape and we havn't startet rotating, turn left
+// 			if((tapeSensor2 == 1) && !rotating){
+// 				rightTapeHit = true; 
+// 				StartBackwardsTimer();
+// 				nextOrder = MOVE_BACKWARDS;
+// 				continue;
+// 			}
+// 		
+// 			if (backing) {
+// 				if(BACKWARDS_TIMER_CTR >= timeToReachOneHundredth){
+// 					BACKWARDS_TIMER_CTR = 0;
+// 					backing_ctr++;
+// 					
+// 					if (backing_ctr >= 50) {
+// 						backing = false;
+// 						StopBackwardsTimer();
+// 						
+// 						if (leftTapeHit) {
+// 							leftTapeHit = false;
+// 							Rotate(45000, false);
+// 						}
+// 						else if (rightTapeHit) {
+// 							rightTapeHit = false;
+// 							Rotate(45000, true);
+// 						}
+// 					}
+// 					
+// 				}
+// 			}
+// 			
+// 			// If we are rotating
+// 			if (rotating) {
+// 				if(TCNT2 >= sampleticks){
+// 					//300 is max angular rate from gyro
+// 					//calculate how much we rotate per sample in millidegrees/second and add it total total millidegreesturned
+// 					float degreesPerPart = 300/128;
+// 					int parts = Abs(gyro - ANGULAR_RATE_IDLE);
+// 					float angularVelocity = parts*degreesPerPart;
+// 					millidegreesTurned += angularVelocity*sampleTimeInMS;
+// 					
+// 
+// 					if (millidegreesTurned >= targetRotation) {
+// 						rotating = false;
+// 						nextOrder = MOVE_FORWARD;
+// 						
+// 						millidegreesTurned = 0;
+// 						//reset case of 2 tapesensors
+// 						bothTapeSensors = false;
+// 						//stop counter
+// 						TCCR2B &= ~((1 << CS20) | (1 << CS21) | (1 << CS22));
+// 						
+// 						// If we reached the end of the first turn, turn to the opposite way
+// 						/*
+// 						if (laserActive ) {
+// 							Rotate(SHOOT_SWEEP_DEGREES, true);
+// 						}
+// 						*/
+// 					}
+// 					//Send how many degrees we have rotated over uart
+// 					
+// // 					uint8_t degreesTurned = millidegreesTurned/1000;
+// // 					messageout4 &= 0b00000000; //Reset bits
+// // 					messageout4 |= (degreesTurned<<LOWERBITSGYRO_INDEX);
+// // 					messageout4 |= (message4 & 0b00000111);
+// // 					messageout5 &= 0b00000000; //Reset bits
+// // 					messageout5 |= (degreesTurned>>2);
+// // 					messageout5 |= (message5 & 0b11000111);
+// 					
+// 					//messageout5 = gyro;
+// 					
+// 					//reset counter
+// 					TCNT2 = 0;
+// 				}
+// 				continue;
+// 			}
+ 		/*
 		 	// If we are scaning for opponents and we find something within 1,5 meters, stop move, 
 			if (scaning && rotating) {
 				if (ultraSonicSensor1 <= 10) {
@@ -451,6 +467,7 @@ int main(void)
 void SendUART() {
 	//check if transmit buffer is empty
 	//(UCSR1A & (1<<TXC1)) &&
+	//_delay_us(300);
 	if((UCSR1A & (1<<UDRE1))){
 		//mux through messages
 		//may need to disable interrupts
@@ -492,6 +509,57 @@ void SendUART() {
 	}
 	
 }
+
+
+//UART TESTING WITH INTERUPTS
+/*
+ISR(USART1_TX_vect){
+
+	//mux through messages
+	//may need to disable interrupts
+	cli();
+	switch(messageNumber){
+		case 1:
+		UDR1 = message1;
+		break;
+		case 2:
+		UDR1 = message2;
+		break;
+		case 3:
+		UDR1 = message3;
+		break;
+		case 4:
+		UDR1 = message4;
+		break;
+		case 5:
+		UDR1 = message5;
+		break;
+		case 6:
+		if(nextOrder != DO_NOTHING){ //Only send order if something is to be done
+			message6 &= 0b00000111; //reset everything except message ID
+			UDR1 = (nextOrder<<3) | message6;
+			nextOrder = 0;
+		}
+		else{
+			UDR1 = 0x00;
+		}
+		break;
+		default:
+		//
+		//PORTC |= (1 << PINC0);
+		//_delay_us(300);
+		//PORTC &= ~(1 << PINC0);
+		break;
+	}
+	//next mux
+	messageNumber++;
+	if(messageNumber>NUMBER_OF_MESSAGES+1) messageNumber=1;
+	//UCSR1A |= (1<<TXC1);
+	//_delay_us(300);
+	sei();
+	
+}
+*/
 
 ISR(USART0_RX_vect){
 	
