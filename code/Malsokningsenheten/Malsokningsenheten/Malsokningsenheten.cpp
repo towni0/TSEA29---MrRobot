@@ -30,6 +30,9 @@ int Abs(int value);
 void SendUART();
 void StartBackwardsTimer();
 void StopBackwardsTimer();
+void StopRotate(int orderToPerformOnStop);
+void UpdateRotation();
+
 
 
 //initial values are set to their IDs from design spec. (these bits are never changed)
@@ -379,47 +382,7 @@ int main(void)
 			
 			// If we are rotating
 			if (rotating) {
-				if(TCNT2 >= sampleticks){
-					//300 is max angular rate from gyro
-					//calculate how much we rotate per sample in millidegrees/second and add it total total millidegreesturned
-					float degreesPerPart = 300/128;
-					int parts = Abs(gyro - ANGULAR_RATE_IDLE);
-					float angularVelocity = parts*degreesPerPart;
-					millidegreesTurned += angularVelocity*sampleTimeInMS;
-					
-
-					if (millidegreesTurned >= targetRotation) {
-						rotating = false;
-						nextOrder = MOVE_FORWARD;
-						
-						millidegreesTurned = 0;
-						//reset case of 2 tapesensors
-						bothTapeSensors = false;
-						//stop counter
-						TCCR2B &= ~((1 << CS20) | (1 << CS21) | (1 << CS22));
-						
-						// If we reached the end of the first turn, turn to the opposite way
-						/*
-						if (laserActive ) {
-							Rotate(SHOOT_SWEEP_DEGREES, true);
-						}
-						*/
-					}
-					//Send how many degrees we have rotated over uart
-					
-// 					uint8_t degreesTurned = millidegreesTurned/1000;
-// 					messageout4 &= 0b00000000; //Reset bits
-// 					messageout4 |= (degreesTurned<<LOWERBITSGYRO_INDEX);
-// 					messageout4 |= (message4 & 0b00000111);
-// 					messageout5 &= 0b00000000; //Reset bits
-// 					messageout5 |= (degreesTurned>>2);
-// 					messageout5 |= (message5 & 0b11000111);
-					
-					//messageout5 = gyro;
-					
-					//reset counter
-					TCNT2 = 0;
-				}
+				UpdateRotation();
 				continue;
 			}
 			
@@ -618,6 +581,52 @@ ISR(USART0_RX_vect){
 // 			message5 |= (buffer & 0b11000111);
 	
 			break;
+	}
+}
+
+//####################### NEW ###############################
+
+
+// This functions stops the rotation and performs the provided order
+// Should call continue after this
+void StopRotate(int orderToPerformOnStop) {
+	rotating = false;
+	millidegreesTurned = 0;
+	targetRotation = 0;
+	TCNT2 = 0;
+	TCCR2B &= ~((1 << CS20) | (1 << CS21) | (1 << CS22));
+	
+	nextOrder = orderToPerformOnStop;
+}
+
+void UpdateRotation() {
+		if(TCNT2 >= sampleticks){
+		//reset counter
+		TCNT2 = 0;
+		
+		//300 is max angular rate from gyro
+		//calculate how much we rotate per sample in millidegrees/second and add it total total millidegreesturned
+		float degreesPerPart = 300/128;
+		int parts = Abs(gyro - ANGULAR_RATE_IDLE);
+		float angularVelocity = parts*degreesPerPart;
+		millidegreesTurned += angularVelocity*sampleTimeInMS;
+		
+		if (millidegreesTurned >= targetRotation) {
+			StopRotate(MOVE_FORWARD);
+		}
+		//Send how many degrees we have rotated over uart
+		
+// 		uint8_t degreesTurned = millidegreesTurned/1000;
+// 		messageout4 &= 0b00000000; //Reset bits
+// 		messageout4 |= (degreesTurned<<LOWERBITSGYRO_INDEX);
+// 		messageout4 |= (message4 & 0b00000111);
+// 		messageout5 &= 0b00000000; //Reset bits
+// 		messageout5 |= (degreesTurned>>2);
+// 		messageout5 |= (message5 & 0b11000111);
+		
+//		messageout5 = gyro;
+		
+
 	}
 }
 
