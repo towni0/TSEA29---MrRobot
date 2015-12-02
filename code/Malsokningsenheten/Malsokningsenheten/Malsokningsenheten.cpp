@@ -15,7 +15,6 @@
 // Function headerss
 void SetPriority(int priority);
 void ClearPriority();
-void BlinkLEDs();
 void WeAreHit();
 void Shoot();
 void Rotate(long milliDegrees, bool leftTurn);
@@ -102,6 +101,9 @@ bool laserActive = false;
 
 bool laserSensorHit = false;
 
+// IR-signature counting
+long enemySignatureCTR = 0;
+long enemySignatureLimit = 100000;
 
 // Used to count up to 3
 int IRCTR = 0;
@@ -113,6 +115,17 @@ int orders[10];
 const float sampleTimeInMS = 5; // the gyro gives us degrees/sec
 const int sampleticks = 90 ;
 double millidegreesTurned = 0;
+
+
+//Test kod för testläge
+bool targetDistanceIsSet = false;
+bool needToRotate = false;
+int minDistance = 5;
+int distanceToTarget = 0;
+bool isPositioning = false;
+
+void positioning();
+
 
 int main(void)
 {
@@ -159,8 +172,8 @@ int main(void)
 	//UDR1 = 0x00;
 	
 	//###first order!###
-	//nextOrder = MOVE_FORWARD;
-	nextOrder = ACTIVATE_LASER;
+	nextOrder = MOVE_FORWARD;
+	//nextOrder = ACTIVATE_LASER;
 	//nextOrder = TURN_OFF_IR_SIG;
 	
 	//WeAreHit();
@@ -258,17 +271,57 @@ int main(void)
 			//## Testläge ##
 			//##############
 			
+			// LASER timer stuff
+			if (LASER_TIMER_COUNTER >= ONE_SECOND) {
+				coolDownCTR++;
+				LASER_TIMER_COUNTER = 0;
+							
+				// Lasers been active for 1 sec, turn it off
+				if (coolDownCTR == 1) {
+					nextOrder = DEACTIVATE_LASER;
+					laserActive = false;
+					foundSomethingToDo = true;
+					continue;
+				}
+				// cooldown is over
+				else if (coolDownCTR == 4) {
+					canShoot = true;
+					StopLaserTimer();
+					coolDownCTR = 0;
+				}
+							
+							
+			}
 			
-			if(laserSensor == 1 && !laserSensorHit){
-				foundSomethingToDo = true;
-				laserSensorHit = true;
-				WeAreHit();
-				continue;
+			
+			if (activeIRsignature) {
+				enemySignatureCTR++;	
+			}
+			
+			else{
+				enemySignatureCTR = 0;
+			}
+			
+			
+			//test för att centrera framför fyr.
+			if (enemySignatureCTR >= enemySignatureLimit && !isPositioning) {
+// 				nextOrder = ACTIVATE_LASER;
+// 				continue;
+				isPositioning = true;
+			}
+			
 
-			}
-			else if (laserSensor == 0 && laserSensorHit) {
-				laserSensorHit = false;
-			}
+			
+// 			if(laserSensor == 1 && !laserSensorHit){
+// 				foundSomethingToDo = true;
+// 				laserSensorHit = true;
+// 				WeAreHit();
+// 				continue;
+// 
+// 			}
+// 			else if (laserSensor == 0 && laserSensorHit) {
+// 				laserSensorHit = false;
+// 			}
 			/*
 			// IR timer stuff
 			if (IR_TIMER_COUNTER >= ONE_SECOND) {
@@ -280,123 +333,101 @@ int main(void)
 					continue;
 				}
 			}
-		
-			// LASER timer stuff
-			if (LASER_TIMER_COUNTER >= ONE_SECOND) {
-				coolDownCTR++;
-				LASER_TIMER_COUNTER = 0;
-				
-				// Lasers been active for 1 sec, turn it off
-				if (coolDownCTR == 1) {
-					nextOrder = DEACTIVATE_LASER;					
-					laserActive = false;
-					foundSomethingToDo = true;
-					continue;
-				}
-				// cooldown is over
-				else if (coolDownCTR == 4) {
-					canShoot = true;
-					StopLaserTimer();				
-				}
-			
-			}
-			
-			*/
+		*/
+
 			
 			
-			// If both line sensor detects tape and we havn't startet rotating, turn around (180 degrees)
-// 			if ((tapeSensor1 == 1 && tapeSensor2 == 1 && !bothTapeSensors)) {
-// 				Rotate(135000, true);
-// 				bothTapeSensors = true;
-// 				millidegreesTurned = 0;
-// 
-// 				
-// 			}
 		
 			// If the Left line sensor detects tape and we havn't startet rotating, turn right
-// 			if((tapeSensor1 == 1) && !rotating){ 
-// 				leftTapeHit = true;
-// 				StartBackwardsTimer();
-// 				nextOrder = MOVE_BACKWARDS;
-// 				continue;
-// 
-// 			}
-// 		
-// 			// If the Right line sensor detects tape and we havn't startet rotating, turn left
-// 			if((tapeSensor2 == 1) && !rotating){
-// 				rightTapeHit = true; 
-// 				StartBackwardsTimer();
-// 				nextOrder = MOVE_BACKWARDS;
-// 				continue;
-// 			}
-// 		
-// 			if (backing) {
-// 				if(BACKWARDS_TIMER_CTR >= timeToReachOneHundredth){
-// 					BACKWARDS_TIMER_CTR = 0;
-// 					backing_ctr++;
-// 					
-// 					if (backing_ctr >= 50) {
-// 						backing = false;
-// 						StopBackwardsTimer();
-// 						
-// 						if (leftTapeHit) {
-// 							leftTapeHit = false;
-// 							Rotate(45000, false);
-// 						}
-// 						else if (rightTapeHit) {
-// 							rightTapeHit = false;
-// 							Rotate(45000, true);
-// 						}
-// 					}
-// 					
-// 				}
-// 			}
-// 			
-// 			// If we are rotating
-// 			if (rotating) {
-// 				if(TCNT2 >= sampleticks){
-// 					//300 is max angular rate from gyro
-// 					//calculate how much we rotate per sample in millidegrees/second and add it total total millidegreesturned
-// 					float degreesPerPart = 300/128;
-// 					int parts = Abs(gyro - ANGULAR_RATE_IDLE);
-// 					float angularVelocity = parts*degreesPerPart;
-// 					millidegreesTurned += angularVelocity*sampleTimeInMS;
-// 					
-// 
-// 					if (millidegreesTurned >= targetRotation) {
-// 						rotating = false;
-// 						nextOrder = MOVE_FORWARD;
-// 						
-// 						millidegreesTurned = 0;
-// 						//reset case of 2 tapesensors
-// 						bothTapeSensors = false;
-// 						//stop counter
-// 						TCCR2B &= ~((1 << CS20) | (1 << CS21) | (1 << CS22));
-// 						
-// 						// If we reached the end of the first turn, turn to the opposite way
-// 						/*
-// 						if (laserActive ) {
-// 							Rotate(SHOOT_SWEEP_DEGREES, true);
-// 						}
-// 						*/
-// 					}
-// 					//Send how many degrees we have rotated over uart
-// 					
-// // 					uint8_t degreesTurned = millidegreesTurned/1000;
-// // 					messageout4 &= 0b00000000; //Reset bits
-// // 					messageout4 |= (degreesTurned<<LOWERBITSGYRO_INDEX);
-// // 					messageout4 |= (message4 & 0b00000111);
-// // 					messageout5 &= 0b00000000; //Reset bits
-// // 					messageout5 |= (degreesTurned>>2);
-// // 					messageout5 |= (message5 & 0b11000111);
-// 					
-// 					//messageout5 = gyro;
-// 					
-// 					//reset counter
-// 					TCNT2 = 0;
-// 				}
-// 				continue;
-// 			}
+			if((tapeSensor1 == 1) && !rotating){ 
+				leftTapeHit = true;
+				StartBackwardsTimer();
+				nextOrder = MOVE_BACKWARDS;
+				continue;
+
+			}
+		
+			// If the Right line sensor detects tape and we havn't startet rotating, turn left
+			if((tapeSensor2 == 1) && !rotating){
+				rightTapeHit = true; 
+				StartBackwardsTimer();
+				nextOrder = MOVE_BACKWARDS;
+				continue;
+			}
+		
+			if (backing) {
+				if(BACKWARDS_TIMER_CTR >= timeToReachOneHundredth){
+					BACKWARDS_TIMER_CTR = 0;
+					backing_ctr++;
+					
+					if (backing_ctr >= 50) {
+						backing = false;
+						StopBackwardsTimer();
+						
+						if (leftTapeHit) {
+							leftTapeHit = false;
+							Rotate(45000, false);
+						}
+						else if (rightTapeHit) {
+							rightTapeHit = false;
+							Rotate(45000, true);
+						}
+					}
+					
+				}
+			}
+			
+			// If we are rotating
+			if (rotating) {
+				if(TCNT2 >= sampleticks){
+					//300 is max angular rate from gyro
+					//calculate how much we rotate per sample in millidegrees/second and add it total total millidegreesturned
+					float degreesPerPart = 300/128;
+					int parts = Abs(gyro - ANGULAR_RATE_IDLE);
+					float angularVelocity = parts*degreesPerPart;
+					millidegreesTurned += angularVelocity*sampleTimeInMS;
+					
+
+					if (millidegreesTurned >= targetRotation) {
+						rotating = false;
+						nextOrder = MOVE_FORWARD;
+						
+						millidegreesTurned = 0;
+						//reset case of 2 tapesensors
+						bothTapeSensors = false;
+						//stop counter
+						TCCR2B &= ~((1 << CS20) | (1 << CS21) | (1 << CS22));
+						
+						// If we reached the end of the first turn, turn to the opposite way
+						/*
+						if (laserActive ) {
+							Rotate(SHOOT_SWEEP_DEGREES, true);
+						}
+						*/
+					}
+					//Send how many degrees we have rotated over uart
+					
+// 					uint8_t degreesTurned = millidegreesTurned/1000;
+// 					messageout4 &= 0b00000000; //Reset bits
+// 					messageout4 |= (degreesTurned<<LOWERBITSGYRO_INDEX);
+// 					messageout4 |= (message4 & 0b00000111);
+// 					messageout5 &= 0b00000000; //Reset bits
+// 					messageout5 |= (degreesTurned>>2);
+// 					messageout5 |= (message5 & 0b11000111);
+					
+					//messageout5 = gyro;
+					
+					//reset counter
+					TCNT2 = 0;
+				}
+				continue;
+			}
+			
+			if (isPositioning) {
+				positioning();
+				continue;
+			}
+			
  		/*
 		 	// If we are scaning for opponents and we find something within 1,5 meters, stop move, 
 			if (scaning && rotating) {
@@ -437,13 +468,13 @@ int main(void)
 		*/
 			
 			
-			
 		}
-	
-
-
 
     }
+	
+	//#############################
+	//#### DEATH CODE #############
+	//#############################
 	
 	// Reset the laser timers count variable and start the laser timer (used to get a blinking LEDs)
 	StartLaserTimer();
@@ -668,13 +699,13 @@ void WeAreHit() {
 void Shoot() {
 	laserActive = true;
 	canShoot = false;
-	rotating = true;
-	targetRotation = SHOOT_SWEEP_DEGREES / 2;
+// 	rotating = true;
+// 	targetRotation = SHOOT_SWEEP_DEGREES / 2;
 	
 	//start timer
-	TCCR2B |= (1 << CS20) | (1 << CS21) | (1 << CS22);
+	///TCCR2B |= (1 << CS20) | (1 << CS21) | (1 << CS22);
 	
-	nextOrder = ACTIVATE_LASER_AND_TURN_RIGHT;
+	nextOrder = ACTIVATE_LASER;
 	StartLaserTimer();
 	
 }
@@ -720,8 +751,43 @@ void StopIRTimer() {
 }
 
 
-void BlinkLEDs() {
+void positioning() {
+	if (!targetDistanceIsSet) {
+		//check if something is inside the cone.
+		if (!needToRotate && (ultraSonicSensor1 <= minDistance)) {
+			//save the distance to your enemy
+			distanceToTarget = ultraSonicSensor1;
+			targetDistanceIsSet = true;
+		}
+		else {
+			//Rotate untill you can find something inside the cone.
+			needToRotate = true;
+			//rotera
+			Rotate(180000, true);
+			
+			//Stop rotating when you can see something inside the cone.
+			if (ultraSonicSensor1 <= minDistance) {
+				//Start turning right
+				Rotate(180000, false);
+				distanceToTarget = ultraSonicSensor1;
+				
+				targetDistanceIsSet = true;
+			}
+		}
+	}
+	else {
+		//when distance is greater then target distance, rotate half a cone to the opposite direction.
+		if (ultraSonicSensor1 > distanceToTarget && !rotating) {
+			Rotate(22500, true);
+		}
+		
+		//Rotating is complete. SHOOT.
+		if (!rotating && canShoot) {
+			Shoot();
+			isPositioning = false;
+			targetDistanceIsSet = false;
+			needToRotate = false;
+		}
+	}
 	
 }
-
-

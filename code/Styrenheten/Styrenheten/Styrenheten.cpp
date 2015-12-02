@@ -58,6 +58,7 @@ bool IRisActivive = true;
 
 uint8_t currentOrder = 0;
 
+
 //initial values are set to their IDs from design spec. (these bits are never changed)
 uint8_t message1 = 0;
 uint8_t message2 = 1;
@@ -73,11 +74,12 @@ int main(void){
 
 	//Grace time for bluetooth timer prescale /1024
 	TCCR2B |= (1<<CS20) | (1<<CS22);
-	//enable global interrupts
-	sei();
 	
 	// Call all Init functions in this module
 	Init();
+	
+	//enable global interrupts
+	sei();
 	
 	waitForActivation();
 	//StopMove(); //temp
@@ -87,10 +89,7 @@ int main(void){
     while(1)
     {
 
-		//Do command
-		cli();
-		uint8_t snapshotOrder = currentOrder;
-		sei();
+		
 		
 		//Send UART to bluetooth without DC
  		if(TCNT2 >= UART_BLUETOOTH_GRACE_PERIOD){
@@ -99,6 +98,10 @@ int main(void){
  			TCNT2 = 0;	
  		}
 
+		//Do command
+		cli();
+		uint8_t snapshotOrder = currentOrder;
+		sei();
 		
 		//Reset order so that its not executed more than once
 		currentOrder = DO_NOTHING;

@@ -13,7 +13,7 @@
 #define TAPESENSOR2 2
 
 //initial values are set to their IDs from design spec. (these bits are never changed)
-uint8_t message1 = 0;
+uint8_t message1 = 0b00110000;
 uint8_t message2 = 1;
 uint8_t message3 = 2;
 uint8_t message4 = 3;
