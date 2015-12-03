@@ -6,6 +6,7 @@
  */ 
 
 #include "../../Robotdefinitions.h"
+#include "../../queue.h"
 
 // Function headers
 void InitModule();
@@ -78,6 +79,7 @@ int main(void){
 	// Call all Init functions in this module
 	Init();
 	
+	queue_init(&orderQueue);
 	//enable global interrupts
 	sei();
 	
@@ -414,6 +416,7 @@ ISR(USART0_RX_vect){
 	//only look at ORDERS
 	if(messageID == ORDER_ID){
 		currentOrder = (snapbuffer>>3) & 0b00011111; //Mask out the order
+		enqueue(snapbuffer, &orderQueue);
 	}
 }
 
@@ -441,9 +444,13 @@ void SendUART() {
 			UDR1 = message5;
 			break;
 			case 6:
+				//cli();
+				UDR1 = orderQueue.front->orderdata;
+				dequeue(&orderQueue);
+				//sei();
 				if(currentOrder != DO_NOTHING){ //Only send order if something is to be done
-					message6 &= 0b00000111; //reset everything except message ID
-					UDR1 = (currentOrder<<3) | message6;
+// 					message6 &= 0b00000111; //reset everything except message ID
+// 					UDR1 = (currentOrder<<3) | message6;
 					//nextOrder = 0;
 				}
 			break;

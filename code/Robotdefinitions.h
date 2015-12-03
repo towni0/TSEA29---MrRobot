@@ -5,7 +5,7 @@
 #include <avr/interrupt.h>
 #include <util/delay.h>
 
-#define UART_BLUETOOTH_GRACE_PERIOD 40
+#define UART_BLUETOOTH_GRACE_PERIOD 45
 
 #define MESSAGEID_INDEX 0
 
