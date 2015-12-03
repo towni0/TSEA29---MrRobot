@@ -605,11 +605,7 @@ void StopRotate(int orderToPerformOnStop) {
 	nextOrder = orderToPerformOnStop;
 }
 
-<<<<<<< HEAD
 bool UpdateRotation() {
-=======
-void UpdateRotation() {
->>>>>>> origin/master
 		if(TCNT2 >= sampleticks){
 		//reset counter
 		TCNT2 = 0;
@@ -622,7 +618,6 @@ void UpdateRotation() {
 		millidegreesTurned += angularVelocity*sampleTimeInMS;
 		
 		if (millidegreesTurned >= targetRotation) {
-<<<<<<< HEAD
 			if(laserActive){
 				Rotate(SHOOT_SWEEP_DEGREES, true);
 				laserActive = false;
@@ -631,9 +626,6 @@ void UpdateRotation() {
 				StopRotate(MOVE_FORWARD);
 			}
 			return true;
-=======
-			StopRotate(MOVE_FORWARD);
->>>>>>> origin/master
 		}
 		//Send how many degrees we have rotated over uart
 		
@@ -646,14 +638,8 @@ void UpdateRotation() {
 // 		messageout5 |= (message5 & 0b11000111);
 		
 //		messageout5 = gyro;
-<<<<<<< HEAD
 	}
 	return false;
-=======
-		
-
-	}
->>>>>>> origin/master
 }
 
 void Scan() {
