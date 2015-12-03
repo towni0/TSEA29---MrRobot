@@ -75,7 +75,7 @@ const uint8_t TAPE_ERROR_MARGIN = 200;
 #define LASER_LED_PIN PINB4
 #define LED_PORT PORTB
 
-#define SHOOT_SWEEP_DEGREES 46
+#define SHOOT_SWEEP_DEGREES 45000
 
 //Orders
 #define DO_NOTHING 						0
