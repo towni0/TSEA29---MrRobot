@@ -180,10 +180,10 @@ int main(void)
 	//UDR1 = 0x00;
 	
 	//###first order!###
-	nextOrder = MOVE_FORWARD;
+	//nextOrder = MOVE_FORWARD;
 	//nextOrder = ACTIVATE_LASER;
 	//nextOrder = TURN_OFF_IR_SIG;
-	//Shoot();
+	Shoot();
 	
 	//WeAreHit();
 	//health = 1;
@@ -379,7 +379,7 @@ int main(void)
 						}
 						else if (rightTapeHit) {
 							rightTapeHit = false;
-							Rotate(45000, true);
+							Rotate(60000, true);
 						}
 					}
 					
@@ -392,7 +392,7 @@ int main(void)
 					continue;
 			}
 			
-			if (isPositioning) {
+			if (isPositioning && canShoot) {
 				positioning();
 				continue;
 			}
@@ -619,7 +619,7 @@ bool UpdateRotation() {
 		
 		if (millidegreesTurned >= targetRotation) {
 			if(laserActive){
-				Rotate(SHOOT_SWEEP_DEGREES, true);
+				Rotate(SHOOT_SWEEP_DEGREES * 1.3, true);
 				laserActive = false;
 			}
 			else{
@@ -785,6 +785,7 @@ void positioning() {
 			
 			targetDistanceIsSet = true;
 			Rotate(90000, true);
+			checkLeft = true;
 		}
 		else {
 			needToRotate = true;
