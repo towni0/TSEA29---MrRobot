@@ -36,6 +36,7 @@ bool UpdateRotation();
 
 
 
+
 //initial values are set to their IDs from design spec. (these bits are never changed)
 uint8_t message1 = 0;
 uint8_t message2 = 1;
@@ -604,7 +605,11 @@ void StopRotate(int orderToPerformOnStop) {
 	nextOrder = orderToPerformOnStop;
 }
 
+<<<<<<< HEAD
 bool UpdateRotation() {
+=======
+void UpdateRotation() {
+>>>>>>> origin/master
 		if(TCNT2 >= sampleticks){
 		//reset counter
 		TCNT2 = 0;
@@ -617,6 +622,7 @@ bool UpdateRotation() {
 		millidegreesTurned += angularVelocity*sampleTimeInMS;
 		
 		if (millidegreesTurned >= targetRotation) {
+<<<<<<< HEAD
 			if(laserActive){
 				Rotate(SHOOT_SWEEP_DEGREES, true);
 				laserActive = false;
@@ -625,6 +631,9 @@ bool UpdateRotation() {
 				StopRotate(MOVE_FORWARD);
 			}
 			return true;
+=======
+			StopRotate(MOVE_FORWARD);
+>>>>>>> origin/master
 		}
 		//Send how many degrees we have rotated over uart
 		
@@ -637,8 +646,14 @@ bool UpdateRotation() {
 // 		messageout5 |= (message5 & 0b11000111);
 		
 //		messageout5 = gyro;
+<<<<<<< HEAD
 	}
 	return false;
+=======
+		
+
+	}
+>>>>>>> origin/master
 }
 
 void Scan() {
