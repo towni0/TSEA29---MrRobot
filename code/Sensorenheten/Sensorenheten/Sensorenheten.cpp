@@ -84,7 +84,7 @@ uint8_t secsSinceLaserHit = 0;
 
 int main(void)
 {
-	//init µcontroller
+	//init Âµcontroller
 	
 	/*
 	PIN0: Ultrasonic 1		(in)
@@ -126,7 +126,7 @@ int main(void)
 	//## UART INITS ##
 	//################
 	
-	//initiate UART målsökning
+	//initiate UART mÃ¥lsÃ¶kning
 	//set baud rate
 	uint16_t UBRR_val = UBRR_SENSOR_MALSOKNING;
 	UBRR0H = (unsigned char) (UBRR_val >> 8);
@@ -564,22 +564,22 @@ void waitForActivationSensor(){
 Meddelande 1:
 Bit 0-2:	Meddelande ID (000)
 Bit 3-5:	IR-signaturen
-Bit 6:      Laser (1 för träff)
-Bit 7:		Aktiv IR-signatur (robot framför oss)
+Bit 6:      Laser (1 fÃ¶r trÃ¤ff)
+Bit 7:		Aktiv IR-signatur (robot framfÃ¶r oss)
 Meddelande 2:
 Bit 0-2:	Meddelande ID (001)
-Bit 3-7:	Främre avståndssensorn (ca 1 dm precision)
+Bit 3-7:	FrÃ¤mre avstÃ¥ndssensorn (ca 1 dm precision)
 Meddelande 3:
 Bit 0-2:	Meddelande ID (010)
-Bit 3-7:	Bakre avståndssensorn (ca 1 dm precision)
+Bit 3-7:	Bakre avstÃ¥ndssensorn (ca 1 dm precision)
 Meddelande 4:
 Bit 0-2:	Meddelande ID (011)
 Bit 3-7:	5 LSB Gyro (grader rotatation)
 Meddelande 5:
 Bit 0-2:	Meddelande ID (100)
 Bit 3-5:	3 MSB Gyro (grader rotatation)
-Bit 6:		Tejpsensor 1 (vänster, 1 för tejp)
-Bit 7:		Tejpsensor 2 (höger, 1 för tejp)
+Bit 6:		Tejpsensor 1 (vÃ¤nster, 1 fÃ¶r tejp)
+Bit 7:		Tejpsensor 2 (hÃ¶ger, 1 fÃ¶r tejp)
 Meddelande 6:
 Bit 0-2:	Meddelande ID (101)(ORDER)
 Bit 3-7		ORDERID

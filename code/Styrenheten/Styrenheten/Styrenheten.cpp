@@ -236,7 +236,7 @@ void InitUART() {
 
 	//#UART INITS#//
 
-	//initiate UART målsökning to styr
+	//initiate UART mÃ¥lsÃ¶kning to styr
 	//set baud rate
 	//115200
 	uint16_t UBRR_val = UBRR_STYR_MALSOKNING;
@@ -252,7 +252,7 @@ void InitUART() {
 	
 	
 	//FROM STYR TO BLUETOOTH
-	//initiate UART målsökning to styr
+	//initiate UART mÃ¥lsÃ¶kning to styr
 	//set baud rate
 	//115200
 	uint16_t UBRR_val1 = UBRR_STYR_MALSOKNING;
