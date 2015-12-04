@@ -35,7 +35,7 @@ void SendUART();
 #define PAUSE 6
 #define HEADER 24
 #define HIGH 12
-#define ENDPAUSE 24
+#define ENDPAUSE 98
 
 // VARIABLES
 int IRdutyCycle = 240;

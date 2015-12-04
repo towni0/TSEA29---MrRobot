@@ -10,6 +10,7 @@
 #include <avr/io.h>
 #include <avr/interrupt.h>
 #include <util/delay.h>
+#include <stdlib.h>
 
 
 // Function headerss
@@ -108,7 +109,7 @@ bool laserSensorHit = false;
 
 // IR-signature counting
 long enemySignatureCTR = 0;
-long enemySignatureLimit = 200000;
+long enemySignatureLimit = 100000;
 
 // Used to count up to 3
 int IRCTR = 0;
@@ -125,7 +126,7 @@ double millidegreesTurned = 0;
 //Test kod för testläge
 bool targetDistanceIsSet = false;
 bool needToRotate = false;
-int maxDistance = 7;
+int maxDistance = 10;
 int distanceToTarget = 0;
 bool isPositioning = false;
 bool checkLeft = false;
@@ -388,18 +389,27 @@ int main(void)
 							
 			}
 			
-			
+			// IR Signature debouncing
 			if (activeIRsignature) {
-				enemySignatureCTR++;	
+				
+				if (!(enemySignatureCTR >= enemySignatureLimit * 2)) {
+					//enemySignatureCTR++;
+					enemySignatureCTR += (rotating ? 3 : 1);
+				}
 			}
 			
 			else{
-				enemySignatureCTR = 0;
+				//enemySignatureCTR -= 5;
+				enemySignatureCTR -= (rotating ? 15 : 5);
+				
+				if (enemySignatureCTR < 0){
+					enemySignatureCTR = 0;
+				}
 			}
 			
 			
 			//test för att centrera framför fyr.
-			if (enemySignatureCTR >= enemySignatureLimit && !isPositioning) {
+			if (enemySignatureCTR >= enemySignatureLimit && !isPositioning  && canShoot) {
 // 				nextOrder = ACTIVATE_LASER;
 // 				continue;
 				isPositioning = true;
@@ -433,8 +443,8 @@ int main(void)
 			
 			
 		
-			// If the Left line sensor detects tape and we havn't startet rotating, turn right
-			if((tapeSensor1 == 1) && !rotating && !backing){ 
+			// If the Left line sensor detects tape and we haven't started rotating, turn right
+			if((tapeSensor1 == 1) && !backing){ 
 				leftTapeHit = true;
 				StartBackwardsTimer();
 				nextOrder = MOVE_BACKWARDS;
@@ -443,7 +453,7 @@ int main(void)
 			}
 		
 			// If the Right line sensor detects tape and we havn't startet rotating, turn left
-			if((tapeSensor2 == 1) && !rotating && !backing){
+			if((tapeSensor2 == 1) && !backing){
 				rightTapeHit = true; 
 				StartBackwardsTimer();
 				nextOrder = MOVE_BACKWARDS;
@@ -461,11 +471,11 @@ int main(void)
 						
 						if (leftTapeHit) {
 							leftTapeHit = false;
-							Rotate(45000, false);
+							Rotate(45000 + (-30000 + (rand()%60)*1000), false);
 						}
 						else if (rightTapeHit) {
 							rightTapeHit = false;
-							Rotate(60000, true);
+							Rotate(60000 + (-30000 + (rand()%60)*1000), true);
 						}
 					}
 					
@@ -474,11 +484,12 @@ int main(void)
 			
 			// If we are rotating
 			if (rotating) {
-				if (UpdateRotation())
+				if (UpdateRotation()){
 					continue;
+				}
 			}
 			
-			if (isPositioning && canShoot) {
+			if (isPositioning) {
 				positioning();
 				continue;
 			}
@@ -692,7 +703,7 @@ void StopRotate(int orderToPerformOnStop) {
 }
 
 bool UpdateRotation() {
-		if(TCNT2 >= sampleticks){
+	if(TCNT2 >= sampleticks){
 		//reset counter
 		TCNT2 = 0;
 		
@@ -705,6 +716,7 @@ bool UpdateRotation() {
 		
 		if (millidegreesTurned >= targetRotation) {
 			if(laserActive){
+				millidegreesTurned = 0;
 				Rotate(SHOOT_SWEEP_DEGREES * 1.3, true);
 				laserActive = false;
 			}
@@ -712,6 +724,11 @@ bool UpdateRotation() {
 				StopRotate(MOVE_FORWARD);
 				isMovingForward = true;		// tävlingsläge
 			}
+			
+			// used to only rotate 360 when searching.
+			isPositioning = false;
+			enemySignatureCTR = 0;
+			
 			return true;
 		}
 		//Send how many degrees we have rotated over uart
@@ -788,6 +805,7 @@ void Shoot() {
 	laserActive = true;
 	canShoot = false;
  	rotating = true;
+	millidegreesTurned = 0;
  	targetRotation = (SHOOT_SWEEP_DEGREES / 2) - calculateGyroOffset(SHOOT_SWEEP_DEGREES / 2);
 	
 	//start timer
@@ -864,6 +882,18 @@ void StopIRTimer() {
 
 
 void positioning() {
+	if (ultraSonicSensor1 <= maxDistance && enemySignatureCTR >= enemySignatureLimit) {
+		Shoot();
+		isPositioning = false;
+		enemySignatureCTR = 0;
+	}
+	else {
+		if (!rotating) {
+			Rotate(360000, true);
+		}
+	}
+	
+	/*
 	if (!targetDistanceIsSet) {
 		//check if something is inside the cone.
 		if (!needToRotate && (ultraSonicSensor1 <= maxDistance)) {
@@ -871,7 +901,9 @@ void positioning() {
 			distanceToTarget = ultraSonicSensor1;
 			
 			targetDistanceIsSet = true;
-			Rotate(45000, true);
+			//Rotate(45000, true);
+			Shoot();
+			
 			checkLeft = false;
 		}
 		else {
@@ -933,4 +965,5 @@ void positioning() {
 		}
 	
 	}
+	*/
 }

@@ -70,6 +70,7 @@ uint8_t distancecm1 = 0; //Ultrasonic sensor 1 distance [cm]
 // Variables
 uint8_t distance1 = 0; //Ultrasonic sensor 1 distance [dm]
 uint8_t distance2 = 0; //Ultrasonic sensor 2 distance [dm]
+uint8_t previousdistance = 0;
 
 bool triggerStarted = false;
 bool triggerSend = false;
@@ -336,6 +337,10 @@ void CalculateTime1() {
 		else{
 			distance1 = distancecm1/10;
 		}
+// 		//quick fix to filter out wrong 4 values
+// 		if(distance2 == 4){
+// 			return;
+// 		}
 		message2 &= ~(0b11111<<3); //Reset distance bits
 		message2 |= (distance1<<3); //Set UART message with new distance
 		
@@ -368,6 +373,7 @@ void CalculateTime2() {
 		else{
 			distance2 = distancecm1/10;
 		}
+		
 		message3 &= ~(0b11111<<3); //Reset distance bits
 		message3 |= (distance2<<3); //Set UART msg with new distance
 		
@@ -388,7 +394,7 @@ float calculateDistance() {
 	int uTime = timer * MICRO_SEC_PER_TICK;
 	//float seconds = uTime / 100;
 	float centiMeters = uTime/58;
-	if (centiMeters > 300) return 0;
+	if (centiMeters > 240) return 240;
 	return centiMeters;
 }
 

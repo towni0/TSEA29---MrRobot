@@ -16,10 +16,10 @@
 #define TICKS_TO_WAIT_FOR_ACTIVATE_LASER 1000
 
 //left 800
-uint16_t tape1Threshold = 650; //Limit that determines what's tape and what's not
+uint16_t tape1Threshold = 750; //Limit that determines what's tape and what's not
 uint16_t tape1CurrentValue = 0;
 //right 500
-uint16_t tape2Threshold = 400; //Limit that determines what's tape and what's not
+uint16_t tape2Threshold = 600; //Limit that determines what's tape and what's not
 uint16_t tape2CurrentValue = 0;
 
 const uint8_t TAPE_ERROR_MARGIN = 200;
@@ -75,7 +75,7 @@ const uint8_t TAPE_ERROR_MARGIN = 200;
 #define LASER_LED_PIN PINB4
 #define LED_PORT PORTB
 
-#define SHOOT_SWEEP_DEGREES 60000
+#define SHOOT_SWEEP_DEGREES 50000
 
 //Orders
 #define DO_NOTHING 						0
@@ -95,9 +95,9 @@ const uint8_t TAPE_ERROR_MARGIN = 200;
 
 #define RESET_SE						20
 										
-#define MOVEMENT_SPEED					1175
+#define MOVEMENT_SPEED					2000
 //1175
-#define ROTATION_SPEED					2350
+#define ROTATION_SPEED					1800
 
 
 //## Målsökning definitions ##
