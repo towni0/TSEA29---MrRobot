@@ -19,7 +19,7 @@ void ClearPriority();
 void WeAreHit();
 void Shoot();
 void Rotate(long milliDegrees, bool leftTurn);
-int calculateGyroOffset(long milliDegrees);
+long calculateGyroOffset(long milliDegrees);
 void StopIRTimer();
 void StartIRTimer();
 void StartLaserTimer();
@@ -193,6 +193,7 @@ int main(void)
 	//nextOrder = ACTIVATE_LASER;
 	//nextOrder = TURN_OFF_IR_SIG;
 	//Shoot();
+	//Rotate(90000,true);
 	
 	//WeAreHit();
 	//health = 1;
@@ -717,7 +718,7 @@ bool UpdateRotation() {
 		if (millidegreesTurned >= targetRotation) {
 			if(laserActive){
 				millidegreesTurned = 0;
-				Rotate(SHOOT_SWEEP_DEGREES * 1.3, true);
+				Rotate(SHOOT_SWEEP_DEGREES, true);
 				laserActive = false;
 			}
 			else{
@@ -816,7 +817,7 @@ void Shoot() {
 	
 }
 
-int calculateGyroOffset(long milliDegrees){
+long calculateGyroOffset(long milliDegrees){
 	long degreeOffset;
 	switch(milliDegrees){
 		case 22500:
@@ -833,6 +834,9 @@ int calculateGyroOffset(long milliDegrees){
 		break;
 		case 180000:
 		degreeOffset = OFFSET_ROTATE_180;
+		break;
+		case 360000:
+		degreeOffset = OFFSET_ROTATE_360;
 		break;
 		default:
 		degreeOffset = (milliDegrees*333.333)/1000 + 2500;
