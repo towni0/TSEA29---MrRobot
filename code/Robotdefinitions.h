@@ -76,6 +76,7 @@ const uint8_t TAPE_ERROR_MARGIN = 200;
 #define LED_PORT PORTB
 
 #define SHOOT_SWEEP_DEGREES 50000
+#define COLLISION_DISTANCE 2
 
 //Orders
 #define DO_NOTHING 						0

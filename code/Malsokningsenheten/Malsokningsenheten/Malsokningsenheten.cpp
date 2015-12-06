@@ -89,6 +89,16 @@ bool scaning = false;
 bool movingForward = false;
 bool bothTapeSensors = false;
 
+
+//Main loop functions
+void IRDebouncer();
+bool checkForTape();
+bool checkBacking();
+bool checkLaserSensor();
+bool checkLaserCooldown();
+bool invisibilityHandler();
+bool collisionCheck();
+
 // Rotation stuff
 bool rotating = false;
 int currentRotationValue;
@@ -114,7 +124,6 @@ long enemySignatureLimit = 100000;
 // Used to count up to 3
 int IRCTR = 0;
 int	currentPriority = -1;
-bool foundSomethingToDo = false;
 int orders[10];
 
 //gyro
@@ -193,7 +202,7 @@ int main(void)
 	//nextOrder = ACTIVATE_LASER;
 	//nextOrder = TURN_OFF_IR_SIG;
 	//Shoot();
-	//Rotate(90000,true);
+	//Rotate(360000,true);
 	
 	//WeAreHit();
 	//health = 1;
@@ -244,123 +253,26 @@ int main(void)
 		SendUART();
 		
 		if((PINB>>PINB2) == 0){
-			//Tävling
-			
-			
-			// Used for debouncing the IR signatures
-			if (activeIRsignature) {
-				enemySignatureCTR++;
-			}
-			
-			else{
-				enemySignatureCTR = 0;
-			}
-			
-			// Used to see if we have confirmed a IR signature
-			if (enemySignatureCTR >= enemySignatureLimit && !signatureConfirmed) {
-				signatureConfirmed = true;
-			}
-			else {
-				signatureConfirmed = false;
-			}
-			
-			// LASER timer stuff
-			if (LASER_TIMER_COUNTER >= ONE_SECOND) {
-				coolDownCTR++;
-				LASER_TIMER_COUNTER = 0;
-				
-				// Lasers been active for 1 sec, turn it off
-				if (coolDownCTR == 1) {
-					nextOrder = DEACTIVATE_LASER;
-					laserActive = false;
-					foundSomethingToDo = true;
-					continue;
-				}
-				// cooldown is over
-				else if (coolDownCTR == 4) {
-					canShoot = true;
-					StopLaserTimer();
-				}
-				
-			}
+			// #############
+			// ## Tävling ##
+			// #############
 
-			//IR timer stuff
-			if (IR_TIMER_COUNTER >= ONE_SECOND) {
-				IR_TIMER_COUNTER = 0;
-				IRCTR++;
-				if (IRCTR >= 5) {
-					StopIRTimer();
-					nextOrder = TURN_ON_IR_SIG;
-					continue;
-				}
-			}
-			
-			
-			// If the Left line sensor detects tape and we havn't startet rotating, turn right
-			if((tapeSensor1 == 1) && !rotating && !backing){
-				leftTapeHit = true;
-				StartBackwardsTimer();
-				nextOrder = MOVE_BACKWARDS;
-				continue;
+			IRDebouncer();			
 
-			}
+			if(checkForTape() || checkBacking() || checkLaserSensor() || checkLaserCooldown() || invisibilityHandler() || collisionCheck()) continue;
 			
-			// If the Right line sensor detects tape and we havn't startet rotating, turn left
-			if((tapeSensor2 == 1) && !rotating && !backing){
-				rightTapeHit = true;
-				StartBackwardsTimer();
-				nextOrder = MOVE_BACKWARDS;
-				continue;
-			}
 			
-			// Backing stuff
-			if (backing) {
-				if(BACKWARDS_TIMER_CTR >= timeToReachOneHundredth){
-					BACKWARDS_TIMER_CTR = 0;
-					backing_ctr++;
-					
-					if (backing_ctr >= 50) {
-						backing = false;
-						StopBackwardsTimer();
-						
-						if (leftTapeHit) {
-							leftTapeHit = false;
-							Rotate(45000, false);
-						}
-						else if (rightTapeHit) {
-							rightTapeHit = false;
-							Rotate(60000, true);
-						}
-					}
-					
-				}
-			}
-			
-			// Used to see if we are moving forward and to trigger a rotation after a specified amount of ticks have passed
-			if (isMovingForward) {
-				forwardTickCTR++;
-				
-				// If we have Moved Forward enought, start rotate
-				if (forwardTickCTR >= forwardMaxTimeInTicks) {
-					forwardTickCTR = 0;
-					isMovingForward = false;
-					Rotate(360000, true);
-					continue;
-				}
-				
-			}
-			
-			// Used to see if we are rotating and updates rotation data and checks for opponents
+			// If we are rotating
 			if (rotating) {
-				UpdateRotation();
-				if (ultraSonicSensor1 <= 12 && signatureConfirmed) {
-					Shoot();
+				if (UpdateRotation()){
+					continue;
 				}
 			}
 			
-			
-		
-		
+			if (isPositioning) {
+				positioning();
+				continue;
+			}
 
 		}
 		else{
@@ -368,120 +280,10 @@ int main(void)
 			//## Testläge ##
 			//##############
 			
-			// LASER timer stuff
-			if (LASER_TIMER_COUNTER >= ONE_SECOND) {
-				coolDownCTR++;
-				LASER_TIMER_COUNTER = 0;
-							
-				// Lasers been active for 1 sec, turn it off
-				if (coolDownCTR == 1) {
-					nextOrder = DEACTIVATE_LASER;
-					laserActive = false;
-					foundSomethingToDo = true;
-					continue;
-				}
-				// cooldown is over
-				else if (coolDownCTR == 4) {
-					canShoot = true;
-					StopLaserTimer();
-					coolDownCTR = 0;
-				}
-							
-							
-			}
-			
-			// IR Signature debouncing
-			if (activeIRsignature) {
-				
-				if (!(enemySignatureCTR >= enemySignatureLimit * 2)) {
-					//enemySignatureCTR++;
-					enemySignatureCTR += (rotating ? 3 : 1);
-				}
-			}
-			
-			else{
-				//enemySignatureCTR -= 5;
-				enemySignatureCTR -= (rotating ? 15 : 5);
-				
-				if (enemySignatureCTR < 0){
-					enemySignatureCTR = 0;
-				}
-			}
-			
-			
-			//test för att centrera framför fyr.
-			if (enemySignatureCTR >= enemySignatureLimit && !isPositioning  && canShoot) {
-// 				nextOrder = ACTIVATE_LASER;
-// 				continue;
-				isPositioning = true;
-			}
-			
 
-			
-// 			if(laserSensor == 1 && !laserSensorHit){
-// 				foundSomethingToDo = true;
-// 				laserSensorHit = true;
-// 				WeAreHit();
-// 				continue;
-// 
-// 			}
-// 			else if (laserSensor == 0 && laserSensorHit) {
-// 				laserSensorHit = false;
-// 			}
-			/*
-			// IR timer stuff
-			if (IR_TIMER_COUNTER >= ONE_SECOND) {
-				IRCTR++;
-				if (IRCTR >= 5) {
-					StopIRTimer();
-					nextOrder = TURN_ON_IR_SIG;
-					foundSomethingToDo = true;
-					continue;
-				}
-			}
-		*/
+			IRDebouncer();
 
-			
-			
-		
-			// If the Left line sensor detects tape and we haven't started rotating, turn right
-			if((tapeSensor1 == 1) && !backing){ 
-				leftTapeHit = true;
-				StartBackwardsTimer();
-				nextOrder = MOVE_BACKWARDS;
-				continue;
-
-			}
-		
-			// If the Right line sensor detects tape and we havn't startet rotating, turn left
-			if((tapeSensor2 == 1) && !backing){
-				rightTapeHit = true; 
-				StartBackwardsTimer();
-				nextOrder = MOVE_BACKWARDS;
-				continue;
-			}
-		
-			if (backing) {
-				if(BACKWARDS_TIMER_CTR >= timeToReachOneHundredth){
-					BACKWARDS_TIMER_CTR = 0;
-					backing_ctr++;
-					
-					if (backing_ctr >= 50) {
-						backing = false;
-						StopBackwardsTimer();
-						
-						if (leftTapeHit) {
-							leftTapeHit = false;
-							Rotate(45000 + (-30000 + (rand()%60)*1000), false);
-						}
-						else if (rightTapeHit) {
-							rightTapeHit = false;
-							Rotate(60000 + (-30000 + (rand()%60)*1000), true);
-						}
-					}
-					
-				}
-			}
+			if(checkForTape() || checkBacking() || checkLaserCooldown()) continue;
 			
 			// If we are rotating
 			if (rotating) {
@@ -495,46 +297,6 @@ int main(void)
 				continue;
 			}
 			
- 		/*
-		 	// If we are scaning for opponents and we find something within 1,5 meters, stop move, 
-			if (scaning && rotating) {
-				if (ultraSonicSensor1 <= 10) {
-					rotating = false;
-					scaning = false;
-					foundSomethingToDo = true;
-					nextOrder = STOP_MOVING;
-					continue;
-				}
-			}
-		
-			// If something is in front of the robot and the IR-signature is active
-			if (ultraSonicSensor1 <= 10 && activeIRsignature) {
-				if (canShoot) {
-					foundSomethingToDo = true;
-					Shoot();
-					continue;
-				}
-			
-			}
-			
-			if (laserActive) {
-				
-			}
-		
-			// If the IR-sensor sees an enemy signature ONLY
-			if(activeIRsignature == 1 ){
-				foundSomethingToDo = true;
-				Scan();
-				continue;
-			}
-		 
-			 // If there is nothing else to do, move forward, KEEP THIS??
-			if (!foundSomethingToDo) {
-				nextOrder = MOVE_FORWARD;
-			}
-		*/
-			
-			
 		}
 
     }
@@ -546,6 +308,7 @@ int main(void)
 	// Reset the laser timers count variable and start the laser timer (used to get a blinking LEDs)
 	StartLaserTimer();
 	// This loop blinks the LEDs to show that we are dead
+	//nextOrder = MOVE_FORWARD;
 	while (dead) {
 		SendUART();
 		if (LASER_TIMER_COUNTER >= 2250) {
@@ -717,7 +480,6 @@ bool UpdateRotation() {
 		
 		if (millidegreesTurned >= targetRotation) {
 			if(laserActive){
-				millidegreesTurned = 0;
 				Rotate(SHOOT_SWEEP_DEGREES, true);
 				laserActive = false;
 			}
@@ -757,8 +519,8 @@ void Rotate(long milliDegrees, bool leftTurn) {
 	movingForward = false;
 	//different offsets for different rotations
 	
+	millidegreesTurned = 0;
 	targetRotation = milliDegrees - calculateGyroOffset(milliDegrees);
-	
 	
 	if (leftTurn) {
 		nextOrder = TURN_LEFT;
@@ -896,78 +658,135 @@ void positioning() {
 			Rotate(360000, true);
 		}
 	}
+}
+
+bool checkForTape(){
+	// If the Left line sensor detects tape and we haven't started rotating, turn right
+	if((tapeSensor1 == 1) && !backing){
+		leftTapeHit = true;
+		StartBackwardsTimer();
+		nextOrder = MOVE_BACKWARDS;
+		return true;
+
+	}
 	
-	/*
-	if (!targetDistanceIsSet) {
-		//check if something is inside the cone.
-		if (!needToRotate && (ultraSonicSensor1 <= maxDistance)) {
-			//save the distance to your enemy
-			distanceToTarget = ultraSonicSensor1;
+	// If the Right line sensor detects tape and we haven't started rotating, turn left
+	if((tapeSensor2 == 1) && !backing){
+		rightTapeHit = true;
+		StartBackwardsTimer();
+		nextOrder = MOVE_BACKWARDS;
+		return true;
+	}
+	return false;
+}
+
+bool checkBacking(){
+	if (backing) {
+		if(BACKWARDS_TIMER_CTR >= timeToReachOneHundredth){
+			BACKWARDS_TIMER_CTR = 0;
+			backing_ctr++;
 			
-			targetDistanceIsSet = true;
-			//Rotate(45000, true);
-			Shoot();
-			
-			checkLeft = false;
-		}
-		else {
-			needToRotate = true;
-			
-			//Check to the left.
-			if (!scanDone) {
-				if (!checkLeft) {
-					checkLeft = true;
-					if (!rotating){
-						Rotate(90000, true);
-					}
-				}
-				else {	//check to the right.
-					if (!rotating) {
-						checkLeft = false;
-						Rotate(180000, false);
-						scanDone = true;
-					}
-				}
+			if (backing_ctr >= 50) {
+				backing = false;
+				StopBackwardsTimer();
 				
+				if (leftTapeHit) {
+					leftTapeHit = false;
+					//Rotate(45000 + (-30000 + (rand()%60)*1000), false);
+					Rotate(40000 + (rand()%100)*1000, false);
+					return true;
+				}
+				else if (rightTapeHit) {
+					rightTapeHit = false;
+					//Rotate(60000 + (-30000 + (rand()%60)*1000), true);
+					Rotate(40000 + (rand()%100)*1000, true);
+					return true;
+				}
 			}
-			
-			//if you find something, stop rotating.
-			if (ultraSonicSensor1 <= maxDistance) {				
-				distanceToTarget = ultraSonicSensor1 - 1;
-				targetDistanceIsSet = true;
-			}	
-			if(scanDone && !rotating){
-				isPositioning = false;
-				needToRotate = false;
-			}
-		
 		}
 	}
-	else {
-		//when distance is greater then target distance, rotate half a cone to the opposite direction.
+	return false;
+}
 
-		if (ultraSonicSensor1 > distanceToTarget && !prepareToFire) {
-			if (checkLeft) {
-				Rotate(22500, true);
-			}
-			else {	//if you were rotating right, keep rotating right.
-				Rotate(22500, false);
-			}
-			prepareToFire = true;
-		}
+void IRDebouncer(){
+	// IR Signature debouncing
+	if (activeIRsignature) {
 		
-		//Rotating is complete. SHOOT.
-		if (!rotating && canShoot && prepareToFire) {
-			//nextOrder = STOP_MOVING;
-			Shoot();
-			isPositioning = false;
-			targetDistanceIsSet = false;
-			needToRotate = false;
-			checkLeft = false;
-			prepareToFire = false;
+		if (!(enemySignatureCTR >= enemySignatureLimit * 2)) {
+			//enemySignatureCTR++;
+			enemySignatureCTR += (rotating ? 3 : 1);
+		}
+	}
+	
+	else{
+		//enemySignatureCTR -= 5;
+		enemySignatureCTR -= (rotating ? 15 : 5);
+		
+		if (enemySignatureCTR < 0){
 			enemySignatureCTR = 0;
 		}
-	
 	}
-	*/
+	
+	
+	//test för att centrera framför fyr.
+	if (enemySignatureCTR >= enemySignatureLimit && !isPositioning  && canShoot) {
+		isPositioning = true;
+	}
+}
+
+bool checkLaserSensor(){
+	if(laserSensor == 1 && !laserSensorHit){
+		laserSensorHit = true;
+		WeAreHit();
+		return true;
+		
+	}
+	else if (laserSensor == 0 && laserSensorHit) {
+		laserSensorHit = false;
+	}
+	return false;
+}
+
+bool checkLaserCooldown(){
+	// LASER timer stuff
+	if (LASER_TIMER_COUNTER >= ONE_SECOND) {
+		coolDownCTR++;
+		LASER_TIMER_COUNTER = 0;
+		
+		// Lasers been active for 1 sec, turn it off
+		if (coolDownCTR == 1) {
+			nextOrder = DEACTIVATE_LASER;
+			laserActive = false;
+			return true;
+		}
+		// cooldown is over
+		else if (coolDownCTR == 4) {
+			canShoot = true;
+			StopLaserTimer();
+			coolDownCTR = 0;
+		}
+	}
+	return false;
+}
+
+bool invisibilityHandler(){
+	//IR timer stuff
+	if (IR_TIMER_COUNTER >= ONE_SECOND) {
+		IR_TIMER_COUNTER = 0;
+		IRCTR++;
+		if (IRCTR >= 5) {
+			StopIRTimer();
+			nextOrder = TURN_ON_IR_SIG;
+			return true;
+		}
+	}
+	return false;
+}
+
+bool collisionCheck(){
+	if(ultraSonicSensor1 <= COLLISION_DISTANCE && !rotating){
+		Rotate(80000, (rand()%2 ? true : false)); //Random direction later?
+		return true;
+	}
+	return false;
 }
