@@ -308,9 +308,43 @@ int main(void)
 	// Reset the laser timers count variable and start the laser timer (used to get a blinking LEDs)
 	StartLaserTimer();
 	// This loop blinks the LEDs to show that we are dead
-	//nextOrder = MOVE_FORWARD;
+	nextOrder = MOVE_FORWARD;
+	
+
+	bool startedMoveForward = false;
+	
 	while (dead) {
 		SendUART();
+		
+		if(tapeSensor1 == 1 && !leftTapeHit){
+			leftTapeHit = true;
+			
+			nextOrder = TURN_LEFT;
+			continue;
+
+		}
+	
+		// If the Right line sensor detects tape and we haven't started rotating, turn left
+		if(tapeSensor2 == 1 && !rightTapeHit){
+			rightTapeHit = true;
+			
+			nextOrder = TURN_RIGHT;
+			continue;
+		}
+		
+		if (leftTapeHit && rightTapeHit && !startedMoveForward) {
+			nextOrder = MOVE_FORWARD;
+			startedMoveForward = true;
+			StartIRTimer();
+			continue;
+		}
+	
+		if (IR_TIMER_COUNTER >= 18000) {
+			nextOrder = STOP_MOVING;
+			StopIRTimer();
+		}
+		
+		// Pulse LEDs
 		if (LASER_TIMER_COUNTER >= 2250) {
 			LASER_TIMER_COUNTER = 0;
 			coolDownCTR++;
@@ -533,13 +567,6 @@ void Rotate(long milliDegrees, bool leftTurn) {
 	TCCR2B |= (1 << CS20) | (1 << CS21) | (1 << CS22);
 	
 }
-
-/*
-sampleTimeSecs = 1;
-unsigned long CalcGyro(int gyroData){
-	gyroSum += gyroData;
-	return (gyroSum * sampleTimeSecs);
-}*/
 
 int Abs(int value) {
 	if (value < 0) {
