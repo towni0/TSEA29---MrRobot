@@ -587,17 +587,17 @@ END GROUP
                 0x00000524       0x22 Malsokningsenheten.o
                 0x00000524                _Z11StopIRTimerv
  .text._Z11positioningv
-                0x00000546       0x70 Malsokningsenheten.o
+                0x00000546       0x78 Malsokningsenheten.o
                 0x00000546                _Z11positioningv
  .text._Z12checkForTapev
-                0x000005b6       0x56 Malsokningsenheten.o
-                0x000005b6                _Z12checkForTapev
+                0x000005be       0x56 Malsokningsenheten.o
+                0x000005be                _Z12checkForTapev
  .text._Z12checkBackingv
-                0x0000060c       0xc0 Malsokningsenheten.o
-                0x0000060c                _Z12checkBackingv
+                0x00000614       0xc0 Malsokningsenheten.o
+                0x00000614                _Z12checkBackingv
  .text._Z11IRDebouncerv
-                0x000006cc      0x108 Malsokningsenheten.o
-                0x000006cc                _Z11IRDebouncerv
+                0x000006d4      0x100 Malsokningsenheten.o
+                0x000006d4                _Z11IRDebouncerv
  .text._Z16checkLaserSensorv
                 0x000007d4       0x48 Malsokningsenheten.o
                 0x000007d4                _Z16checkLaserSensorv

@@ -36,7 +36,10 @@ void testTAPEsensors();
 //###############
 
 #define IRheader 20
-#define IROneValue 7
+#define IROneValueMin 10
+#define IROneValueMax 14
+#define IRZeroValueMin 4
+#define IRZeroValueMax 8
 
 bool compareSignature(uint8_t* oursignature, uint8_t* signature);
 void IRSensorFunction();
@@ -439,16 +442,16 @@ void IRSensorFunction(){
 			index = 0;
 		}
 	}
-	
 	else{
 		if (edge && bit_is_set(PINB, 6)) { //PIND & (1<<PIND7)) {
-			if (IRtimer > IROneValue){ // 1 if longer than 1100us, else 0
+			if (IRtimer > 9){
 				signature[index] = 1;
+				index++;
 			}
 			else{
 				signature[index] = 0;
-			}
-			index++;
+				index++;
+				}
 		}
 	}
 	if (edge && bit_is_set(PINB, 6)){ // End of signal

@@ -119,7 +119,7 @@ bool laserSensorHit = false;
 
 // IR-signature counting
 long enemySignatureCTR = 0;
-long enemySignatureLimit = 100000;
+long enemySignatureLimit = 50000;
 
 // Used to count up to 3
 int IRCTR = 0;
@@ -251,7 +251,7 @@ int main(void)
 		//## UART Transmission ##
 		//#######################
 		SendUART();
-		
+		//continue; //For testing, skips giving orders
 		if((PINB>>PINB2) == 0){
 			// #############
 			// ## Tävling ##
@@ -675,14 +675,14 @@ void StopIRTimer() {
 
 
 void positioning() {
-	if (ultraSonicSensor1 <= maxDistance && enemySignatureCTR >= enemySignatureLimit) {
+	if (ultraSonicSensor1 <= maxDistance && enemySignatureCTR >= enemySignatureLimit && canShoot) {
 		Shoot();
 		isPositioning = false;
 		enemySignatureCTR = 0;
 	}
 	else {
 		if (!rotating) {
-			Rotate(360000, true);
+			Rotate(360000, false);
 		}
 	}
 }
@@ -720,13 +720,13 @@ bool checkBacking(){
 				if (leftTapeHit) {
 					leftTapeHit = false;
 					//Rotate(45000 + (-30000 + (rand()%60)*1000), false);
-					Rotate(40000 + (rand()%100)*1000, false);
+					Rotate(50000 + (rand()%140)*1000, false);
 					return true;
 				}
 				else if (rightTapeHit) {
 					rightTapeHit = false;
 					//Rotate(60000 + (-30000 + (rand()%60)*1000), true);
-					Rotate(40000 + (rand()%100)*1000, true);
+					Rotate(50000 + (rand()%140)*1000, true);
 					return true;
 				}
 			}
@@ -756,7 +756,7 @@ void IRDebouncer(){
 	
 	
 	//test för att centrera framför fyr.
-	if (enemySignatureCTR >= enemySignatureLimit && !isPositioning  && canShoot) {
+	if (enemySignatureCTR >= enemySignatureLimit && !isPositioning) {
 		isPositioning = true;
 	}
 }

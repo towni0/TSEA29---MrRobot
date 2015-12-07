@@ -19,7 +19,7 @@
 uint16_t tape1Threshold = 750; //Limit that determines what's tape and what's not
 uint16_t tape1CurrentValue = 0;
 //right 500
-uint16_t tape2Threshold = 600; //Limit that determines what's tape and what's not
+uint16_t tape2Threshold = 450; //Limit that determines what's tape and what's not
 uint16_t tape2CurrentValue = 0;
 
 const uint8_t TAPE_ERROR_MARGIN = 200;
@@ -75,7 +75,7 @@ const uint8_t TAPE_ERROR_MARGIN = 200;
 #define LASER_LED_PIN PINB4
 #define LED_PORT PORTB
 
-#define SHOOT_SWEEP_DEGREES 50000
+#define SHOOT_SWEEP_DEGREES 45000
 #define COLLISION_DISTANCE 2
 
 //Orders

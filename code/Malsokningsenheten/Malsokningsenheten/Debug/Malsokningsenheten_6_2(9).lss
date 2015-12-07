@@ -486,8 +486,8 @@ void Scan() {
      3c8:	88 23       	and	r24, r24
      3ca:	49 f0       	breq	.+18     	; 0x3de <_Z14UpdateRotationv+0xa6>
      3cc:	41 e0       	ldi	r20, 0x01	; 1
-     3ce:	60 e5       	ldi	r22, 0x50	; 80
-     3d0:	73 ec       	ldi	r23, 0xC3	; 195
+     3ce:	68 ec       	ldi	r22, 0xC8	; 200
+     3d0:	7f ea       	ldi	r23, 0xAF	; 175
      3d2:	80 e0       	ldi	r24, 0x00	; 0
      3d4:	90 e0       	ldi	r25, 0x00	; 0
      3d6:	76 df       	rcall	.-276    	; 0x2c4 <_Z6Rotatelb>
@@ -591,13 +591,13 @@ void Shoot() {
      472:	10 92 17 01 	sts	0x0117, r1
      476:	10 92 18 01 	sts	0x0118, r1
  	targetRotation = (SHOOT_SWEEP_DEGREES / 2) - calculateGyroOffset(SHOOT_SWEEP_DEGREES / 2);
-     47a:	68 ea       	ldi	r22, 0xA8	; 168
-     47c:	71 e6       	ldi	r23, 0x61	; 97
+     47a:	64 ee       	ldi	r22, 0xE4	; 228
+     47c:	77 e5       	ldi	r23, 0x57	; 87
      47e:	80 e0       	ldi	r24, 0x00	; 0
      480:	90 e0       	ldi	r25, 0x00	; 0
      482:	c4 de       	rcall	.-632    	; 0x20c <_Z19calculateGyroOffsetl>
-     484:	08 ea       	ldi	r16, 0xA8	; 168
-     486:	11 e6       	ldi	r17, 0x61	; 97
+     484:	04 ee       	ldi	r16, 0xE4	; 228
+     486:	17 e5       	ldi	r17, 0x57	; 87
      488:	20 e0       	ldi	r18, 0x00	; 0
      48a:	30 e0       	ldi	r19, 0x00	; 0
      48c:	68 01       	movw	r12, r16
@@ -732,14 +732,14 @@ void StopIRTimer() {
 
 
 void positioning() {
-	if (ultraSonicSensor1 <= maxDistance && enemySignatureCTR >= enemySignatureLimit) {
+	if (ultraSonicSensor1 <= maxDistance && enemySignatureCTR >= enemySignatureLimit && canShoot) {
      546:	80 91 35 01 	lds	r24, 0x0135
      54a:	90 e0       	ldi	r25, 0x00	; 0
      54c:	20 91 05 01 	lds	r18, 0x0105
      550:	30 91 06 01 	lds	r19, 0x0106
      554:	28 17       	cp	r18, r24
      556:	39 07       	cpc	r19, r25
-     558:	ec f0       	brlt	.+58     	; 0x594 <_Z11positioningv+0x4e>
+     558:	6c f1       	brlt	.+90     	; 0x5b4 <_Z11positioningv+0x6e>
      55a:	40 91 1b 01 	lds	r20, 0x011B
      55e:	50 91 1c 01 	lds	r21, 0x011C
      562:	60 91 1d 01 	lds	r22, 0x011D
@@ -752,383 +752,380 @@ void positioning() {
      57c:	59 07       	cpc	r21, r25
      57e:	6a 07       	cpc	r22, r26
      580:	7b 07       	cpc	r23, r27
-     582:	6c f4       	brge	.+26     	; 0x59e <_Z11positioningv+0x58>
-     584:	07 c0       	rjmp	.+14     	; 0x594 <_Z11positioningv+0x4e>
+     582:	c4 f0       	brlt	.+48     	; 0x5b4 <_Z11positioningv+0x6e>
+     584:	80 91 0d 01 	lds	r24, 0x010D
+     588:	81 11       	cpse	r24, r1
+     58a:	08 c0       	rjmp	.+16     	; 0x59c <_Z11positioningv+0x56>
+     58c:	13 c0       	rjmp	.+38     	; 0x5b4 <_Z11positioningv+0x6e>
 		isPositioning = false;
 		enemySignatureCTR = 0;
 	}
 	else {
 		if (!rotating) {
-			Rotate(360000, true);
-     586:	41 e0       	ldi	r20, 0x01	; 1
-     588:	60 e4       	ldi	r22, 0x40	; 64
-     58a:	7e e7       	ldi	r23, 0x7E	; 126
-     58c:	85 e0       	ldi	r24, 0x05	; 5
-     58e:	90 e0       	ldi	r25, 0x00	; 0
-     590:	99 ce       	rjmp	.-718    	; 0x2c4 <_Z6Rotatelb>
-     592:	08 95       	ret
-		Shoot();
-		isPositioning = false;
-		enemySignatureCTR = 0;
-	}
-	else {
-		if (!rotating) {
-     594:	80 91 2c 01 	lds	r24, 0x012C
-     598:	81 11       	cpse	r24, r1
-     59a:	0c c0       	rjmp	.+24     	; 0x5b4 <_Z11positioningv+0x6e>
-     59c:	f4 cf       	rjmp	.-24     	; 0x586 <_Z11positioningv+0x40>
+			Rotate(360000, false);
+     58e:	40 e0       	ldi	r20, 0x00	; 0
+     590:	60 e4       	ldi	r22, 0x40	; 64
+     592:	7e e7       	ldi	r23, 0x7E	; 126
+     594:	85 e0       	ldi	r24, 0x05	; 5
+     596:	90 e0       	ldi	r25, 0x00	; 0
+     598:	95 ce       	rjmp	.-726    	; 0x2c4 <_Z6Rotatelb>
+     59a:	08 95       	ret
 }
 
 
 void positioning() {
-	if (ultraSonicSensor1 <= maxDistance && enemySignatureCTR >= enemySignatureLimit) {
+	if (ultraSonicSensor1 <= maxDistance && enemySignatureCTR >= enemySignatureLimit && canShoot) {
 		Shoot();
-     59e:	58 df       	rcall	.-336    	; 0x450 <_Z5Shootv>
+     59c:	59 df       	rcall	.-334    	; 0x450 <_Z5Shootv>
 		isPositioning = false;
-     5a0:	10 92 14 01 	sts	0x0114, r1
+     59e:	10 92 14 01 	sts	0x0114, r1
 		enemySignatureCTR = 0;
-     5a4:	10 92 1b 01 	sts	0x011B, r1
-     5a8:	10 92 1c 01 	sts	0x011C, r1
-     5ac:	10 92 1d 01 	sts	0x011D, r1
-     5b0:	10 92 1e 01 	sts	0x011E, r1
-     5b4:	08 95       	ret
+     5a2:	10 92 1b 01 	sts	0x011B, r1
+     5a6:	10 92 1c 01 	sts	0x011C, r1
+     5aa:	10 92 1d 01 	sts	0x011D, r1
+     5ae:	10 92 1e 01 	sts	0x011E, r1
+     5b2:	08 95       	ret
+	}
+	else {
+		if (!rotating) {
+     5b4:	80 91 2c 01 	lds	r24, 0x012C
+     5b8:	88 23       	and	r24, r24
+     5ba:	49 f3       	breq	.-46     	; 0x58e <_Z11positioningv+0x48>
+     5bc:	08 95       	ret
 
-000005b6 <_Z12checkForTapev>:
+000005be <_Z12checkForTapev>:
 	}
 }
 
 bool checkForTape(){
 	// If the Left line sensor detects tape and we haven't started rotating, turn right
 	if((tapeSensor1 == 1) && !backing){
-     5b6:	80 91 37 01 	lds	r24, 0x0137
-     5ba:	81 30       	cpi	r24, 0x01	; 1
-     5bc:	59 f4       	brne	.+22     	; 0x5d4 <_Z12checkForTapev+0x1e>
-     5be:	80 91 27 01 	lds	r24, 0x0127
-     5c2:	81 11       	cpse	r24, r1
-     5c4:	1f c0       	rjmp	.+62     	; 0x604 <_Z12checkForTapev+0x4e>
-     5c6:	0c c0       	rjmp	.+24     	; 0x5e0 <_Z12checkForTapev+0x2a>
+     5be:	80 91 37 01 	lds	r24, 0x0137
+     5c2:	81 30       	cpi	r24, 0x01	; 1
+     5c4:	59 f4       	brne	.+22     	; 0x5dc <_Z12checkForTapev+0x1e>
+     5c6:	80 91 27 01 	lds	r24, 0x0127
+     5ca:	81 11       	cpse	r24, r1
+     5cc:	1f c0       	rjmp	.+62     	; 0x60c <_Z12checkForTapev+0x4e>
+     5ce:	0c c0       	rjmp	.+24     	; 0x5e8 <_Z12checkForTapev+0x2a>
 		return true;
 
 	}
 	
 	// If the Right line sensor detects tape and we haven't started rotating, turn left
 	if((tapeSensor2 == 1) && !backing){
-     5c8:	80 91 27 01 	lds	r24, 0x0127
-     5cc:	88 23       	and	r24, r24
-     5ce:	89 f0       	breq	.+34     	; 0x5f2 <_Z12checkForTapev+0x3c>
+     5d0:	80 91 27 01 	lds	r24, 0x0127
+     5d4:	88 23       	and	r24, r24
+     5d6:	89 f0       	breq	.+34     	; 0x5fa <_Z12checkForTapev+0x3c>
 		rightTapeHit = true;
 		StartBackwardsTimer();
 		nextOrder = MOVE_BACKWARDS;
 		return true;
 	}
 	return false;
-     5d0:	80 e0       	ldi	r24, 0x00	; 0
-     5d2:	08 95       	ret
+     5d8:	80 e0       	ldi	r24, 0x00	; 0
+     5da:	08 95       	ret
 		return true;
 
 	}
 	
 	// If the Right line sensor detects tape and we haven't started rotating, turn left
 	if((tapeSensor2 == 1) && !backing){
-     5d4:	80 91 36 01 	lds	r24, 0x0136
-     5d8:	81 30       	cpi	r24, 0x01	; 1
-     5da:	b1 f3       	breq	.-20     	; 0x5c8 <_Z12checkForTapev+0x12>
+     5dc:	80 91 36 01 	lds	r24, 0x0136
+     5e0:	81 30       	cpi	r24, 0x01	; 1
+     5e2:	b1 f3       	breq	.-20     	; 0x5d0 <_Z12checkForTapev+0x12>
 		rightTapeHit = true;
 		StartBackwardsTimer();
 		nextOrder = MOVE_BACKWARDS;
 		return true;
 	}
 	return false;
-     5dc:	80 e0       	ldi	r24, 0x00	; 0
-     5de:	08 95       	ret
+     5e4:	80 e0       	ldi	r24, 0x00	; 0
+     5e6:	08 95       	ret
 }
 
 bool checkForTape(){
 	// If the Left line sensor detects tape and we haven't started rotating, turn right
 	if((tapeSensor1 == 1) && !backing){
 		leftTapeHit = true;
-     5e0:	81 e0       	ldi	r24, 0x01	; 1
-     5e2:	80 93 26 01 	sts	0x0126, r24
+     5e8:	81 e0       	ldi	r24, 0x01	; 1
+     5ea:	80 93 26 01 	sts	0x0126, r24
 		StartBackwardsTimer();
-     5e6:	15 df       	rcall	.-470    	; 0x412 <_Z19StartBackwardsTimerv>
+     5ee:	11 df       	rcall	.-478    	; 0x412 <_Z19StartBackwardsTimerv>
 		nextOrder = MOVE_BACKWARDS;
-     5e8:	8c e0       	ldi	r24, 0x0C	; 12
-     5ea:	80 93 2f 01 	sts	0x012F, r24
+     5f0:	8c e0       	ldi	r24, 0x0C	; 12
+     5f2:	80 93 2f 01 	sts	0x012F, r24
 		return true;
-     5ee:	81 e0       	ldi	r24, 0x01	; 1
-     5f0:	08 95       	ret
+     5f6:	81 e0       	ldi	r24, 0x01	; 1
+     5f8:	08 95       	ret
 
 	}
 	
 	// If the Right line sensor detects tape and we haven't started rotating, turn left
 	if((tapeSensor2 == 1) && !backing){
 		rightTapeHit = true;
-     5f2:	81 e0       	ldi	r24, 0x01	; 1
-     5f4:	80 93 25 01 	sts	0x0125, r24
+     5fa:	81 e0       	ldi	r24, 0x01	; 1
+     5fc:	80 93 25 01 	sts	0x0125, r24
 		StartBackwardsTimer();
-     5f8:	0c df       	rcall	.-488    	; 0x412 <_Z19StartBackwardsTimerv>
+     600:	08 df       	rcall	.-496    	; 0x412 <_Z19StartBackwardsTimerv>
 		nextOrder = MOVE_BACKWARDS;
-     5fa:	8c e0       	ldi	r24, 0x0C	; 12
-     5fc:	80 93 2f 01 	sts	0x012F, r24
+     602:	8c e0       	ldi	r24, 0x0C	; 12
+     604:	80 93 2f 01 	sts	0x012F, r24
 		return true;
-     600:	81 e0       	ldi	r24, 0x01	; 1
-     602:	08 95       	ret
+     608:	81 e0       	ldi	r24, 0x01	; 1
+     60a:	08 95       	ret
 		return true;
 
 	}
 	
 	// If the Right line sensor detects tape and we haven't started rotating, turn left
 	if((tapeSensor2 == 1) && !backing){
-     604:	80 91 36 01 	lds	r24, 0x0136
+     60c:	80 91 36 01 	lds	r24, 0x0136
 		rightTapeHit = true;
 		StartBackwardsTimer();
 		nextOrder = MOVE_BACKWARDS;
 		return true;
 	}
 	return false;
-     608:	80 e0       	ldi	r24, 0x00	; 0
+     610:	80 e0       	ldi	r24, 0x00	; 0
 }
-     60a:	08 95       	ret
+     612:	08 95       	ret
 
-0000060c <_Z12checkBackingv>:
+00000614 <_Z12checkBackingv>:
 
 bool checkBacking(){
-     60c:	cf 93       	push	r28
+     614:	cf 93       	push	r28
 	if (backing) {
-     60e:	c0 91 27 01 	lds	r28, 0x0127
-     612:	cc 23       	and	r28, r28
-     614:	09 f4       	brne	.+2      	; 0x618 <_Z12checkBackingv+0xc>
-     616:	57 c0       	rjmp	.+174    	; 0x6c6 <_Z12checkBackingv+0xba>
+     616:	c0 91 27 01 	lds	r28, 0x0127
+     61a:	cc 23       	and	r28, r28
+     61c:	09 f4       	brne	.+2      	; 0x620 <_Z12checkBackingv+0xc>
+     61e:	57 c0       	rjmp	.+174    	; 0x6ce <_Z12checkBackingv+0xba>
 		if(BACKWARDS_TIMER_CTR >= timeToReachOneHundredth){
-     618:	86 b5       	in	r24, 0x26	; 38
-     61a:	84 3b       	cpi	r24, 0xB4	; 180
-     61c:	08 f4       	brcc	.+2      	; 0x620 <_Z12checkBackingv+0x14>
-     61e:	50 c0       	rjmp	.+160    	; 0x6c0 <_Z12checkBackingv+0xb4>
+     620:	86 b5       	in	r24, 0x26	; 38
+     622:	84 3b       	cpi	r24, 0xB4	; 180
+     624:	08 f4       	brcc	.+2      	; 0x628 <_Z12checkBackingv+0x14>
+     626:	50 c0       	rjmp	.+160    	; 0x6c8 <_Z12checkBackingv+0xb4>
 			BACKWARDS_TIMER_CTR = 0;
-     620:	16 bc       	out	0x26, r1	; 38
+     628:	16 bc       	out	0x26, r1	; 38
 			backing_ctr++;
-     622:	80 91 23 01 	lds	r24, 0x0123
-     626:	90 91 24 01 	lds	r25, 0x0124
-     62a:	01 96       	adiw	r24, 0x01	; 1
-     62c:	90 93 24 01 	sts	0x0124, r25
-     630:	80 93 23 01 	sts	0x0123, r24
+     62a:	80 91 23 01 	lds	r24, 0x0123
+     62e:	90 91 24 01 	lds	r25, 0x0124
+     632:	01 96       	adiw	r24, 0x01	; 1
+     634:	90 93 24 01 	sts	0x0124, r25
+     638:	80 93 23 01 	sts	0x0123, r24
 			
 			if (backing_ctr >= 50) {
-     634:	c2 97       	sbiw	r24, 0x32	; 50
-     636:	0c f4       	brge	.+2      	; 0x63a <_Z12checkBackingv+0x2e>
-     638:	45 c0       	rjmp	.+138    	; 0x6c4 <_Z12checkBackingv+0xb8>
+     63c:	c2 97       	sbiw	r24, 0x32	; 50
+     63e:	0c f4       	brge	.+2      	; 0x642 <_Z12checkBackingv+0x2e>
+     640:	45 c0       	rjmp	.+138    	; 0x6cc <_Z12checkBackingv+0xb8>
 				backing = false;
-     63a:	10 92 27 01 	sts	0x0127, r1
+     642:	10 92 27 01 	sts	0x0127, r1
 				StopBackwardsTimer();
-     63e:	f4 de       	rcall	.-536    	; 0x428 <_Z18StopBackwardsTimerv>
+     646:	f0 de       	rcall	.-544    	; 0x428 <_Z18StopBackwardsTimerv>
 				
 				if (leftTapeHit) {
-     640:	c0 91 26 01 	lds	r28, 0x0126
-     644:	cc 23       	and	r28, r28
-     646:	e1 f0       	breq	.+56     	; 0x680 <_Z12checkBackingv+0x74>
+     648:	c0 91 26 01 	lds	r28, 0x0126
+     64c:	cc 23       	and	r28, r28
+     64e:	e1 f0       	breq	.+56     	; 0x688 <_Z12checkBackingv+0x74>
 					leftTapeHit = false;
-     648:	10 92 26 01 	sts	0x0126, r1
+     650:	10 92 26 01 	sts	0x0126, r1
 					//Rotate(45000 + (-30000 + (rand()%60)*1000), false);
-					Rotate(40000 + (rand()%100)*1000, false);
-     64c:	c6 d4       	rcall	.+2444   	; 0xfda <rand>
-     64e:	64 e6       	ldi	r22, 0x64	; 100
-     650:	70 e0       	ldi	r23, 0x00	; 0
-     652:	55 d4       	rcall	.+2218   	; 0xefe <__divmodhi4>
-     654:	28 ee       	ldi	r18, 0xE8	; 232
-     656:	33 e0       	ldi	r19, 0x03	; 3
-     658:	82 9f       	mul	r24, r18
-     65a:	b0 01       	movw	r22, r0
-     65c:	83 9f       	mul	r24, r19
-     65e:	70 0d       	add	r23, r0
-     660:	92 9f       	mul	r25, r18
-     662:	70 0d       	add	r23, r0
-     664:	11 24       	eor	r1, r1
-     666:	cb 01       	movw	r24, r22
-     668:	77 0f       	add	r23, r23
-     66a:	aa 0b       	sbc	r26, r26
-     66c:	bb 0b       	sbc	r27, r27
-     66e:	bc 01       	movw	r22, r24
-     670:	cd 01       	movw	r24, r26
-     672:	60 5c       	subi	r22, 0xC0	; 192
-     674:	73 46       	sbci	r23, 0x63	; 99
-     676:	8f 4f       	sbci	r24, 0xFF	; 255
-     678:	9f 4f       	sbci	r25, 0xFF	; 255
-     67a:	40 e0       	ldi	r20, 0x00	; 0
-     67c:	23 de       	rcall	.-954    	; 0x2c4 <_Z6Rotatelb>
+					Rotate(50000 + (rand()%140)*1000, false);
+     654:	c2 d4       	rcall	.+2436   	; 0xfda <rand>
+     656:	6c e8       	ldi	r22, 0x8C	; 140
+     658:	70 e0       	ldi	r23, 0x00	; 0
+     65a:	51 d4       	rcall	.+2210   	; 0xefe <__divmodhi4>
+     65c:	28 ee       	ldi	r18, 0xE8	; 232
+     65e:	33 e0       	ldi	r19, 0x03	; 3
+     660:	82 9f       	mul	r24, r18
+     662:	b0 01       	movw	r22, r0
+     664:	83 9f       	mul	r24, r19
+     666:	70 0d       	add	r23, r0
+     668:	92 9f       	mul	r25, r18
+     66a:	70 0d       	add	r23, r0
+     66c:	11 24       	eor	r1, r1
+     66e:	cb 01       	movw	r24, r22
+     670:	77 0f       	add	r23, r23
+     672:	aa 0b       	sbc	r26, r26
+     674:	bb 0b       	sbc	r27, r27
+     676:	bc 01       	movw	r22, r24
+     678:	cd 01       	movw	r24, r26
+     67a:	60 5b       	subi	r22, 0xB0	; 176
+     67c:	7c 43       	sbci	r23, 0x3C	; 60
+     67e:	8f 4f       	sbci	r24, 0xFF	; 255
+     680:	9f 4f       	sbci	r25, 0xFF	; 255
+     682:	40 e0       	ldi	r20, 0x00	; 0
+     684:	1f de       	rcall	.-962    	; 0x2c4 <_Z6Rotatelb>
 					return true;
-     67e:	23 c0       	rjmp	.+70     	; 0x6c6 <_Z12checkBackingv+0xba>
+     686:	23 c0       	rjmp	.+70     	; 0x6ce <_Z12checkBackingv+0xba>
 				}
 				else if (rightTapeHit) {
-     680:	c0 91 25 01 	lds	r28, 0x0125
-     684:	cc 23       	and	r28, r28
-     686:	f9 f0       	breq	.+62     	; 0x6c6 <_Z12checkBackingv+0xba>
+     688:	c0 91 25 01 	lds	r28, 0x0125
+     68c:	cc 23       	and	r28, r28
+     68e:	f9 f0       	breq	.+62     	; 0x6ce <_Z12checkBackingv+0xba>
 					rightTapeHit = false;
-     688:	10 92 25 01 	sts	0x0125, r1
+     690:	10 92 25 01 	sts	0x0125, r1
 					//Rotate(60000 + (-30000 + (rand()%60)*1000), true);
-					Rotate(40000 + (rand()%100)*1000, true);
-     68c:	a6 d4       	rcall	.+2380   	; 0xfda <rand>
-     68e:	64 e6       	ldi	r22, 0x64	; 100
-     690:	70 e0       	ldi	r23, 0x00	; 0
-     692:	35 d4       	rcall	.+2154   	; 0xefe <__divmodhi4>
-     694:	28 ee       	ldi	r18, 0xE8	; 232
-     696:	33 e0       	ldi	r19, 0x03	; 3
-     698:	82 9f       	mul	r24, r18
-     69a:	b0 01       	movw	r22, r0
-     69c:	83 9f       	mul	r24, r19
-     69e:	70 0d       	add	r23, r0
-     6a0:	92 9f       	mul	r25, r18
-     6a2:	70 0d       	add	r23, r0
-     6a4:	11 24       	eor	r1, r1
-     6a6:	cb 01       	movw	r24, r22
-     6a8:	77 0f       	add	r23, r23
-     6aa:	aa 0b       	sbc	r26, r26
-     6ac:	bb 0b       	sbc	r27, r27
-     6ae:	bc 01       	movw	r22, r24
-     6b0:	cd 01       	movw	r24, r26
-     6b2:	60 5c       	subi	r22, 0xC0	; 192
-     6b4:	73 46       	sbci	r23, 0x63	; 99
-     6b6:	8f 4f       	sbci	r24, 0xFF	; 255
-     6b8:	9f 4f       	sbci	r25, 0xFF	; 255
-     6ba:	41 e0       	ldi	r20, 0x01	; 1
-     6bc:	03 de       	rcall	.-1018   	; 0x2c4 <_Z6Rotatelb>
+					Rotate(50000 + (rand()%140)*1000, true);
+     694:	a2 d4       	rcall	.+2372   	; 0xfda <rand>
+     696:	6c e8       	ldi	r22, 0x8C	; 140
+     698:	70 e0       	ldi	r23, 0x00	; 0
+     69a:	31 d4       	rcall	.+2146   	; 0xefe <__divmodhi4>
+     69c:	28 ee       	ldi	r18, 0xE8	; 232
+     69e:	33 e0       	ldi	r19, 0x03	; 3
+     6a0:	82 9f       	mul	r24, r18
+     6a2:	b0 01       	movw	r22, r0
+     6a4:	83 9f       	mul	r24, r19
+     6a6:	70 0d       	add	r23, r0
+     6a8:	92 9f       	mul	r25, r18
+     6aa:	70 0d       	add	r23, r0
+     6ac:	11 24       	eor	r1, r1
+     6ae:	cb 01       	movw	r24, r22
+     6b0:	77 0f       	add	r23, r23
+     6b2:	aa 0b       	sbc	r26, r26
+     6b4:	bb 0b       	sbc	r27, r27
+     6b6:	bc 01       	movw	r22, r24
+     6b8:	cd 01       	movw	r24, r26
+     6ba:	60 5b       	subi	r22, 0xB0	; 176
+     6bc:	7c 43       	sbci	r23, 0x3C	; 60
+     6be:	8f 4f       	sbci	r24, 0xFF	; 255
+     6c0:	9f 4f       	sbci	r25, 0xFF	; 255
+     6c2:	41 e0       	ldi	r20, 0x01	; 1
+     6c4:	ff dd       	rcall	.-1026   	; 0x2c4 <_Z6Rotatelb>
 					return true;
-     6be:	03 c0       	rjmp	.+6      	; 0x6c6 <_Z12checkBackingv+0xba>
+     6c6:	03 c0       	rjmp	.+6      	; 0x6ce <_Z12checkBackingv+0xba>
 				}
 			}
 		}
 	}
 	return false;
-     6c0:	c0 e0       	ldi	r28, 0x00	; 0
-     6c2:	01 c0       	rjmp	.+2      	; 0x6c6 <_Z12checkBackingv+0xba>
-     6c4:	c0 e0       	ldi	r28, 0x00	; 0
+     6c8:	c0 e0       	ldi	r28, 0x00	; 0
+     6ca:	01 c0       	rjmp	.+2      	; 0x6ce <_Z12checkBackingv+0xba>
+     6cc:	c0 e0       	ldi	r28, 0x00	; 0
 }
-     6c6:	8c 2f       	mov	r24, r28
-     6c8:	cf 91       	pop	r28
-     6ca:	08 95       	ret
+     6ce:	8c 2f       	mov	r24, r28
+     6d0:	cf 91       	pop	r28
+     6d2:	08 95       	ret
 
-000006cc <_Z11IRDebouncerv>:
+000006d4 <_Z11IRDebouncerv>:
 
 void IRDebouncer(){
 	// IR Signature debouncing
 	if (activeIRsignature) {
-     6cc:	80 91 33 01 	lds	r24, 0x0133
-     6d0:	88 23       	and	r24, r24
-     6d2:	a1 f1       	breq	.+104    	; 0x73c <_Z11IRDebouncerv+0x70>
+     6d4:	80 91 33 01 	lds	r24, 0x0133
+     6d8:	88 23       	and	r24, r24
+     6da:	a1 f1       	breq	.+104    	; 0x744 <_Z11IRDebouncerv+0x70>
 		
 		if (!(enemySignatureCTR >= enemySignatureLimit * 2)) {
-     6d4:	40 91 1b 01 	lds	r20, 0x011B
-     6d8:	50 91 1c 01 	lds	r21, 0x011C
-     6dc:	60 91 1d 01 	lds	r22, 0x011D
-     6e0:	70 91 1e 01 	lds	r23, 0x011E
-     6e4:	80 91 07 01 	lds	r24, 0x0107
-     6e8:	90 91 08 01 	lds	r25, 0x0108
-     6ec:	a0 91 09 01 	lds	r26, 0x0109
-     6f0:	b0 91 0a 01 	lds	r27, 0x010A
-     6f4:	88 0f       	add	r24, r24
-     6f6:	99 1f       	adc	r25, r25
-     6f8:	aa 1f       	adc	r26, r26
-     6fa:	bb 1f       	adc	r27, r27
-     6fc:	48 17       	cp	r20, r24
-     6fe:	59 07       	cpc	r21, r25
-     700:	6a 07       	cpc	r22, r26
-     702:	7b 07       	cpc	r23, r27
-     704:	0c f0       	brlt	.+2      	; 0x708 <_Z11IRDebouncerv+0x3c>
-     706:	45 c0       	rjmp	.+138    	; 0x792 <_Z11IRDebouncerv+0xc6>
+     6dc:	40 91 1b 01 	lds	r20, 0x011B
+     6e0:	50 91 1c 01 	lds	r21, 0x011C
+     6e4:	60 91 1d 01 	lds	r22, 0x011D
+     6e8:	70 91 1e 01 	lds	r23, 0x011E
+     6ec:	80 91 07 01 	lds	r24, 0x0107
+     6f0:	90 91 08 01 	lds	r25, 0x0108
+     6f4:	a0 91 09 01 	lds	r26, 0x0109
+     6f8:	b0 91 0a 01 	lds	r27, 0x010A
+     6fc:	88 0f       	add	r24, r24
+     6fe:	99 1f       	adc	r25, r25
+     700:	aa 1f       	adc	r26, r26
+     702:	bb 1f       	adc	r27, r27
+     704:	48 17       	cp	r20, r24
+     706:	59 07       	cpc	r21, r25
+     708:	6a 07       	cpc	r22, r26
+     70a:	7b 07       	cpc	r23, r27
+     70c:	0c f0       	brlt	.+2      	; 0x710 <_Z11IRDebouncerv+0x3c>
+     70e:	45 c0       	rjmp	.+138    	; 0x79a <_Z11IRDebouncerv+0xc6>
 			//enemySignatureCTR++;
 			enemySignatureCTR += (rotating ? 3 : 1);
-     708:	80 91 2c 01 	lds	r24, 0x012C
-     70c:	81 11       	cpse	r24, r1
-     70e:	05 c0       	rjmp	.+10     	; 0x71a <_Z11IRDebouncerv+0x4e>
-     710:	81 e0       	ldi	r24, 0x01	; 1
-     712:	90 e0       	ldi	r25, 0x00	; 0
-     714:	a0 e0       	ldi	r26, 0x00	; 0
-     716:	b0 e0       	ldi	r27, 0x00	; 0
-     718:	04 c0       	rjmp	.+8      	; 0x722 <_Z11IRDebouncerv+0x56>
-     71a:	83 e0       	ldi	r24, 0x03	; 3
-     71c:	90 e0       	ldi	r25, 0x00	; 0
-     71e:	a0 e0       	ldi	r26, 0x00	; 0
-     720:	b0 e0       	ldi	r27, 0x00	; 0
-     722:	48 0f       	add	r20, r24
-     724:	59 1f       	adc	r21, r25
-     726:	6a 1f       	adc	r22, r26
-     728:	7b 1f       	adc	r23, r27
-     72a:	40 93 1b 01 	sts	0x011B, r20
-     72e:	50 93 1c 01 	sts	0x011C, r21
-     732:	60 93 1d 01 	sts	0x011D, r22
-     736:	70 93 1e 01 	sts	0x011E, r23
-     73a:	2b c0       	rjmp	.+86     	; 0x792 <_Z11IRDebouncerv+0xc6>
+     710:	80 91 2c 01 	lds	r24, 0x012C
+     714:	81 11       	cpse	r24, r1
+     716:	05 c0       	rjmp	.+10     	; 0x722 <_Z11IRDebouncerv+0x4e>
+     718:	81 e0       	ldi	r24, 0x01	; 1
+     71a:	90 e0       	ldi	r25, 0x00	; 0
+     71c:	a0 e0       	ldi	r26, 0x00	; 0
+     71e:	b0 e0       	ldi	r27, 0x00	; 0
+     720:	04 c0       	rjmp	.+8      	; 0x72a <_Z11IRDebouncerv+0x56>
+     722:	83 e0       	ldi	r24, 0x03	; 3
+     724:	90 e0       	ldi	r25, 0x00	; 0
+     726:	a0 e0       	ldi	r26, 0x00	; 0
+     728:	b0 e0       	ldi	r27, 0x00	; 0
+     72a:	48 0f       	add	r20, r24
+     72c:	59 1f       	adc	r21, r25
+     72e:	6a 1f       	adc	r22, r26
+     730:	7b 1f       	adc	r23, r27
+     732:	40 93 1b 01 	sts	0x011B, r20
+     736:	50 93 1c 01 	sts	0x011C, r21
+     73a:	60 93 1d 01 	sts	0x011D, r22
+     73e:	70 93 1e 01 	sts	0x011E, r23
+     742:	2b c0       	rjmp	.+86     	; 0x79a <_Z11IRDebouncerv+0xc6>
 		}
 	}
 	
 	else{
 		//enemySignatureCTR -= 5;
 		enemySignatureCTR -= (rotating ? 15 : 5);
-     73c:	80 91 1b 01 	lds	r24, 0x011B
-     740:	90 91 1c 01 	lds	r25, 0x011C
-     744:	a0 91 1d 01 	lds	r26, 0x011D
-     748:	b0 91 1e 01 	lds	r27, 0x011E
-     74c:	20 91 2c 01 	lds	r18, 0x012C
-     750:	21 11       	cpse	r18, r1
-     752:	05 c0       	rjmp	.+10     	; 0x75e <_Z11IRDebouncerv+0x92>
-     754:	45 e0       	ldi	r20, 0x05	; 5
-     756:	50 e0       	ldi	r21, 0x00	; 0
-     758:	60 e0       	ldi	r22, 0x00	; 0
-     75a:	70 e0       	ldi	r23, 0x00	; 0
-     75c:	04 c0       	rjmp	.+8      	; 0x766 <_Z11IRDebouncerv+0x9a>
-     75e:	4f e0       	ldi	r20, 0x0F	; 15
-     760:	50 e0       	ldi	r21, 0x00	; 0
-     762:	60 e0       	ldi	r22, 0x00	; 0
-     764:	70 e0       	ldi	r23, 0x00	; 0
-     766:	84 1b       	sub	r24, r20
-     768:	95 0b       	sbc	r25, r21
-     76a:	a6 0b       	sbc	r26, r22
-     76c:	b7 0b       	sbc	r27, r23
+     744:	80 91 1b 01 	lds	r24, 0x011B
+     748:	90 91 1c 01 	lds	r25, 0x011C
+     74c:	a0 91 1d 01 	lds	r26, 0x011D
+     750:	b0 91 1e 01 	lds	r27, 0x011E
+     754:	20 91 2c 01 	lds	r18, 0x012C
+     758:	21 11       	cpse	r18, r1
+     75a:	05 c0       	rjmp	.+10     	; 0x766 <_Z11IRDebouncerv+0x92>
+     75c:	45 e0       	ldi	r20, 0x05	; 5
+     75e:	50 e0       	ldi	r21, 0x00	; 0
+     760:	60 e0       	ldi	r22, 0x00	; 0
+     762:	70 e0       	ldi	r23, 0x00	; 0
+     764:	04 c0       	rjmp	.+8      	; 0x76e <_Z11IRDebouncerv+0x9a>
+     766:	4f e0       	ldi	r20, 0x0F	; 15
+     768:	50 e0       	ldi	r21, 0x00	; 0
+     76a:	60 e0       	ldi	r22, 0x00	; 0
+     76c:	70 e0       	ldi	r23, 0x00	; 0
+     76e:	84 1b       	sub	r24, r20
+     770:	95 0b       	sbc	r25, r21
+     772:	a6 0b       	sbc	r26, r22
+     774:	b7 0b       	sbc	r27, r23
 		
 		if (enemySignatureCTR < 0){
-     76e:	4a f0       	brmi	.+18     	; 0x782 <_Z11IRDebouncerv+0xb6>
+     776:	4a f0       	brmi	.+18     	; 0x78a <_Z11IRDebouncerv+0xb6>
 		}
 	}
 	
 	else{
 		//enemySignatureCTR -= 5;
 		enemySignatureCTR -= (rotating ? 15 : 5);
-     770:	80 93 1b 01 	sts	0x011B, r24
-     774:	90 93 1c 01 	sts	0x011C, r25
-     778:	a0 93 1d 01 	sts	0x011D, r26
-     77c:	b0 93 1e 01 	sts	0x011E, r27
-     780:	08 c0       	rjmp	.+16     	; 0x792 <_Z11IRDebouncerv+0xc6>
+     778:	80 93 1b 01 	sts	0x011B, r24
+     77c:	90 93 1c 01 	sts	0x011C, r25
+     780:	a0 93 1d 01 	sts	0x011D, r26
+     784:	b0 93 1e 01 	sts	0x011E, r27
+     788:	08 c0       	rjmp	.+16     	; 0x79a <_Z11IRDebouncerv+0xc6>
 		
 		if (enemySignatureCTR < 0){
 			enemySignatureCTR = 0;
-     782:	10 92 1b 01 	sts	0x011B, r1
-     786:	10 92 1c 01 	sts	0x011C, r1
-     78a:	10 92 1d 01 	sts	0x011D, r1
-     78e:	10 92 1e 01 	sts	0x011E, r1
+     78a:	10 92 1b 01 	sts	0x011B, r1
+     78e:	10 92 1c 01 	sts	0x011C, r1
+     792:	10 92 1d 01 	sts	0x011D, r1
+     796:	10 92 1e 01 	sts	0x011E, r1
 		}
 	}
 	
 	
 	//test för att centrera framför fyr.
-	if (enemySignatureCTR >= enemySignatureLimit && !isPositioning  && canShoot) {
-     792:	40 91 1b 01 	lds	r20, 0x011B
-     796:	50 91 1c 01 	lds	r21, 0x011C
-     79a:	60 91 1d 01 	lds	r22, 0x011D
-     79e:	70 91 1e 01 	lds	r23, 0x011E
-     7a2:	80 91 07 01 	lds	r24, 0x0107
-     7a6:	90 91 08 01 	lds	r25, 0x0108
-     7aa:	a0 91 09 01 	lds	r26, 0x0109
-     7ae:	b0 91 0a 01 	lds	r27, 0x010A
-     7b2:	48 17       	cp	r20, r24
-     7b4:	59 07       	cpc	r21, r25
-     7b6:	6a 07       	cpc	r22, r26
-     7b8:	7b 07       	cpc	r23, r27
-     7ba:	5c f0       	brlt	.+22     	; 0x7d2 <_Z11IRDebouncerv+0x106>
-     7bc:	80 91 14 01 	lds	r24, 0x0114
-     7c0:	81 11       	cpse	r24, r1
-     7c2:	07 c0       	rjmp	.+14     	; 0x7d2 <_Z11IRDebouncerv+0x106>
-     7c4:	80 91 0d 01 	lds	r24, 0x010D
-     7c8:	88 23       	and	r24, r24
-     7ca:	19 f0       	breq	.+6      	; 0x7d2 <_Z11IRDebouncerv+0x106>
+	if (enemySignatureCTR >= enemySignatureLimit && !isPositioning) {
+     79a:	40 91 1b 01 	lds	r20, 0x011B
+     79e:	50 91 1c 01 	lds	r21, 0x011C
+     7a2:	60 91 1d 01 	lds	r22, 0x011D
+     7a6:	70 91 1e 01 	lds	r23, 0x011E
+     7aa:	80 91 07 01 	lds	r24, 0x0107
+     7ae:	90 91 08 01 	lds	r25, 0x0108
+     7b2:	a0 91 09 01 	lds	r26, 0x0109
+     7b6:	b0 91 0a 01 	lds	r27, 0x010A
+     7ba:	48 17       	cp	r20, r24
+     7bc:	59 07       	cpc	r21, r25
+     7be:	6a 07       	cpc	r22, r26
+     7c0:	7b 07       	cpc	r23, r27
+     7c2:	3c f0       	brlt	.+14     	; 0x7d2 <_Z11IRDebouncerv+0xfe>
+     7c4:	80 91 14 01 	lds	r24, 0x0114
+     7c8:	81 11       	cpse	r24, r1
+     7ca:	03 c0       	rjmp	.+6      	; 0x7d2 <_Z11IRDebouncerv+0xfe>
 		isPositioning = true;
      7cc:	81 e0       	ldi	r24, 0x01	; 1
      7ce:	80 93 14 01 	sts	0x0114, r24
@@ -1311,7 +1308,6 @@ bool collisionCheck(){
      8c8:	80 91 2c 01 	lds	r24, 0x012C
      8cc:	88 23       	and	r24, r24
      8ce:	21 f0       	breq	.+8      	; 0x8d8 <_Z14collisionCheckv+0x18>
-		
 		Rotate(80000, (rand()%2 ? true : false)); //Random direction later?
 		return true;
 	}
@@ -1320,11 +1316,11 @@ bool collisionCheck(){
      8d2:	08 95       	ret
      8d4:	80 e0       	ldi	r24, 0x00	; 0
      8d6:	08 95       	ret
+	return false;
 }
 
 bool collisionCheck(){
 	if(ultraSonicSensor1 <= COLLISION_DISTANCE && !rotating){
-		
 		Rotate(80000, (rand()%2 ? true : false)); //Random direction later?
      8d8:	80 d3       	rcall	.+1792   	; 0xfda <rand>
      8da:	48 2f       	mov	r20, r24
@@ -1542,7 +1538,7 @@ int main(void)
 		//#######################
 		SendUART();
      9f2:	7a db       	rcall	.-2316   	; 0xe8 <_Z8SendUARTv>
-		
+		//continue; //For testing, skips giving orders
 		if((PINB>>PINB2) == 0){
      9f4:	83 b1       	in	r24, 0x03	; 3
      9f6:	90 e0       	ldi	r25, 0x00	; 0
@@ -1557,13 +1553,13 @@ int main(void)
 			// #############
 
 			IRDebouncer();			
-     a04:	63 de       	rcall	.-826    	; 0x6cc <_Z11IRDebouncerv>
+     a04:	67 de       	rcall	.-818    	; 0x6d4 <_Z11IRDebouncerv>
 
 			if(checkForTape() || checkBacking() || checkLaserSensor() || checkLaserCooldown() || invisibilityHandler() || collisionCheck()) continue;
-     a06:	d7 dd       	rcall	.-1106   	; 0x5b6 <_Z12checkForTapev>
+     a06:	db dd       	rcall	.-1098   	; 0x5be <_Z12checkForTapev>
      a08:	81 11       	cpse	r24, r1
      a0a:	31 c0       	rjmp	.+98     	; 0xa6e <main+0x182>
-     a0c:	ff dd       	rcall	.-1026   	; 0x60c <_Z12checkBackingv>
+     a0c:	03 de       	rcall	.-1018   	; 0x614 <_Z12checkBackingv>
      a0e:	81 11       	cpse	r24, r1
      a10:	2e c0       	rjmp	.+92     	; 0xa6e <main+0x182>
      a12:	e0 de       	rcall	.-576    	; 0x7d4 <_Z16checkLaserSensorv>
@@ -1607,13 +1603,13 @@ int main(void)
 			
 
 			IRDebouncer();
-     a44:	43 de       	rcall	.-890    	; 0x6cc <_Z11IRDebouncerv>
+     a44:	47 de       	rcall	.-882    	; 0x6d4 <_Z11IRDebouncerv>
 
 			if(checkForTape() || checkBacking() || checkLaserCooldown()) continue;
-     a46:	b7 dd       	rcall	.-1170   	; 0x5b6 <_Z12checkForTapev>
+     a46:	bb dd       	rcall	.-1162   	; 0x5be <_Z12checkForTapev>
      a48:	81 11       	cpse	r24, r1
      a4a:	11 c0       	rjmp	.+34     	; 0xa6e <main+0x182>
-     a4c:	df dd       	rcall	.-1090   	; 0x60c <_Z12checkBackingv>
+     a4c:	e3 dd       	rcall	.-1082   	; 0x614 <_Z12checkBackingv>
      a4e:	81 11       	cpse	r24, r1
      a50:	0e c0       	rjmp	.+28     	; 0xa6e <main+0x182>
      a52:	e4 de       	rcall	.-568    	; 0x81c <_Z18checkLaserCooldownv>
@@ -1656,6 +1652,7 @@ int main(void)
 	StartLaserTimer();
      a78:	e3 dc       	rcall	.-1594   	; 0x440 <_Z15StartLaserTimerv>
 	// This loop blinks the LEDs to show that we are dead
+	//nextOrder = MOVE_FORWARD;
 	while (dead) {
 		SendUART();
 		if (LASER_TIMER_COUNTER >= 2250) {
@@ -1668,11 +1665,11 @@ int main(void)
 			if (coolDownCTR == 4) {
 				nextOrder = RESET_SE;
      a80:	04 e1       	ldi	r16, 0x14	; 20
-	//#############################
 	
 	// Reset the laser timers count variable and start the laser timer (used to get a blinking LEDs)
 	StartLaserTimer();
 	// This loop blinks the LEDs to show that we are dead
+	//nextOrder = MOVE_FORWARD;
 	while (dead) {
      a82:	1b c0       	rjmp	.+54     	; 0xaba <main+0x1ce>
 		SendUART();
@@ -1702,11 +1699,11 @@ int main(void)
 				coolDownCTR = 0;
      ab2:	10 92 22 01 	sts	0x0122, r1
      ab6:	10 92 21 01 	sts	0x0121, r1
-	//#############################
 	
 	// Reset the laser timers count variable and start the laser timer (used to get a blinking LEDs)
 	StartLaserTimer();
 	// This loop blinks the LEDs to show that we are dead
+	//nextOrder = MOVE_FORWARD;
 	while (dead) {
      aba:	80 91 2e 01 	lds	r24, 0x012E
      abe:	81 11       	cpse	r24, r1
