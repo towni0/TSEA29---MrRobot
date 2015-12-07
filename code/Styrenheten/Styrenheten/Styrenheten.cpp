@@ -214,7 +214,7 @@ void ResetSE() {
 	health = 3;
 	
 	// Make sure that we dont move when we have restarted this module
-	MoveForward(0);
+	//MoveForward(0);
 	
 	// Set all heath LEDs activate
 	LED_PORT |= (1<<LED1_PIN) | (1<<LED2_PIN) | (1<<LED3_PIN);
