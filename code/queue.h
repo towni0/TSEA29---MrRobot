@@ -16,6 +16,7 @@ struct queue{
 void queue_init(struct queue *toBeInit){
 	toBeInit->front = 0;
 	toBeInit->back = 0;
+	toBeInit->size = 0;
 }
 
 void enqueue(uint8_t order, struct queue *queue){
@@ -55,7 +56,9 @@ void dequeue(struct queue *queue){
 			queue->front = queue->front->next;
 		}
 		free(temp);
-		queue->size--;
+		if(queue->size>0){
+			queue->size--;
+		}
 	}
 }
 

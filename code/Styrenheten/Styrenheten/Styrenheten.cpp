@@ -435,31 +435,26 @@ void SendUART() {
 		//may need to disable interrupts
 		switch(messageNumber){
 			case 1:
-			UDR1 = message1;
-			break;
+				UDR1 = message1;
+				break;
 			case 2:
-			UDR1 = message2;
-			break;
+				UDR1 = message2;
+				break;
 			case 3:
-			UDR1 = message3;
-			break;
+				UDR1 = message3;
+				break;
 			case 4:
-			UDR1 = message4;
-			break;
+				UDR1 = message4;
+				break;
 			case 5:
-			UDR1 = message5;
-			break;
+				UDR1 = message5;
+				break;
 			case 6:
 				//cli();
 				UDR1 = orderQueue.front->orderdata;
 				dequeue(&orderQueue);
 				//sei();
-				if(currentOrder != DO_NOTHING){ //Only send order if something is to be done
-// 					message6 &= 0b00000111; //reset everything except message ID
-// 					UDR1 = (currentOrder<<3) | message6;
-					//nextOrder = 0;
-				}
-			break;
+				break;
 			default:
 			//
 			//PORTC |= (1 << PINC0);
