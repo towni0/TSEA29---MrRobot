@@ -559,8 +559,8 @@ void waitForActivationSensor(){
 		
 		if((PINB>>PINB7) == 0){
 			cli();
-			tape1Threshold = tape1CurrentValue - TAPE_ERROR_MARGIN; 
-			tape2Threshold = tape2CurrentValue - TAPE_ERROR_MARGIN; 
+			tape1Threshold = tape1CurrentValue - TAPE1_ERROR_MARGIN; 
+			tape2Threshold = tape2CurrentValue - TAPE2_ERROR_MARGIN; 
 			sei();
 		}
 		

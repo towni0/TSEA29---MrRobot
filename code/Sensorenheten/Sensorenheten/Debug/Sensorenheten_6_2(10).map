@@ -632,9 +632,9 @@ END GROUP
  *(.debug_info .gnu.linkonce.wi.*)
  .debug_info    0x00000000      0x83b Sensorenheten.o
 
-.debug_abbrev   0x00000000      0x2de
+.debug_abbrev   0x00000000      0x2cf
  *(.debug_abbrev)
- .debug_abbrev  0x00000000      0x2de Sensorenheten.o
+ .debug_abbrev  0x00000000      0x2cf Sensorenheten.o
 
 .debug_line     0x00000000      0x8ce
  *(.debug_line .debug_line.* .debug_line_end)

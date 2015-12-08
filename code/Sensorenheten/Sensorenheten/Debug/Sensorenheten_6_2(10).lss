@@ -17,17 +17,17 @@ Idx Name          Size      VMA       LMA       File off  Algn
                   CONTENTS, READONLY, DEBUGGING
   6 .debug_info   0000083b  00000000  00000000  00000c78  2**0
                   CONTENTS, READONLY, DEBUGGING
-  7 .debug_abbrev 000002de  00000000  00000000  000014b3  2**0
+  7 .debug_abbrev 000002cf  00000000  00000000  000014b3  2**0
                   CONTENTS, READONLY, DEBUGGING
-  8 .debug_line   000008ce  00000000  00000000  00001791  2**0
+  8 .debug_line   000008ce  00000000  00000000  00001782  2**0
                   CONTENTS, READONLY, DEBUGGING
-  9 .debug_frame  00000190  00000000  00000000  00002060  2**2
+  9 .debug_frame  00000190  00000000  00000000  00002050  2**2
                   CONTENTS, READONLY, DEBUGGING
- 10 .debug_str    00000638  00000000  00000000  000021f0  2**0
+ 10 .debug_str    00000638  00000000  00000000  000021e0  2**0
                   CONTENTS, READONLY, DEBUGGING
- 11 .debug_loc    00000402  00000000  00000000  00002828  2**0
+ 11 .debug_loc    00000402  00000000  00000000  00002818  2**0
                   CONTENTS, READONLY, DEBUGGING
- 12 .debug_ranges 000000c0  00000000  00000000  00002c2a  2**0
+ 12 .debug_ranges 000000c0  00000000  00000000  00002c1a  2**0
                   CONTENTS, READONLY, DEBUGGING
 
 Disassembly of section .text:
@@ -1441,11 +1441,11 @@ void waitForActivationSensor(){
 			tape1Threshold = tape1CurrentValue - TAPE_ERROR_MARGIN; 
  83a:	80 91 29 01 	lds	r24, 0x0129
  83e:	90 91 2a 01 	lds	r25, 0x012A
- 842:	88 5c       	subi	r24, 0xC8	; 200
+ 842:	84 56       	subi	r24, 0x64	; 100
  844:	91 09       	sbc	r25, r1
  846:	90 93 0e 01 	sts	0x010E, r25
  84a:	80 93 0d 01 	sts	0x010D, r24
-			tape2Threshold = tape2CurrentValue - TAPE_ERROR_MARGIN; 
+			tape2Threshold = tape2CurrentValue - TAPE_ERROR_MARGIN - 100; 
  84e:	80 91 27 01 	lds	r24, 0x0127
  852:	90 91 28 01 	lds	r25, 0x0128
  856:	88 5c       	subi	r24, 0xC8	; 200
