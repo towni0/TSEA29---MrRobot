@@ -22,7 +22,7 @@ uint16_t tape1CurrentValue = 0;
 uint16_t tape2Threshold = 450; //Limit that determines what's tape and what's not
 uint16_t tape2CurrentValue = 0;
 
-const uint8_t TAPE1_ERROR_MARGIN = 100;
+const uint8_t TAPE1_ERROR_MARGIN = 75;
 const uint8_t TAPE2_ERROR_MARGIN = 200;
 
 //message 1
@@ -80,19 +80,20 @@ const uint8_t TAPE2_ERROR_MARGIN = 200;
 #define COLLISION_DISTANCE 2
 
 //Orders
-#define DO_NOTHING 						0
-#define MOVE_FORWARD 					1
-#define TURN_LEFT 						2
-#define TURN_RIGHT 						3
-#define ACTIVATE_LASER 					4
-#define DEACTIVATE_LASER 				5
-#define TURN_OFF_IR_SIG					6
-#define TURN_ON_IR_SIG 					7
-#define STOP_MOVING 					8
-#define DECREMENT_LED_LIVES				9
-#define TURN_INVISIBLE_AND_DEC_LIFE_LED 10
-#define ACTIVATE_LASER_AND_TURN_RIGHT 	11
-#define MOVE_BACKWARDS				 	12
+#define DO_NOTHING 										 0
+#define MOVE_FORWARD 									 1
+#define TURN_LEFT 										 2
+#define TURN_RIGHT 										 3
+#define ACTIVATE_LASER 									 4
+#define DEACTIVATE_LASER 								 5
+#define TURN_OFF_IR_SIG									 6
+#define TURN_ON_IR_SIG 									 7
+#define STOP_MOVING 									 8
+#define DECREMENT_LED_LIVES								 9
+#define TURN_INVISIBLE_AND_DEC_LIFE_LED					 10
+#define ACTIVATE_LASER_AND_TURN_RIGHT 					 11
+#define MOVE_BACKWARDS				 					 12
+#define MOVE_FORWARD_AND_TURN_INVISIBLE_AND_DEC_LIFE_LED 13
 
 
 #define RESET_SE						20
@@ -117,7 +118,7 @@ const uint8_t TAPE2_ERROR_MARGIN = 200;
 #define OFFSET_ROTATE_90		33000
 #define OFFSET_ROTATE_135		48000
 #define OFFSET_ROTATE_180		62000
-#define OFFSET_ROTATE_360		120000
+#define OFFSET_ROTATE_360		110000
 
 //UBRR constants for UART
 const uint8_t UBRR_SENSOR_MALSOKNING = 119;

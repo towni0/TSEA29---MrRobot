@@ -98,6 +98,7 @@ bool checkLaserSensor();
 bool checkLaserCooldown();
 bool invisibilityHandler();
 bool collisionCheck();
+void snapshotUART();
 
 // Rotation stuff
 bool rotating = false;
@@ -135,7 +136,7 @@ double millidegreesTurned = 0;
 //Test kod för testläge
 bool targetDistanceIsSet = false;
 bool needToRotate = false;
-int maxDistance = 10;
+int maxDistance = 20;
 int distanceToTarget = 0;
 bool isPositioning = false;
 bool checkLeft = false;
@@ -198,11 +199,12 @@ int main(void)
 	//UDR1 = 0x00;
 	
 	//###first order!###
-	nextOrder = MOVE_FORWARD;
+	//nextOrder = MOVE_FORWARD;
 	//nextOrder = ACTIVATE_LASER;
 	//nextOrder = TURN_OFF_IR_SIG;
 	//Shoot();
 	//Rotate(360000,true);
+	Rotate(50000,true);
 	
 	//WeAreHit();
 	//health = 1;
@@ -212,40 +214,7 @@ int main(void)
 	
     while(!dead)
     {
-		//disable interrupts
-		cli();
-		
-		//############################
-		//## Snapshot sensor values ##
-		//############################
-		//Message 1
-		IRSignature = (message1>>IRSIGNATURE_INDEX) & 0b00000111;
-		laserSensor = (message1>>LASER_INDEX) & 0b00000001;
-		activeIRsignature = (message1>>IRSENSOR_INDEX) & 0b00000001;
-		
-		//Message 2
-		ultraSonicSensor1 = (message2>>ULTRASONICSENSOR1_INDEX) & 0b00011111;
-		
-		//debugging
-		if(ultraSonicSensor1 < 1){
-			PORTC |= (1 << PINC0);
-		}
-		else{
-			PORTC &= ~(1 << PINC0);
-		}
-		//Message 3
-		ultraSonicSensor2 = (message3>>ULTRASONICSENSOR2_INDEX) & 0b00011111;
-		
-		//Message 4
-		gyro = (message4>>LOWERBITSGYRO_INDEX) & 0b00011111; //Low 5 bits
-		
-		//Message 5
-		gyro |= (message5<<2) & 0b11100000; //High 3 bits
-		tapeSensor1 = (message5>>TAPESENSOR1_INDEX) & 0b00000001;
-		tapeSensor2 = (message5>>TAPESENSOR2_INDEX) & 0b00000001;
-		
-		//enable interrupts
-		sei();
+		snapshotUART();
 		
 		//#######################
 		//## UART Transmission ##
@@ -259,7 +228,7 @@ int main(void)
 
 			IRDebouncer();			
 
-			if(checkForTape() || checkBacking() || checkLaserSensor() || checkLaserCooldown() || invisibilityHandler() || collisionCheck()) continue;
+			if(checkLaserSensor() || invisibilityHandler() || checkForTape() || checkBacking() || checkLaserCooldown() || collisionCheck()) continue;
 			
 			
 			// If we are rotating
@@ -283,7 +252,7 @@ int main(void)
 
 			IRDebouncer();
 
-			if(checkForTape() || checkBacking() || checkLaserCooldown()) continue;
+			if(checkLaserSensor() || invisibilityHandler() || checkForTape() || checkBacking() || checkLaserCooldown()) continue;
 			
 			// If we are rotating
 			if (rotating) {
@@ -304,17 +273,18 @@ int main(void)
 	//#############################
 	//#### DEATH CODE #############
 	//#############################
+
 	
 	// Reset the laser timers count variable and start the laser timer (used to get a blinking LEDs)
 	StartLaserTimer();
 	// This loop blinks the LEDs to show that we are dead
-	nextOrder = MOVE_FORWARD;
+	nextOrder = MOVE_FORWARD_AND_TURN_INVISIBLE_AND_DEC_LIFE_LED;
 	
 	bool startedMoveForward = false;
 	
 	while (dead) {
 		SendUART();
-		
+		snapshotUART();
 		if(tapeSensor1 == 1 && !leftTapeHit){
 			leftTapeHit = true;
 			
@@ -492,10 +462,6 @@ bool UpdateRotation() {
 	return false;
 }
 
-void Scan() {
-	scaning = true;
-	Rotate(360, true);
-}
 
 void Rotate(long milliDegrees, bool leftTurn) {
 	rotating = true;
@@ -528,15 +494,14 @@ int Abs(int value) {
 
 void WeAreHit() {
 	health--;
-	
+	nextOrder = TURN_INVISIBLE_AND_DEC_LIFE_LED;
+		
 	// We are dead
 	if (health <= 0) {
 		dead = true;
 		return;
 	}
-	
-	//SetPriority() // Måste skicka argument!
-	nextOrder = TURN_INVISIBLE_AND_DEC_LIFE_LED;
+
 	StartIRTimer();
 }
 
@@ -669,13 +634,13 @@ bool checkBacking(){
 				if (leftTapeHit) {
 					leftTapeHit = false;
 					//Rotate(45000 + (-30000 + (rand()%60)*1000), false);
-					Rotate(50000 + (rand()%140)*1000, false);
+					Rotate(60000 + (rand()%170)*1000, false);
 					return true;
 				}
 				else if (rightTapeHit) {
 					rightTapeHit = false;
 					//Rotate(60000 + (-30000 + (rand()%60)*1000), true);
-					Rotate(50000 + (rand()%140)*1000, true);
+					Rotate(60000 + (rand()%170)*1000, true);
 					return true;
 				}
 			}
@@ -765,4 +730,41 @@ bool collisionCheck(){
 		return true;
 	}
 	return false;
+}
+
+void snapshotUART(){
+	//disable interrupts
+	cli();
+	
+	//############################
+	//## Snapshot sensor values ##
+	//############################
+	//Message 1
+	IRSignature = (message1>>IRSIGNATURE_INDEX) & 0b00000111;
+	laserSensor = (message1>>LASER_INDEX) & 0b00000001;
+	activeIRsignature = (message1>>IRSENSOR_INDEX) & 0b00000001;
+	
+	//Message 2
+	ultraSonicSensor1 = (message2>>ULTRASONICSENSOR1_INDEX) & 0b00011111;
+	
+	//debugging
+	if(ultraSonicSensor1 < 1){
+		PORTC |= (1 << PINC0);
+	}
+	else{
+		PORTC &= ~(1 << PINC0);
+	}
+	//Message 3
+	ultraSonicSensor2 = (message3>>ULTRASONICSENSOR2_INDEX) & 0b00011111;
+	
+	//Message 4
+	gyro = (message4>>LOWERBITSGYRO_INDEX) & 0b00011111; //Low 5 bits
+	
+	//Message 5
+	gyro |= (message5<<2) & 0b11100000; //High 3 bits
+	tapeSensor1 = (message5>>TAPESENSOR1_INDEX) & 0b00000001;
+	tapeSensor2 = (message5>>TAPESENSOR2_INDEX) & 0b00000001;
+	
+	//enable interrupts
+	sei();
 }

@@ -162,6 +162,12 @@ int main(void){
 				MoveBackwards(MOVEMENT_SPEED);			
 				break;
 				
+			case MOVE_FORWARD_AND_TURN_INVISIBLE_AND_DEC_LIFE_LED:
+				MoveForward(MOVEMENT_SPEED);
+				TurnOffIRSignature();
+				DecrementLEDLives();
+			break;
+				
 			case RESET_SE:
 				ResetSE();
 				break;
