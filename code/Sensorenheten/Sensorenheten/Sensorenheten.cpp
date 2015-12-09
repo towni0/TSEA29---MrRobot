@@ -100,7 +100,10 @@ int main(void)
 	*/
 	
 	DDRD &= ~(1<<PIND7); //Aktiveringsknapp (in)
-	DDRB = 0b00011010;
+	DDRB = 0b00011110;
+	//DDRB = 0b11011110;
+	
+	//DDRA = 0b00000000;
 	//DDRB |= (1<<PIND6);
 	
 	//debugging
@@ -219,6 +222,7 @@ ISR(ADC_vect){
 	uint16_t message = ADCH <<8 | lowbits;
 	//enable interrupts
 	sei();
+	uint8_t inbetween = 0;
 	switch(ADCcount){
 		case GYRO:
 			message >>= 2; //Divide by 4
@@ -234,6 +238,11 @@ ISR(ADC_vect){
 			message5 &= 0b10111111;
 			tape1CurrentValue = message; //Save current value, used for calibration
 			//mask in actual value
+			//debug
+			message3 &= 0b00000111;
+			inbetween = (message >> 5);
+			message3 |= (inbetween << 3);
+			//!!!
 			message5 |= (tapeCheck(message, 1)<<TAPESENSOR1_INDEX);
 			//next muxed ADC
 			clearADCMUX();

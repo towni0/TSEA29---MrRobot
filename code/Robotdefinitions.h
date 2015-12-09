@@ -16,14 +16,14 @@
 #define TICKS_TO_WAIT_FOR_ACTIVATE_LASER 1000
 
 //left 800
-uint16_t tape1Threshold = 750; //Limit that determines what's tape and what's not
+uint16_t tape1Threshold = 650; //Limit that determines what's tape and what's not
 uint16_t tape1CurrentValue = 0;
 //right 500
-uint16_t tape2Threshold = 450; //Limit that determines what's tape and what's not
+uint16_t tape2Threshold = 650; //Limit that determines what's tape and what's not
 uint16_t tape2CurrentValue = 0;
 
-const uint8_t TAPE1_ERROR_MARGIN = 75;
-const uint8_t TAPE2_ERROR_MARGIN = 75;
+const uint8_t TAPE1_ERROR_MARGIN = 25;
+const uint8_t TAPE2_ERROR_MARGIN = 25;
 
 //message 1
 #define IRSIGNATURE_INDEX 3

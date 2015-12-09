@@ -54,7 +54,7 @@ volatile uint8_t tapeSensor1 = 0; //1 for tape, 0 for floor
 volatile uint8_t tapeSensor2 = 0; //1 for tape, 0 for floor
 volatile uint8_t ultraSonicSensor1 = 0; //distance in dm
 volatile uint8_t ultraSonicSensor2 = 0; //distance in dm
-volatile uint8_t activeIRsignature = 0; //1 if enemy in front
+volatile uint8_t isEnemy = 0; //1 if enemy in front
 volatile uint8_t IRSignature = 0; //the active IR signature
 volatile uint8_t laserSensor = 0; //1 if hit
 volatile uint8_t gyro = 0; //Rotation speed
@@ -124,7 +124,7 @@ void IRDebouncer();
 long IRDebounceArray[8];
 const uint8_t ourSignature = 0b00000110;
 const long enemySignatureLimit = 50000;
-uint8_t activeIRIndex = ourSignature;
+uint8_t activeIRIndex = 0;
 
 // Used to count up to 3
 int IRCTR = 0;
@@ -208,6 +208,8 @@ int main(void)
 	//nextOrder = TURN_OFF_IR_SIG;
 	//Shoot();
 	//Rotate(360000,true);
+	
+	
 	Rotate(50000,true);
 	
 	//WeAreHit();
@@ -224,6 +226,7 @@ int main(void)
 		//## UART Transmission ##
 		//#######################
 		SendUART();
+		
 		//continue; //For testing, skips giving orders
 		if((PINB>>PINB2) == 0){
 			// #############
@@ -340,34 +343,37 @@ void SendUART() {
 		//mux through messages
 		//may need to disable interrupts
 		switch(messageNumber){
-			case 1:
-			UDR1 = message1;
-			break;
+			case 1:	
+				// Send debounced IR-signature
+				message1 &= 0b11000111; //Reset signature in message
+				message1 |= (activeIRIndex<<IRSIGNATURE_INDEX); //Set new signature
+				UDR1 = message1;
+				break;
 			case 2:
-			UDR1 = message2;
-			break;
+				UDR1 = message2;
+				break;
 			case 3:
-			UDR1 = message3;
-			break;
+				UDR1 = message3;
+				break;
 			case 4:
-			UDR1 = message4;
-			break;
+				UDR1 = message4;
+				break;
 			case 5:
-			UDR1 = message5;
-			break;
+				UDR1 = message5;
+				break;
 			case 6:
-			if(nextOrder != DO_NOTHING){ //Only send order if something is to be done
-				message6 &= 0b00000111; //reset everything except message ID
-				UDR1 = (nextOrder<<3) | message6;
-				nextOrder = 0;
-			}
-			break;
+				if(nextOrder != DO_NOTHING){ //Only send order if something is to be done
+					message6 &= 0b00000111; //reset everything except message ID
+					UDR1 = (nextOrder<<3) | message6;
+					nextOrder = 0;
+				}
+				break;
 			default:
-			//
-			//PORTC |= (1 << PINC0);
-			//_delay_us(300);
-			//PORTC &= ~(1 << PINC0);
-			break;
+				//
+				//PORTC |= (1 << PINC0);
+				//_delay_us(300);
+				//PORTC &= ~(1 << PINC0);
+				break;
 		}
 		//next mux
 		messageNumber++;
@@ -389,9 +395,7 @@ ISR(USART0_RX_vect){
 	switch(messageID){
 		case 0:
 			message1 = buffer;
-			// Send debounced IR-signature
-			message1 &= ~(0b111<<IRSIGNATURE_INDEX); //Reset signature in message
-			message1 |= (activeIRIndex<<IRSIGNATURE_INDEX); //Set new signature
+
 			break;
 		case 1:
 			message2 = buffer;
@@ -656,7 +660,7 @@ bool checkBacking(){
 
 void IRDebouncer(){
 	long currentIRValue;
-	for(int i = 0; i<8; ++i){
+	for(uint8_t i = 0; i<8; ++i){
 		currentIRValue = IRDebounceArray[i];
 		// Skip our signature
 		if(i == ourSignature) continue;
@@ -678,7 +682,7 @@ void IRDebouncer(){
 			}
 			// Reset activeIRIndex by setting it to our signature if its below the limit
 			if(activeIRIndex == i && currentIRValue < enemySignatureLimit){
-				activeIRIndex = ourSignature;
+				activeIRIndex = 5;
 			}
 		}
 		IRDebounceArray[i] = currentIRValue;
@@ -752,7 +756,7 @@ void snapshotUART(){
 	//Message 1
 	IRSignature = (message1>>IRSIGNATURE_INDEX) & 0b00000111;
 	laserSensor = (message1>>LASER_INDEX) & 0b00000001;
-	activeIRsignature = (message1>>IRSENSOR_INDEX) & 0b00000001;
+	isEnemy = (message1>>IRSENSOR_INDEX) & 0b00000001;
 	
 	//Message 2
 	ultraSonicSensor1 = (message2>>ULTRASONICSENSOR1_INDEX) & 0b00011111;
