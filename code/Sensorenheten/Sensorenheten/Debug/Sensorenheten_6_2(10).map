@@ -628,9 +628,9 @@ END GROUP
 .debug_pubnames
  *(.debug_pubnames)
 
-.debug_info     0x00000000      0x83b
+.debug_info     0x00000000      0x847
  *(.debug_info .gnu.linkonce.wi.*)
- .debug_info    0x00000000      0x83b Sensorenheten.o
+ .debug_info    0x00000000      0x847 Sensorenheten.o
 
 .debug_abbrev   0x00000000      0x2cf
  *(.debug_abbrev)
@@ -644,10 +644,10 @@ END GROUP
  *(.debug_frame)
  .debug_frame   0x00000000      0x190 Sensorenheten.o
 
-.debug_str      0x00000000      0x638
+.debug_str      0x00000000      0x64c
  *(.debug_str)
- .debug_str     0x00000000      0x638 Sensorenheten.o
-                                0x67c (size before relaxing)
+ .debug_str     0x00000000      0x64c Sensorenheten.o
+                                0x690 (size before relaxing)
 
 .debug_loc      0x00000000      0x402
  *(.debug_loc)

@@ -23,7 +23,7 @@ uint16_t tape2Threshold = 450; //Limit that determines what's tape and what's no
 uint16_t tape2CurrentValue = 0;
 
 const uint8_t TAPE1_ERROR_MARGIN = 75;
-const uint8_t TAPE2_ERROR_MARGIN = 200;
+const uint8_t TAPE2_ERROR_MARGIN = 75;
 
 //message 1
 #define IRSIGNATURE_INDEX 3
