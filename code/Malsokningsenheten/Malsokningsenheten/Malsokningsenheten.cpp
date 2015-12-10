@@ -91,7 +91,7 @@ bool bothTapeSensors = false;
 
 
 //Main loop functions
-//void IRDebouncer();
+void IRDebouncer();
 bool checkForTape();
 bool checkBacking();
 bool checkLaserSensor();
@@ -120,11 +120,7 @@ bool laserSensorHit = false;
 
 // IR-signature counting
 long enemySignatureCTR = 0;
-void IRDebouncer();
-long IRDebounceArray[8];
-const uint8_t ourSignature = 0b00000110;
-const long enemySignatureLimit = 50;
-uint8_t activeIRIndex = 0;
+const long enemySignatureLimit = 50000;
 
 // Used to count up to 3
 int IRCTR = 0;
@@ -203,14 +199,14 @@ int main(void)
 	//UDR1 = 0x00;
 	
 	//###first order!###
-	//nextOrder = MOVE_FORWARD;
+	nextOrder = MOVE_FORWARD;
 	//nextOrder = ACTIVATE_LASER;
 	//nextOrder = TURN_OFF_IR_SIG;
 	//Shoot();
+
 	//Rotate(360000,true);
 	
-	
-	Rotate(50000,true);
+	//Rotate(50000,true);
 	
 	//WeAreHit();
 	//health = 1;
@@ -234,7 +230,7 @@ int main(void)
 			// #############
 
 			IRDebouncer();			
-			if(activeIRIndex != ourSignature && !isPositioning) isPositioning = true;
+			if(enemySignatureCTR >= enemySignatureLimit && !isPositioning) isPositioning = true;
 			if(checkLaserSensor() || invisibilityHandler() || checkForTape() || checkBacking() || checkLaserCooldown() || collisionCheck()) continue;
 			
 			
@@ -258,7 +254,7 @@ int main(void)
 			
 
 			IRDebouncer();
-			if(activeIRIndex != ourSignature && !isPositioning) isPositioning = true;
+			if(enemySignatureCTR >= enemySignatureLimit && !isPositioning) isPositioning = true;
 			if(checkLaserSensor() || invisibilityHandler() || checkForTape() || checkBacking() || checkLaserCooldown()) continue;
 			
 			// If we are rotating
@@ -345,8 +341,10 @@ void SendUART() {
 		switch(messageNumber){
 			case 1:	
 				// Send debounced IR-signature
-				message1 &= 0b11000111; //Reset signature in message
-				message1 |= (activeIRIndex<<IRSIGNATURE_INDEX); //Set new signature
+				//message1 &= 0b11000111; //Reset signature in message
+				//message1 |= (activeIRIndex<<IRSIGNATURE_INDEX); //Set new signature
+				message1 &= ~(1<<IRSENSOR_INDEX); //Reset bit
+				(isEnemy ? message1 |= (1<<IRSENSOR_INDEX) : message1 &= ~(1<<IRSENSOR_INDEX));
 				UDR1 = message1;
 				break;
 			case 2:
@@ -598,7 +596,7 @@ void StopIRTimer() {
 
 
 void positioning() {
-	if (ultraSonicSensor1 <= maxDistance && activeIRIndex != ourSignature && canShoot) {
+	if (ultraSonicSensor1 <= maxDistance && enemySignatureCTR >= enemySignatureLimit && canShoot) {
 		Shoot();
 		isPositioning = false;
 		enemySignatureCTR = 0;
@@ -657,35 +655,26 @@ bool checkBacking(){
 }
 
 void IRDebouncer(){
-	long currentIRValue;
-	for(uint8_t i = 0; i<8; i++){
-		currentIRValue = IRDebounceArray[i];
-		// Skip our signature
-		if(i == ourSignature) continue;
-		// Increment/decrement and cap at (enemySignatureLimit * 2)
-		if(IRSignature == i){
-			// Cap at (enemySignatureLimit * 2)
-			if(currentIRValue < enemySignatureLimit * 2){
-				currentIRValue += (rotating ? 1 : 1);
-			}
-			// Check if we are confident that we have an enemy
-			if(currentIRValue >= enemySignatureLimit){
-				PORTC ^= (1<<PINC1);
-				activeIRIndex = i;
-			}
+	// IR Signature debouncing
+	if (isEnemy) {
+		if (!(enemySignatureCTR >= enemySignatureLimit * 2)) {
+			//enemySignatureCTR++;
+			enemySignatureCTR += (rotating ? 6 : 1);
 		}
-		else{
-			// Cap at 0
-			if(currentIRValue > 0){
-				currentIRValue -= (rotating ? 1 : 1);
-				PORTC ^= (1<<PINC0);
-			}
-			// Reset activeIRIndex by setting it to our signature if its below the limit
-			if(activeIRIndex == i && currentIRValue < enemySignatureLimit){
-				activeIRIndex = ourSignature;
-			}
+	}
+	
+	else{
+		//enemySignatureCTR -= 5;
+		enemySignatureCTR -= (rotating ? 12 : 3);
+		
+		if (enemySignatureCTR < 0){
+			enemySignatureCTR = 0;
 		}
-		IRDebounceArray[i] = currentIRValue;
+	}
+	
+	//test för att centrera framför fyr.
+	if (enemySignatureCTR >= enemySignatureLimit && !isPositioning) {
+		isPositioning = true;
 	}
 }
 

@@ -108,7 +108,7 @@ const uint8_t TAPE2_ERROR_MARGIN = 25;
 #define HighSpeed 255
 #define MediumSpeed 128
 #define LowSpeed 64
-#define ANGULAR_RATE_IDLE 128
+#define ANGULAR_RATE_IDLE 133
 
 
 //Rotation offset
@@ -118,7 +118,7 @@ const uint8_t TAPE2_ERROR_MARGIN = 25;
 #define OFFSET_ROTATE_90		33000
 #define OFFSET_ROTATE_135		48000
 #define OFFSET_ROTATE_180		62000
-#define OFFSET_ROTATE_360		118000
+#define OFFSET_ROTATE_360		103000
 
 //UBRR constants for UART
 const uint8_t UBRR_SENSOR_MALSOKNING = 119;

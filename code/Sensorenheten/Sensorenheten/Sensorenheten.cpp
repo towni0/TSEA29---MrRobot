@@ -146,6 +146,7 @@ int main(void)
 	UCSR0B |= (1<<TXCIE0);
 	
 	//inactivate
+	_delay_ms(100);
 	PORTB |= (1 << LASER_AKTIVERA_PORT);
 	_delay_ms(10);
 	//activate, might have to wait if this is too fast
