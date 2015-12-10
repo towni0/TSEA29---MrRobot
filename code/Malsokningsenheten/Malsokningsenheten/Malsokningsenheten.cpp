@@ -123,7 +123,7 @@ long enemySignatureCTR = 0;
 void IRDebouncer();
 long IRDebounceArray[8];
 const uint8_t ourSignature = 0b00000110;
-const long enemySignatureLimit = 50000;
+const long enemySignatureLimit = 50;
 uint8_t activeIRIndex = 0;
 
 // Used to count up to 3
@@ -395,7 +395,6 @@ ISR(USART0_RX_vect){
 	switch(messageID){
 		case 0:
 			message1 = buffer;
-
 			break;
 		case 1:
 			message2 = buffer;
@@ -410,7 +409,6 @@ ISR(USART0_RX_vect){
 			message5 = buffer;
 // 			message5 &= 0b00111000; //We set the gyro bits elsewhere
 // 			message5 |= (buffer & 0b11000111);
-	
 			break;
 	}
 }
@@ -660,7 +658,7 @@ bool checkBacking(){
 
 void IRDebouncer(){
 	long currentIRValue;
-	for(uint8_t i = 0; i<8; ++i){
+	for(uint8_t i = 0; i<8; i++){
 		currentIRValue = IRDebounceArray[i];
 		// Skip our signature
 		if(i == ourSignature) continue;
@@ -668,21 +666,23 @@ void IRDebouncer(){
 		if(IRSignature == i){
 			// Cap at (enemySignatureLimit * 2)
 			if(currentIRValue < enemySignatureLimit * 2){
-				currentIRValue += (rotating ? 3 : 1);
+				currentIRValue += (rotating ? 1 : 1);
 			}
 			// Check if we are confident that we have an enemy
 			if(currentIRValue >= enemySignatureLimit){
+				PORTC ^= (1<<PINC1);
 				activeIRIndex = i;
 			}
 		}
 		else{
 			// Cap at 0
 			if(currentIRValue > 0){
-				currentIRValue -= (rotating ? 10 : 3);
+				currentIRValue -= (rotating ? 1 : 1);
+				PORTC ^= (1<<PINC0);
 			}
 			// Reset activeIRIndex by setting it to our signature if its below the limit
 			if(activeIRIndex == i && currentIRValue < enemySignatureLimit){
-				activeIRIndex = 5;
+				activeIRIndex = ourSignature;
 			}
 		}
 		IRDebounceArray[i] = currentIRValue;
@@ -762,12 +762,12 @@ void snapshotUART(){
 	ultraSonicSensor1 = (message2>>ULTRASONICSENSOR1_INDEX) & 0b00011111;
 	
 	//debugging
-	if(ultraSonicSensor1 < 1){
-		PORTC |= (1 << PINC0);
-	}
-	else{
-		PORTC &= ~(1 << PINC0);
-	}
+// 	if(ultraSonicSensor1 < 1){
+// 		PORTC |= (1 << PINC0);
+// 	}
+// 	else{
+// 		PORTC &= ~(1 << PINC0);
+// 	}
 	//Message 3
 	ultraSonicSensor2 = (message3>>ULTRASONICSENSOR2_INDEX) & 0b00011111;
 	

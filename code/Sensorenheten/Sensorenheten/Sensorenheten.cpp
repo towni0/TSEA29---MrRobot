@@ -43,6 +43,7 @@ void testTAPEsensors();
 
 bool compareSignature(uint8_t* oursignature, uint8_t* signature);
 void IRSensorFunction();
+void IRSensortest();
 bool edge = false;
 bool header = false;
 bool enemy = false;
@@ -167,7 +168,8 @@ int main(void)
 		//## IR SENSOR ##
 		//###############
 		
-		IRSensorFunction();
+		//IRSensorFunction();
+		IRSensortest();
 		
 		//##################
 		//## Laser sensor ##
@@ -575,6 +577,123 @@ void waitForActivationSensor(){
 		
 	}
 	return;
+}
+
+int IRcount = 0;
+bool headerPhase = false;
+bool signaturePhase = false;
+bool pause = false;
+bool messySignal = false; //use for debug
+bool enemy1 = false;
+
+void IRSensortest(){
+	// If 100 us have passed
+	if (TCNT1 > 1842){ //Timer counter
+		IRcount++;
+		TCNT1 = 0;
+		
+		//debug signal
+		PORTC ^= (1<<PINC0);
+	}
+	
+	//start with looking for header
+	if(!headerPhase && !signaturePhase){
+		if(bit_is_clear(PINB, 6)){ // check if header can start
+			headerPhase = true;
+			IRcount = 0;
+			messySignal = false;
+		}
+	}
+	else if(headerPhase && !signaturePhase){
+		//if header is too short or long redo
+		if(bit_is_set(PINB, 6) && ((IRcount < IRheader) || (IRcount > IRheader + 6))){
+			messySignal = true;
+			headerPhase = false;
+		}
+		else if(bit_is_set(PINB, 6) && IRcount >= IRheader){
+			signaturePhase = true;
+			index = 0;
+			IRcount = 0;
+			pause=true;
+		}
+	}
+	
+	if(signaturePhase){
+		//pauses should be detected as +~400us signals
+		if(pause){
+			//if the pause is too short or long we have a mess
+			if(bit_is_clear(PINB, 6) && ((IRcount < 5) || (IRcount > 7))){
+				messySignal = true;
+				signaturePhase = false;
+				headerPhase = false;
+			}
+			//if pause is between 300 to 700 we accept it
+			else if(bit_is_clear(PINB, 6)){
+				pause=false;
+				IRcount = 0;
+			}
+		}
+		else{
+			//if signal was too short or too long we have mixed signal or header
+			if(bit_is_set(PINB, 6) && ((IRcount < 4) || (IRcount > 13))){
+				messySignal = true;
+				signaturePhase = false;
+				headerPhase = false;
+			}
+			//accept ~1100 to 2000us as a 1
+			else if(bit_is_set(PINB, 6) && IRcount > 9){
+				signature[index] = 1;
+				index++;
+				pause = true;
+				IRcount = 0;
+			}
+			//accept 3-10 as a 0 ~300 us to 1000 us
+			else if(bit_is_set(PINB, 6)){
+				signature[index] = 0;
+				index++;
+				pause = true;
+				IRcount = 0;
+			}
+		}
+	}
+	
+	//if full signature has been picked up
+	if(index == 3){
+		if (compareSignature(oursignature, signature)){
+			enemy1 = false;
+		}
+		else {
+			enemy1 = true;
+		}
+		headerPhase = false;
+		signaturePhase = false;
+		index = 0;
+		IRcount = 0;
+		messySignal = false;
+		
+		//Set UART message
+		signatureS = (signature[0]<<2) | (signature[1]<<1) | signature[2];
+		message1 &= ~(0b111<<IRSIGNATURE_INDEX); //Reset signature in message
+		message1 |= (signatureS<<IRSIGNATURE_INDEX); //Set new signature
+		(enemy1 ? message1 |= (1<<IRSENSOR_INDEX) : message1 &= ~(1<<IRSENSOR_INDEX));
+		//send signature in message3 for debug(old ultrasonic sensor 2)
+		message3 &= 0b00000111;
+		message3 |= (signatureS << 3);
+	}
+	
+	//update with our signature (default) if no signature spotted
+	if (IRcount == IRheader * 10){
+		enemy = false;
+		//Set UART message
+		signatureS = (oursignature[0]<<2) | (oursignature[1]<<1) | oursignature[2];
+		message1 &= ~(0b111<<IRSIGNATURE_INDEX); //Reset signature in message
+		message1 |= (signatureS<<IRSIGNATURE_INDEX); //Set new signature
+		(enemy ? message1 |= (1<<IRSENSOR_INDEX) : message1 &= ~(1<<IRSENSOR_INDEX));
+		//send signature in message3 for debug(old ultrasonic sensor 2)
+		message3 &= 0b00000111;
+		message3 |= (signatureS << 3);
+	}
+	
 }
 
 
