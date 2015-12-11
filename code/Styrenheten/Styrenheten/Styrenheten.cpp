@@ -73,26 +73,21 @@ uint8_t messageNumber = 1;
 int main(void){
 	DDRB = 0b11111111;
 
-	//Grace time for bluetooth timer prescale /1024
+	//Grace time for bluetooth timer prescaler /1024
 	TCCR2B |= (1<<CS20) | (1<<CS22);
 	
 	// Call all Init functions in this module
 	Init();
 	
 	queue_init(&orderQueue);
+	
 	//enable global interrupts
 	sei();
 	
 	waitForActivation();
-	//StopMove(); //temp
-	//PORTD &= ~(1<<PIND4);
 	
-
     while(1)
     {
-
-		
-		
 		//Send UART to bluetooth without DC
  		if(TCNT2 >= UART_BLUETOOTH_GRACE_PERIOD){
 			//LED_PORT ^= (1 << INVISIBLE_LED_PIN);
@@ -100,7 +95,7 @@ int main(void){
  			TCNT2 = 0;	
  		}
 
-		//Do command
+		//Snapshot order data
 		cli();
 		uint8_t snapshotOrder = currentOrder;
 		sei();
@@ -108,7 +103,6 @@ int main(void){
 		//Reset order so that its not executed more than once
 		currentOrder = DO_NOTHING;
 
-		//snapshotOrder = TURN_RIGHT;
 		switch (snapshotOrder) {
 			case DO_NOTHING:
 				break;
@@ -153,6 +147,7 @@ int main(void){
 				DecrementLEDLives();
 				TurnOffIRSignature();
 				break;
+				
 			case ACTIVATE_LASER_AND_TURN_RIGHT:
 				ActivateLaser();
 				TurnRight(ROTATION_SPEED);
@@ -166,15 +161,10 @@ int main(void){
 				MoveForward(MOVEMENT_SPEED);
 				TurnOffIRSignature();
 				DecrementLEDLives();
-			break;
+				break;
 				
 			case RESET_SE:
 				ResetSE();
-				break;
-			
-			default:
-				// Error
-				PORTB |= (1<<PINB4);
 				break;
 		}
 		
@@ -182,13 +172,12 @@ int main(void){
 		if (IRisActivive) {
 			IR_sender();
 		}
-		
-		
-		
     }
 }
 
-// Code that send out our signature
+/*
+	Sends out our IR-signature.
+*/
 void IR_sender() {
 	if (isHigh) {
 		OCR3A = ICR3 - IRdutyCycle; // duty cycle on 50% of length 26 for PINB6
@@ -200,7 +189,6 @@ void IR_sender() {
 	if (TCNT0 > 225) {
 		ctr++;
 		TCNT0 = 0;
-		
 	}
 	
 	if (ctr == pauseTimes[ptIndex]) {
@@ -214,25 +202,28 @@ void IR_sender() {
 	}
 }
 
-// Reset all necessary data
+/*
+	Reset all necessary data
+*/
 void ResetSE() {
 	// Reset health
 	health = 3;
-	
-	// Make sure that we dont move when we have restarted this module
-	//MoveForward(0);
-	
-	// Set all heath LEDs activate
+
+	// Set all health LEDs activate
 	LED_PORT |= (1<<LED1_PIN) | (1<<LED2_PIN) | (1<<LED3_PIN);
 }
 
-// Set doutyCycle for the PWM pins
+/*
+	Sets dutyCycle for the PWM pins
+*/
 void SetPWM() {
 	OCR1A = ICR1 - dutyCycle; // duty cycle on "dutyCycle" of length "period" for PD5
 	OCR1B = ICR1 - dutyCycle; // duty cycle on "dutyCycle" of length "period" for PD4
 }
 
-// Calls all Init functions
+/*
+	Calls all init functions.
+*/
 void Init() {
 	InitUART();
 	InitPWM();
@@ -240,13 +231,15 @@ void Init() {
 	InitIRSender();
 }
 
+/*
+	Initiates UART.
+*/
 void InitUART() {
 
 	//#UART INITS#//
 
 	//initiate UART målsökning to styr
-	//set baud rate
-	//115200
+	//set baud rate 115200
 	uint16_t UBRR_val = UBRR_STYR_MALSOKNING;
 	UBRR0H = (unsigned char) (UBRR_val >> 8);
 	UBRR0L = (unsigned char) UBRR_val;
@@ -258,11 +251,8 @@ void InitUART() {
 	//enable receive interrupt
 	UCSR0B |= (1<<RXCIE0);
 	
-	
 	//FROM STYR TO BLUETOOTH
-	//initiate UART målsökning to styr
-	//set baud rate
-	//115200
+	//set baud rate 115200
 	uint16_t UBRR_val1 = UBRR_STYR_MALSOKNING;
 	UBRR1H = (unsigned char) (UBRR_val1 >> 8);
 	UBRR1L = (unsigned char) UBRR_val1;
@@ -273,46 +263,52 @@ void InitUART() {
 	//#UART INITS END#//
 }
 
-// Set all LED pins as output and light them up!
+/*
+	Sets all LED pins as output and lights them up!
+*/
 void InitLEDs() {
 	DDRB |= (1<<LED1_PIN) | (1<<LED2_PIN) | (1<<LED3_PIN) | (1<<INVISIBLE_LED_PIN) | (1<<LASER_LED_PIN);
 	// Set all heath LEDs activate
 	LED_PORT |= (1<<LED1_PIN) | (1<<LED2_PIN) | (1<<LED3_PIN);
 }
 
-// Setup of PWM and DIR
+/*
+	Setup of PWM and DIR.
+*/
 void InitPWM() {
 	// PWM setup
 	TCCR1A |= (1<<WGM11) | (1<<COM1A1) | (1<<COM1A0) | (1<<COM1B0) | (1<<COM1B1);
  	TCCR1B |= (1<<WGM12) | (1<<WGM13) | (1<<CS10);
 
-
 	ICR1 = period;
 	
-	// make sure motor is off.
+	// Make sure motor is off.
 	OCR1A = ICR1;
 	OCR1B = ICR1;
 	
 	// DIR setup
-	
 	DDRD |= (1<<PWM1) | (1<<PWM2);
 	DDRB |= (1<<DIR1);
 	DDRA |= (1<<DIR2);
 }
 
-
+/*
+	Initiates the IR sender.
+*/
 void InitIRSender() {
 	DDRB|= (1<<PINB6);
 	TCCR3A |= 1<<WGM31 | 1<<COM3A1 | 1<<COM3A0 |1<<COM3B0 | 1<<COM3B1;
 	TCCR3B |= 1<<WGM32 | 1<<WGM33 | 1<<CS30;
 	
-	ICR3 = IRperiod;		// period length in us
+	ICR3 = IRperiod; // period length in us
 	OCR3A = ICR3;
-	TCCR0B |= 1<<CS01;	// Starta 8-bit ctr
+	TCCR0B |= 1<<CS01; // Starta 8-bit ctr
 }
 
-// Set PWM1 and PWM2 to HIGH(set dutyCycle)
-// Set DIR1 and DIR2 to low
+/*
+	Set PWM1 and PWM2 to HIGH(set dutyCycle)
+	Set DIR1 and DIR2 to low
+*/
 void MoveForward(int speed) {
 	dutyCycle = speed;
 	SetPWM();
@@ -320,6 +316,9 @@ void MoveForward(int speed) {
 	PORTA |= (1<<DIR2);
 }
 
+/*
+	Move the robot backwards.
+*/
 void MoveBackwards(int speed) {
 	dutyCycle = speed;
 	SetPWM();
@@ -327,8 +326,10 @@ void MoveBackwards(int speed) {
 	PORTA &= ~(1<<DIR2);
 }
 
-// Set PWM1 and PWM2 to HIGH(set dutyCycle)
-// Set DIR1 to LOW and DIR2 to HIGH
+/*
+	Set PWM1 and PWM2 to HIGH(set dutyCycle)
+	Set DIR1 to LOW and DIR2 to HIGH
+*/
 void TurnLeft(int speed) {
 	dutyCycle = speed;
 	SetPWM();
@@ -337,8 +338,10 @@ void TurnLeft(int speed) {
 
 }
 
-// Set PWM1 and PWM2 to HIGH(set dutyCycle)
-// Set DIR2 to LOW and DIR1 to HIGH
+/*
+	Sets PWM1 and PWM2 to HIGH(set dutyCycle)
+	Sets DIR2 to LOW and DIR1 to HIGH
+*/
 void TurnRight(int speed) {
 	dutyCycle = speed;
 	SetPWM();
@@ -346,30 +349,40 @@ void TurnRight(int speed) {
 	PORTB |= (1<<DIR1);
 }
 
-// Activates the laser pointer and the Laser lED
+/*
+	Activates the laser pointer and the Laser LED.
+*/
 void ActivateLaser() {
 	LASER_PORT |= (1<<LASER_PIN);
 }
 
-// Deactivates the laser pointer and the Laser LED
+/*
+	Deactivates the laser pointer and the Laser LED.
+*/
 void DeactivateLaser() {
 	LASER_PORT &= ~(1<<LASER_PIN);
 }
 
-// Turns the IR-sender off (invisible) and turn on Invisible LED
+/*
+	Turns the IR-sender off (invisible) and turn on Invisible LED.
+*/
 void TurnOffIRSignature() {
 	IRisActivive = false;
 	LED_PORT |= (1 << INVISIBLE_LED_PIN);
 }
 
-// Turns the IR-sender on (not invisible) and turn off Invisible LED
+/*
+	Turns the IR-sender on (not invisible) and turn off Invisible LED.
+*/
 void TurnOnIRSignature() {
 	IRisActivive = true;
 	LED_PORT &= ~(1 << INVISIBLE_LED_PIN);
 
 }
 
-// Decrement the amount of lives we have (show on less LED)
+/*
+	Decrement the amount of lives we have (show on less LED).
+*/
 void DecrementLEDLives() {
 	health--;
 	
@@ -387,13 +400,17 @@ void DecrementLEDLives() {
 	
 }
 
-// Set PWM1 and PWM2 to LOW(dutyCycle == 0)
+/*
+	Sets PWM1 and PWM2 to LOW(dutyCycle == 0)
+*/
 void StopMove() {
 	dutyCycle = 0;
 	SetPWM();
 }
 
-//UART ISR which sets the "currentOrder" variable
+/*
+	Interrupt function for receiving UART data.
+*/
 ISR(USART0_RX_vect){
 	uint8_t snapbuffer = UDR0;
 	uint8_t messageID = snapbuffer & 0x07; //Mask out message ID
@@ -422,14 +439,17 @@ ISR(USART0_RX_vect){
 	//only look at ORDERS
 	if(messageID == ORDER_ID){
 		currentOrder = (snapbuffer>>3) & 0b00011111; //Mask out the order
+		cli();
 		enqueue(snapbuffer, &orderQueue);
+		sei();
 	}
 }
 
+/*
+	Sends messages over UART.
+*/
 void SendUART() {
 	//check if transmit buffer is empty
-	//(UCSR1A & (1<<TXC1)) &&
-	//_delay_us(300);
 	if((UCSR1A & (1<<UDRE1))){
 		//mux through messages
 		//may need to disable interrupts
@@ -450,23 +470,14 @@ void SendUART() {
 				UDR1 = message5;
 				break;
 			case 6:
-				//cli();
+				cli();
 				UDR1 = orderQueue.front->orderdata;
 				dequeue(&orderQueue);
-				//sei();
+				sei();
 				break;
-			default:
-			//
-			//PORTC |= (1 << PINC0);
-			//_delay_us(300);
-			//PORTC &= ~(1 << PINC0);
-			break;
 		}
 		//next mux
 		messageNumber++;
 		if(messageNumber>NUMBER_OF_MESSAGES+1) messageNumber=1;
-		//UCSR1A |= (1<<TXC1);
-		//_delay_us(300);
 	}
-	
 }

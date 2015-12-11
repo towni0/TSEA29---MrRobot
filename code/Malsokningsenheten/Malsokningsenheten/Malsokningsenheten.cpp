@@ -13,7 +13,7 @@
 #include <stdlib.h>
 
 
-// Function headerss
+// Function headers
 void SetPriority(int priority);
 void ClearPriority();
 void WeAreHit();
@@ -36,8 +36,6 @@ void StopRotate(int orderToPerformOnStop);
 bool UpdateRotation();
 
 
-
-
 //initial values are set to their IDs from design spec. (these bits are never changed)
 uint8_t message1 = 0;
 uint8_t message2 = 1;
@@ -46,8 +44,6 @@ uint8_t message4 = 3;
 uint8_t message5 = 4;
 uint8_t message6 = 5;
 
-uint8_t messageout4 = 3;
-uint8_t messageout5 = 4;
 
 //Variables for storing sensor values
 volatile uint8_t tapeSensor1 = 0; //1 for tape, 0 for floor
@@ -189,52 +185,29 @@ int main(void)
 	UCSR1B = (1<<TXEN1);
 	UCSR1C = (1<<UCSZ10) | (1<<UCSZ11);
 	
-	//enable transmit interrupt was for testing blueetooth
-	//UCSR1B |= (1<<TXCIE0);
-	//#UART INITS END#//
+	//# UART INITS END #//
 	
 	waitForActivation();
 	
-	//start first UART transmission just for testing bluetooth
-	//UDR1 = 0x00;
-	
 	//###first order!###
-	nextOrder = MOVE_FORWARD;
-	//nextOrder = ACTIVATE_LASER;
-	//nextOrder = TURN_OFF_IR_SIG;
-	//Shoot();
-
-	//Rotate(360000,true);
+	Rotate(50000,true);
 	
-	//Rotate(50000,true);
-	
-	//WeAreHit();
-	//health = 1;
-	//WeAreHit();
-	
-	
-	
+	//Main loop when we are alive
     while(!dead)
     {
-		snapshotUART();
-		
-		//#######################
-		//## UART Transmission ##
-		//#######################
+		snapshotUART(); 
 		SendUART();
-		
-		//continue; //For testing, skips giving orders
+	
+		//Check a switch on the robot to determine what mode the robot is set to
 		if((PINB>>PINB2) == 0){
-			// #############
-			// ## Tävling ##
-			// #############
+			//#############
+			//## Tävling ##
+			//#############
 
 			IRDebouncer();			
 			if(enemySignatureCTR >= enemySignatureLimit && !isPositioning) isPositioning = true;
-			if(checkLaserSensor() || invisibilityHandler() || checkForTape() || checkBacking() || checkLaserCooldown() || collisionCheck()) continue;
+			if(checkLaserSensor() || invisibilityHandler() || checkLaserCooldown() || checkForTape() || checkBacking() || collisionCheck()) continue;
 			
-			
-			// If we are rotating
 			if (rotating) {
 				if (UpdateRotation()){
 					continue;
@@ -245,19 +218,16 @@ int main(void)
 				positioning();
 				continue;
 			}
-
 		}
 		else{
 			//##############
 			//## Testläge ##
 			//##############
-			
-
+		
 			IRDebouncer();
-			if(enemySignatureCTR >= enemySignatureLimit && !isPositioning) isPositioning = true;
-			if(checkLaserSensor() || invisibilityHandler() || checkForTape() || checkBacking() || checkLaserCooldown()) continue;
+			if(enemySignatureCTR >= enemySignatureLimit && !isPositioning) isPositioning = true; //Start positioning if we find an enemy signature
+			if(checkLaserSensor() || invisibilityHandler() || checkLaserCooldown() || checkForTape() || checkBacking()) continue;
 			
-			// If we are rotating
 			if (rotating) {
 				if (UpdateRotation()){
 					continue;
@@ -267,17 +237,14 @@ int main(void)
 			if (isPositioning) {
 				positioning();
 				continue;
-			}
-			
+			}	
 		}
-
     }
 	
 	//#############################
 	//#### DEATH CODE #############
 	//#############################
 
-	
 	// Reset the laser timers count variable and start the laser timer (used to get a blinking LEDs)
 	StartLaserTimer();
 	// This loop blinks the LEDs to show that we are dead
@@ -285,25 +252,26 @@ int main(void)
 	
 	bool startedMoveForward = false;
 	
+	//Loops when we are dead
 	while (dead) {
 		SendUART();
 		snapshotUART();
+		
+		// If the left tape sensor detects tape and we haven't started rotating, turn right
 		if(tapeSensor1 == 1 && !leftTapeHit){
 			leftTapeHit = true;
-			
 			nextOrder = TURN_LEFT;
 			continue;
-
 		}
 	
-		// If the Right line sensor detects tape and we haven't started rotating, turn left
+		// If the right line sensor detects tape and we haven't started rotating, turn left
 		if(tapeSensor2 == 1 && !rightTapeHit){
 			rightTapeHit = true;
-			
 			nextOrder = TURN_RIGHT;
 			continue;
 		}
 		
+		// When both left and right tape sensors have detected tape, move forward
 		if (leftTapeHit && rightTapeHit && !startedMoveForward) {
 			nextOrder = MOVE_FORWARD;
 			startedMoveForward = true;
@@ -311,6 +279,7 @@ int main(void)
 			continue;
 		}
 	
+		// Stop after we've moved forward for 1 second (should now be outside the map)
 		if (IR_TIMER_COUNTER >= 18000) {
 			nextOrder = STOP_MOVING;
 			StopIRTimer();
@@ -330,19 +299,15 @@ int main(void)
 	
 }
 
-
+/*
+	Sends messages to the "styrenhet"
+*/
 void SendUART() {
 	//check if transmit buffer is empty
-	//(UCSR1A & (1<<TXC1)) &&
-	//_delay_us(300);
 	if((UCSR1A & (1<<UDRE1))){
 		//mux through messages
-		//may need to disable interrupts
 		switch(messageNumber){
-			case 1:	
-				// Send debounced IR-signature
-				//message1 &= 0b11000111; //Reset signature in message
-				//message1 |= (activeIRIndex<<IRSIGNATURE_INDEX); //Set new signature
+			case 1:
 				message1 &= ~(1<<IRSENSOR_INDEX); //Reset bit
 				(isEnemy ? message1 |= (1<<IRSENSOR_INDEX) : message1 &= ~(1<<IRSENSOR_INDEX));
 				UDR1 = message1;
@@ -366,23 +331,17 @@ void SendUART() {
 					nextOrder = 0;
 				}
 				break;
-			default:
-				//
-				//PORTC |= (1 << PINC0);
-				//_delay_us(300);
-				//PORTC &= ~(1 << PINC0);
-				break;
 		}
 		//next mux
 		messageNumber++;
 		if(messageNumber>NUMBER_OF_MESSAGES+1) messageNumber=1;
-		//UCSR1A |= (1<<TXC1);
-		//_delay_us(300);
 	}
 	
 }
 
-
+/*
+	Interrupt vector for receiving UART
+*/
 ISR(USART0_RX_vect){
 	
 	//may need to disable interrupts
@@ -405,17 +364,15 @@ ISR(USART0_RX_vect){
 			break;
 		case 4:
 			message5 = buffer;
-// 			message5 &= 0b00111000; //We set the gyro bits elsewhere
-// 			message5 |= (buffer & 0b11000111);
 			break;
 	}
 }
 
-//####################### NEW ###############################
 
-
-// This functions stops the rotation and performs the provided order
-// Should call continue after this
+/*
+	This functions stops the rotation and performs the provided order
+	Should call continue after this.
+*/
 void StopRotate(int orderToPerformOnStop) {
 	rotating = false;
 	millidegreesTurned = 0;
@@ -426,11 +383,14 @@ void StopRotate(int orderToPerformOnStop) {
 	nextOrder = orderToPerformOnStop;
 }
 
+/*
+	Checks if we have reached the target rotation.
+	Returns true when reached.
+*/
 bool UpdateRotation() {
 	if(TCNT2 >= sampleticks){
 		//reset counter
 		TCNT2 = 0;
-		
 		//300 is max angular rate from gyro
 		//calculate how much we rotate per sample in millidegrees/second and add it total total millidegreesturned
 		float degreesPerPart = 300/128;
@@ -454,22 +414,13 @@ bool UpdateRotation() {
 			
 			return true;
 		}
-		//Send how many degrees we have rotated over uart
-		
-// 		uint8_t degreesTurned = millidegreesTurned/1000;
-// 		messageout4 &= 0b00000000; //Reset bits
-// 		messageout4 |= (degreesTurned<<LOWERBITSGYRO_INDEX);
-// 		messageout4 |= (message4 & 0b00000111);
-// 		messageout5 &= 0b00000000; //Reset bits
-// 		messageout5 |= (degreesTurned>>2);
-// 		messageout5 |= (message5 & 0b11000111);
-		
-//		messageout5 = gyro;
 	}
 	return false;
 }
 
-
+/*
+	Rotates milliDegrees with direction left if leftTurn == true, otherwise right
+*/
 void Rotate(long milliDegrees, bool leftTurn) {
 	rotating = true;
 	movingForward = false;
@@ -490,15 +441,19 @@ void Rotate(long milliDegrees, bool leftTurn) {
 	
 }
 
+/*
+	Returns the absolute value.
+*/
 int Abs(int value) {
 	if (value < 0) {
 		value *= -1;
 	}
-	
 	return value;
 }
 	
-
+/*
+	Decrements life by 1 and turns us invisible (turns off the IR signature)
+*/
 void WeAreHit() {
 	health--;
 	nextOrder = TURN_INVISIBLE_AND_DEC_LIFE_LED;
@@ -512,6 +467,9 @@ void WeAreHit() {
 	StartIRTimer();
 }
 
+/*
+	Activates the laser and does a sweeping movement first to the right, then back to the left.
+*/
 void Shoot() {
 	laserActive = true;
 	canShoot = false;
@@ -524,37 +482,44 @@ void Shoot() {
 	
 	nextOrder = ACTIVATE_LASER_AND_TURN_RIGHT;
 	StartLaserTimer();
-	
 }
 
+/*
+	For some reason the gyro doesn't give us good enough data so we have to use offsets
+	for turns, and this function calculates the offsets.
+	Returns the offset.
+*/
 long calculateGyroOffset(long milliDegrees){
 	long degreeOffset;
 	switch(milliDegrees){
 		case 22500:
-		degreeOffset = OFFSET_ROTATE_22POINT5;
-		break;
+			degreeOffset = OFFSET_ROTATE_22POINT5;
+			break;
 		case 45000:
-		degreeOffset = OFFSET_ROTATE_45;
-		break;
+			degreeOffset = OFFSET_ROTATE_45;
+			break;
 		case 90000:
-		degreeOffset = OFFSET_ROTATE_90;
-		break;
+			degreeOffset = OFFSET_ROTATE_90;
+			break;
 		case 135000:
-		degreeOffset = OFFSET_ROTATE_135;
-		break;
+			degreeOffset = OFFSET_ROTATE_135;
+			break;
 		case 180000:
-		degreeOffset = OFFSET_ROTATE_180;
-		break;
+			degreeOffset = OFFSET_ROTATE_180;
+			break;
 		case 360000:
-		degreeOffset = OFFSET_ROTATE_360;
-		break;
+			degreeOffset = OFFSET_ROTATE_360;
+			break;
 		default:
-		degreeOffset = (milliDegrees*333.333)/1000 + 2500;
-		break;
+			degreeOffset = (milliDegrees*333.333)/1000 + 2500;
+			break;
 	}
 	return degreeOffset;
 }
 
+/*
+	Resets the backing timer and starts it.
+*/
 void StartBackwardsTimer() {
 	backing = true;
 	BACKWARDS_TIMER_CTR = 0;
@@ -562,31 +527,45 @@ void StartBackwardsTimer() {
 	backing_ctr = 0;
 }
 
+/*
+	Stops the backing timer and resets it.
+*/
 void StopBackwardsTimer() {
-	
 	BACKWARDS_TIMER &= ~(1 << CS12);
 	BACKWARDS_TIMER &= ~(1 << CS10);
 	BACKWARDS_TIMER_CTR = 0;
 	backing_ctr = 0;
 }
 
+/*
+	Resets the laser timer and starts it.
+*/
 void StartLaserTimer() {
 	LASER_TIMER_COUNTER = 0;
 	LASER_TIMER = (1<< CS12) | (1<< CS10);
 }
 
+/*
+	Stops the laser timer and resets it.
+*/
 void StopLaserTimer() {
 	LASER_TIMER &= ~(1 << CS12);
 	LASER_TIMER &= ~(1 << CS10);
 	LASER_TIMER_COUNTER = 0;
 }
 
+/*
+	Resets the IR timer and starts it.
+*/
 void StartIRTimer() {
 	IR_TIMER_COUNTER = 0;
 	IRCTR = 0;
 	IR_TIMER = (1<< CS32) | (1<< CS30);
 }
 
+/*
+	Stops the IR timer and resets it.
+*/
 void StopIRTimer() {
 	IR_TIMER &= ~(1 << CS32);
 	IR_TIMER &= ~(1 << CS30);
@@ -594,7 +573,9 @@ void StopIRTimer() {
 	IRCTR = 0;
 }
 
-
+/*
+	Rotates 360 degrees or until an enemy is detected in front of it and if so shoots at it if the laser is off cooldown.
+*/
 void positioning() {
 	if (ultraSonicSensor1 <= maxDistance && enemySignatureCTR >= enemySignatureLimit && canShoot) {
 		Shoot();
@@ -608,17 +589,22 @@ void positioning() {
 	}
 }
 
+/*
+	Checks if we have have detected tape and if so, sets backing to true to back away from it and then turn.
+	Returns true if tape is detected.
+*/
 bool checkForTape(){
-	// If the Left line sensor detects tape and we haven't started rotating, turn right
+	// If the Left line sensor detects tape and we haven't started rotating, turn right.
+	// If backing is true, the tape has already been registered.
 	if((tapeSensor1 == 1) && !backing){
 		leftTapeHit = true;
 		StartBackwardsTimer();
 		nextOrder = MOVE_BACKWARDS;
 		return true;
-
 	}
 	
-	// If the Right line sensor detects tape and we haven't started rotating, turn left
+	// If the Right line sensor detects tape and we haven't started rotating, turn left.
+	// If backing is true, the tape has already been registered.
 	if((tapeSensor2 == 1) && !backing){
 		rightTapeHit = true;
 		StartBackwardsTimer();
@@ -628,6 +614,10 @@ bool checkForTape(){
 	return false;
 }
 
+/*
+	Handles backing away from the edge of the map and after 0.5 sec makes a random turn
+	Returns true after a turn order has been given.
+*/
 bool checkBacking(){
 	if (backing) {
 		if(BACKWARDS_TIMER_CTR >= timeToReachOneHundredth){
@@ -638,13 +628,11 @@ bool checkBacking(){
 				StopBackwardsTimer();
 				if (leftTapeHit) {
 					leftTapeHit = false;
-					//Rotate(45000 + (-30000 + (rand()%60)*1000), false);
 					Rotate(60000 + (rand()%170)*1000, false);
 					return true;
 				}
 				else if (rightTapeHit) {
 					rightTapeHit = false;
-					//Rotate(60000 + (-30000 + (rand()%60)*1000), true);
 					Rotate(60000 + (rand()%170)*1000, true);
 					return true;
 				}
@@ -654,19 +642,21 @@ bool checkBacking(){
 	return false;
 }
 
+/*
+	Stabilizes when we shoot at an enemy. This is necessary because the IR-sensor is a bit unreliable
+	when there's more than one IR-signature nearby and we must not shoot at allies.
+*/
 void IRDebouncer(){
 	// IR Signature debouncing
 	if (isEnemy) {
+		//Cap at enemySignatureLimit * 2
 		if (!(enemySignatureCTR >= enemySignatureLimit * 2)) {
-			//enemySignatureCTR++;
-			enemySignatureCTR += (rotating ? 6 : 1);
+			enemySignatureCTR += (rotating ? 6 : 1); //Increment faster if we are rotating to faster pick up new enemies
 		}
 	}
-	
 	else{
-		//enemySignatureCTR -= 5;
-		enemySignatureCTR -= (rotating ? 12 : 3);
-		
+		enemySignatureCTR -= (rotating ? 12 : 3); //Decrement faster if we are rotating to minimize risk of shooting allies
+		//Cap at 0
 		if (enemySignatureCTR < 0){
 			enemySignatureCTR = 0;
 		}
@@ -678,6 +668,10 @@ void IRDebouncer(){
 	}
 }
 
+/*
+	Checks if we've been hit by a laser and makes sure that we only register every hit 1 time
+	Returns true if we're hit.
+*/
 bool checkLaserSensor(){
 	if(laserSensor == 1 && !laserSensorHit){
 		laserSensorHit = true;
@@ -691,6 +685,10 @@ bool checkLaserSensor(){
 	return false;
 }
 
+/*
+	Makes sure that we don't shoot too often (must be 3 sec between each shot), and that every shot is 1 second
+	Returns true after laser has been active for 1 second.
+*/
 bool checkLaserCooldown(){
 	// LASER timer stuff
 	if (LASER_TIMER_COUNTER >= ONE_SECOND) {
@@ -713,6 +711,10 @@ bool checkLaserCooldown(){
 	return false;
 }
 
+/*
+	Makes sure that we turn on the IR-signature 5 seconds after we turn it off (after we've been shot).
+	Returns true when the IR-signature is turned back on.
+*/
 bool invisibilityHandler(){
 	//IR timer stuff
 	if (IR_TIMER_COUNTER >= ONE_SECOND) {
@@ -727,14 +729,21 @@ bool invisibilityHandler(){
 	return false;
 }
 
+/*
+	Checks if the robot is about to crash into something.
+	Returns true if a turn order is given.
+*/
 bool collisionCheck(){
 	if(ultraSonicSensor1 <= COLLISION_DISTANCE && !rotating){
-		Rotate(80000, (rand()%2 ? true : false)); //Random direction later?
+		Rotate(80000, (rand()%2 ? true : false)); //Turn 80 degrees left/right randomly
 		return true;
 	}
 	return false;
 }
 
+/*
+	Snapshots values from the sensor unit from UART.
+*/
 void snapshotUART(){
 	//disable interrupts
 	cli();
@@ -750,13 +759,6 @@ void snapshotUART(){
 	//Message 2
 	ultraSonicSensor1 = (message2>>ULTRASONICSENSOR1_INDEX) & 0b00011111;
 	
-	//debugging
-// 	if(ultraSonicSensor1 < 1){
-// 		PORTC |= (1 << PINC0);
-// 	}
-// 	else{
-// 		PORTC &= ~(1 << PINC0);
-// 	}
 	//Message 3
 	ultraSonicSensor2 = (message3>>ULTRASONICSENSOR2_INDEX) & 0b00011111;
 	

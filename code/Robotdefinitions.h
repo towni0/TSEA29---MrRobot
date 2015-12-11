@@ -5,7 +5,7 @@
 #include <avr/interrupt.h>
 #include <util/delay.h>
 
-#define UART_BLUETOOTH_GRACE_PERIOD 45
+#define UART_BLUETOOTH_GRACE_PERIOD 55
 
 #define MESSAGEID_INDEX 0
 
@@ -128,8 +128,9 @@ const uint8_t UBRR_STYR_MALSOKNING = 9;
 const unsigned NUMBER_OF_ADC_SENSORS = 3;
 const uint8_t NUMBER_OF_MESSAGES = 5;
 
-
-//Wait for press on activation button
+/*
+	Waits for press on activation button.
+*/
 void waitForActivation(){
 	DDRD &= ~(1<<PIND7); //Aktiveringsknapp (in)
 	_delay_ms(10);

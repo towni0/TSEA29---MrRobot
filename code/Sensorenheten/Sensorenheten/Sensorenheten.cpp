@@ -36,14 +36,12 @@ void testTAPEsensors();
 //###############
 
 #define IRheader 20
-#define IROneValueMin 10
-#define IROneValueMax 14
+#define IROneValueMin 9
+#define IROneValueMax 13
 #define IRZeroValueMin 4
-#define IRZeroValueMax 8
 
 bool compareSignature(uint8_t* oursignature, uint8_t* signature);
 void IRSensorFunction();
-void IRSensortest();
 bool edge = false;
 bool header = false;
 bool enemy = false;
@@ -53,16 +51,19 @@ uint8_t oursignature[] = {1,1,0};
 int index = 0;
 int IRtimer = 0;
 
+int IRcount = 0;
+bool headerPhase = false;
+bool signaturePhase = false;
+bool pause = false;
+
 //########################
 //## Ultrasonic Sensors ##
 //########################
 
 void ultrasonicFunction();
-void StartPulse1();
-void StartPulse2();
+void StartPulse();
 
-void CalculateTime1();
-void CalculateTime2();
+void CalculateTime();
 
 void resetTimerValues();
 
@@ -82,10 +83,11 @@ bool triggerSend = false;
 bool timerStarted = false;
 bool timeTaken = false;
 
-bool useSensor1 = true;
-
 //laser
 uint8_t secsSinceLaserHit = 0;
+bool waitLaserActivation = false;
+bool laserIniated = false;
+
 
 int main(void)
 {
@@ -103,12 +105,6 @@ int main(void)
 	DDRD &= ~(1<<PIND7); //Aktiveringsknapp (in)
 	DDRB = 0b00011110;
 	//DDRB = 0b11011110;
-	
-	//DDRA = 0b00000000;
-	//DDRB |= (1<<PIND6);
-	
-	//debugging
-	DDRC |= (1<< PINC0) | (1<<PINC1);
 		
 	//enable global interrupt
 	sei();
@@ -145,12 +141,10 @@ int main(void)
 	//enable transmit interrupt
 	UCSR0B |= (1<<TXCIE0);
 	
-	//inactivate
+	//inactivate, must wait for power up
 	_delay_ms(100);
 	PORTB |= (1 << LASER_AKTIVERA_PORT);
 	_delay_ms(10);
-	//activate, might have to wait if this is too fast
-	//PORTB &= 0b11101111;
 	PORTB &= ~(1 << LASER_AKTIVERA_PORT);
 	
 	//## IR Sensor ##
@@ -163,14 +157,14 @@ int main(void)
 	//start first UART transmission
 	UDR0 = 0x00;
 	
+	//Main loop
     while(1)
     {
 		//###############
 		//## IR SENSOR ##
 		//###############
-		
-		//IRSensorFunction();
-		IRSensortest();
+
+		IRSensorFunction();
 		
 		//##################
 		//## Laser sensor ##
@@ -187,8 +181,10 @@ int main(void)
 	
 }
 
+/*
+	Interrupt function for sending UART
+*/
 ISR(USART0_TX_vect){
-	//disable interrupts (might not be necessary?) interrupts get queued?
 	cli();
 	//mux through messages
 	switch(messageNumber){
@@ -217,9 +213,10 @@ ISR(USART0_TX_vect){
 	sei();
 }
 
-
+/*
+	Interrupt function for ADC
+*/
 ISR(ADC_vect){
-	//disable interrupts (might not be necessary?) interrupts get queued?
 	cli();
 	uint8_t lowbits = ADCL;
 	uint16_t message = ADCH <<8 | lowbits;
@@ -274,7 +271,10 @@ ISR(ADC_vect){
 	ADCSRA |= (1 << ADSC);
 }
 
-//Check if the converted value from the tape sensors indicate tape or not
+/*
+	Check if the converted value from the tape sensors indicate tape or not.
+	Returns 1 if tape.
+*/
 uint8_t tapeCheck(uint16_t message, uint8_t tapeSensorNumber){
 	if((tapeSensorNumber == 1 && message >= tape1Threshold) || (tapeSensorNumber == 2 && message >= tape2Threshold)){
 		return 1;
@@ -284,21 +284,25 @@ uint8_t tapeCheck(uint16_t message, uint8_t tapeSensorNumber){
 	}
 }
 
+/*
+	Resets the MUX counter for the ADC.
+*/
 void clearADCMUX(){
 	ADMUX &= 0b11100000;
 }
 
-//just test function
-//PIN B4 and B5 as outputs
-
-
+/*
+	Resets timer 2.
+*/
 void resetTimerValues() {
 	TCNT2 = 0;
 	timer = 0;
 }
 
-
-void StartPulse1() {
+/*
+	Startpulse for the ultrasonic sensor.
+*/
+void StartPulse() {
 	//set trigger to high
 	if (!triggerStarted) {
 		triggerStarted = true;
@@ -307,31 +311,18 @@ void StartPulse1() {
 	}
 	
 	//set trigger to low
-	if (triggerStarted && timer == 10) { // and atleast 15 us has passed.
+	if (triggerStarted && timer == 10) { // and at least 15 us has passed.
 		triggerSend = true;
 		PORTB &= ~(1 << PULSE_TRIGGER_PIN1);
 		resetTimerValues();
 	}
 }
 
-void StartPulse2() {
-	//set trigger to high
-	if (!triggerStarted) {
-		triggerStarted = true;
-		PORTB |= (1 << PULSE_TRIGGER_PIN2);
-		resetTimerValues();
-	}
-	
-	//set trigger to low
-	if (triggerStarted && timer == 10) { // and atleast 15 us has passed.
-		triggerSend = true;
-		PORTB &= ~(1 << PULSE_TRIGGER_PIN2);
-		resetTimerValues();
-	}
-}
 
-
-void CalculateTime1() {
+/*
+	Calculates the time that the pulse to took return.
+*/
+void CalculateTime() {
 	//when echo output is high, start timer.
 	if (!timeTaken && triggerSend && !timerStarted && (PINB & (1<<ECHO_PIN1))) {
 		timerStarted = true;
@@ -341,7 +332,7 @@ void CalculateTime1() {
 	
 	//when echo output is low, stop timer. (save time)
 	if (!timeTaken && triggerSend && timerStarted && !(PINB & (1<<ECHO_PIN1))) {
-		//set timer variables ot zero.
+		//set timer variables to zero.
 		// CalculateDistance returns a value in cm we need it in dm
 		distancecm1 = calculateDistance();
 		//check singular number to do correct round up or down
@@ -352,60 +343,21 @@ void CalculateTime1() {
 		else{
 			distance1 = distancecm1/10;
 		}
-// 		//quick fix to filter out wrong 4 values
-// 		if(distance2 == 4){
-// 			return;
-// 		}
 		message2 &= ~(0b11111<<3); //Reset distance bits
 		message2 |= (distance1<<3); //Set UART message with new distance
 		
 		resetTimerValues();
 		timeTaken = true;
-		//useSensor1 = false;
-		//reset trigger variables.
 	}
 }
 
-void CalculateTime2() {
-	//when echo output is high, start timer.
-	if (!timeTaken && triggerSend && !timerStarted && (PINB & (1<<ECHO_PIN2))) {
-		timerStarted = true;
-		
-	
-	}
-	
-	//when echo output is low, stop timer. (save time)
-	if (!timeTaken && triggerSend && timerStarted && !(PINB & (1<<ECHO_PIN2))) {
-		//set timer variables ot zero.
-		// CalculateDistance returns a value in cm we need it in dm
 
-		distancecm1 = calculateDistance();
-		//check singular number to do correct round up or down
-		int singular = (distancecm1 % 100) % 10;
-		if(singular >= 5){
-			distance2 = distancecm1/10 + 1;
-		}
-		else{
-			distance2 = distancecm1/10;
-		}
-		
-		message3 &= ~(0b11111<<3); //Reset distance bits
-		message3 |= (distance2<<3); //Set UART msg with new distance
-		
-		resetTimerValues();
-		timeTaken = true;
-		useSensor1 = true;
-		//reset trigger variables.
-	}
-}
-
-//returns value in cm.
+/*
+	Returns the distance from the ultrasonic sensor.
+*/
 float calculateDistance() {
 	// 12 is time per tick.
 	//divide 1000000 to make it to meters.
-	
-	
-	
 	int uTime = timer * MICRO_SEC_PER_TICK;
 	//float seconds = uTime / 100;
 	float centiMeters = uTime/58;
@@ -413,6 +365,9 @@ float calculateDistance() {
 	return centiMeters;
 }
 
+/*
+	Returns true if the signatures are the same.
+*/
 bool compareSignature(uint8_t* oursignature, uint8_t* signature){
 	for (int i = 0; i<3;i++){
 		if (oursignature[i] != signature[i]){
@@ -422,80 +377,10 @@ bool compareSignature(uint8_t* oursignature, uint8_t* signature){
 	return true;
 }
 
-void IRSensorFunction(){
-	// If 100 us have passed
-	if (TCNT1 > 1840){ //Timer counter
-		IRtimer++;
-		TCNT1 = 0;
-		PORTC ^= (1<<PINC0);
-		//PORTC ^= (1<<PINC1);
-		 //(1<< PINC0) | (1<<PINC1);
-	}
-	
-	// If 200*100 us(20 ms) has passed and PINB7 is high
-	if (IRtimer == IRheader * 10 && bit_is_set(PINB, 6)){
-		enemy = false;
-		//Set UART message
-		signatureS = (oursignature[0]<<2) | (oursignature[1]<<1) | oursignature[2];
-		message1 &= ~(0b111<<IRSIGNATURE_INDEX); //Reset signature in message
-		message1 |= (signatureS<<IRSIGNATURE_INDEX); //Set new signature
-		(enemy ? message1 |= (1<<IRSENSOR_INDEX) : message1 &= ~(1<<IRSENSOR_INDEX));
-	}
-	
-	if (!edge && bit_is_clear(PINB, 6)){ // Found edge
-		TCNT1 = 0;
-		IRtimer = 0;
-		edge = true;
-	}
-	
-	if (!header){ // Go into header mode if not in header already
-		if(edge && bit_is_set(PINB, 6) && IRtimer >= IRheader){ // header if equal greater than ~2000uS
-			header = true;
-			index = 0;
-		}
-	}
-	else{
-		if (edge && bit_is_set(PINB, 6)) { //PIND & (1<<PIND7)) {
-			if (IRtimer > 9){
-				signature[index] = 1;
-				index++;
-			}
-			else{
-				signature[index] = 0;
-				index++;
-				}
-		}
-	}
-	if (edge && bit_is_set(PINB, 6)){ // End of signal
-		edge = false;
-	}
-	if (index == 3){
-		if (compareSignature(oursignature, signature)){
-			enemy = false;
-		}
-		else {
-			enemy = true;
-		}
-		header = false;
-		index = 0;
-		IRtimer = 0;
-		
-		//Set UART message
-		signatureS = (signature[0]<<2) | (signature[1]<<1) | signature[2];
-		message1 &= ~(0b111<<IRSIGNATURE_INDEX); //Reset signature in message
-		message1 |= (signatureS<<IRSIGNATURE_INDEX); //Set new signature
-		(enemy ? message1 |= (1<<IRSENSOR_INDEX) : message1 &= ~(1<<IRSENSOR_INDEX));
-	}
-	
-
-	
-}
-
-bool waitLaserActivation = false;
-bool laserIniated = false;
-
+/*
+	Checks for hit and reactivates the laser sensor 5 seconds after hit.
+*/
 void laserSensorFunction(){
-	//Reactivate laser 2 sec after hit
 	if(TCNT3 >= 18000){
 		secsSinceLaserHit++;
 		TCNT3 = 0;
@@ -541,21 +426,12 @@ void ultrasonicFunction(){
 		TCNT2 = 0;
 	}
 	
-	if (useSensor1) {
-		
-		if (!triggerSend) {
-			StartPulse1();
-		}
-		CalculateTime1();
+	if (!triggerSend) {
+		StartPulse();
 	}
-	else {
-		if (!triggerSend) {
-			StartPulse2();
-		}
-		CalculateTime2();
-	}
+	CalculateTime();
 	
-	//wait atleast 10msec
+	//wait at least 10msec
 	if (timeTaken && timer == 1000) {
 		triggerSend = false;
 		triggerStarted = false;
@@ -564,37 +440,32 @@ void ultrasonicFunction(){
 	}
 }
 
-//Wait for press on activation button
+/*
+	Wait for press on activation button.
+*/
 void waitForActivationSensor(){
 	while((PIND>>PIND7) == 0){
-		//Do nothing, wait for activation
-		
+		//Calibrate tape sensor if the calibration button is pressed.
 		if((PINB>>PINB7) == 0){
 			cli();
 			tape1Threshold = tape1CurrentValue - TAPE1_ERROR_MARGIN; 
 			tape2Threshold = tape2CurrentValue - TAPE2_ERROR_MARGIN; 
 			sei();
 		}
-		
 	}
 	return;
 }
 
-int IRcount = 0;
-bool headerPhase = false;
-bool signaturePhase = false;
-bool pause = false;
-bool messySignal = false; //use for debug
-bool enemy1 = false;
 
-void IRSensortest(){
+
+/*
+	Reads IR-signatures from the IR-sensor
+*/
+void IRSensorFunction(){
 	// If 100 us have passed
 	if (TCNT1 > 1842){ //Timer counter
 		IRcount++;
 		TCNT1 = 0;
-		
-		//debug signal
-		PORTC ^= (1<<PINC0);
 	}
 	
 	//start with looking for header
@@ -602,13 +473,11 @@ void IRSensortest(){
 		if(bit_is_clear(PINB, 6)){ // check if header can start
 			headerPhase = true;
 			IRcount = 0;
-			messySignal = false;
 		}
 	}
 	else if(headerPhase && !signaturePhase){
 		//if header is too short or long redo
 		if(bit_is_set(PINB, 6) && ((IRcount < IRheader) || (IRcount > IRheader + 6))){
-			messySignal = true;
 			headerPhase = false;
 		}
 		else if(bit_is_set(PINB, 6) && IRcount >= IRheader){
@@ -624,7 +493,6 @@ void IRSensortest(){
 		if(pause){
 			//if the pause is too short or long we have a mess
 			if(bit_is_clear(PINB, 6) && ((IRcount < 5) || (IRcount > 7))){
-				messySignal = true;
 				signaturePhase = false;
 				headerPhase = false;
 			}
@@ -636,13 +504,12 @@ void IRSensortest(){
 		}
 		else{
 			//if signal was too short or too long we have mixed signal or header
-			if(bit_is_set(PINB, 6) && ((IRcount < 4) || (IRcount > 13))){
-				messySignal = true;
+			if(bit_is_set(PINB, 6) && ((IRcount < IRZeroValueMin) || (IRcount > IROneValueMax))){
 				signaturePhase = false;
 				headerPhase = false;
 			}
 			//accept ~1100 to 2000us as a 1
-			else if(bit_is_set(PINB, 6) && IRcount > 9){
+			else if(bit_is_set(PINB, 6) && IRcount > IROneValueMin){
 				signature[index] = 1;
 				index++;
 				pause = true;
@@ -661,22 +528,21 @@ void IRSensortest(){
 	//if full signature has been picked up
 	if(index == 3){
 		if (compareSignature(oursignature, signature)){
-			enemy1 = false;
+			enemy = false;
 		}
 		else {
-			enemy1 = true;
+			enemy = true;
 		}
 		headerPhase = false;
 		signaturePhase = false;
 		index = 0;
 		IRcount = 0;
-		messySignal = false;
 		
 		//Set UART message
 		signatureS = (signature[0]<<2) | (signature[1]<<1) | signature[2];
 		message1 &= ~(0b111<<IRSIGNATURE_INDEX); //Reset signature in message
 		message1 |= (signatureS<<IRSIGNATURE_INDEX); //Set new signature
-		(enemy1 ? message1 |= (1<<IRSENSOR_INDEX) : message1 &= ~(1<<IRSENSOR_INDEX));
+		(enemy ? message1 |= (1<<IRSENSOR_INDEX) : message1 &= ~(1<<IRSENSOR_INDEX));
 		//send signature in message3 for debug(old ultrasonic sensor 2)
 		message3 &= 0b00000111;
 		message3 |= (signatureS << 3);
@@ -696,29 +562,3 @@ void IRSensortest(){
 	}
 	
 }
-
-
-/* NEW SCHEME
-Meddelande 1:
-Bit 0-2:	Meddelande ID (000)
-Bit 3-5:	IR-signaturen
-Bit 6:      Laser (1 för träff)
-Bit 7:		Aktiv IR-signatur (robot framför oss)
-Meddelande 2:
-Bit 0-2:	Meddelande ID (001)
-Bit 3-7:	Främre avståndssensorn (ca 1 dm precision)
-Meddelande 3:
-Bit 0-2:	Meddelande ID (010)
-Bit 3-7:	Bakre avståndssensorn (ca 1 dm precision)
-Meddelande 4:
-Bit 0-2:	Meddelande ID (011)
-Bit 3-7:	5 LSB Gyro (grader rotatation)
-Meddelande 5:
-Bit 0-2:	Meddelande ID (100)
-Bit 3-5:	3 MSB Gyro (grader rotatation)
-Bit 6:		Tejpsensor 1 (vänster, 1 för tejp)
-Bit 7:		Tejpsensor 2 (höger, 1 för tejp)
-Meddelande 6:
-Bit 0-2:	Meddelande ID (101)(ORDER)
-Bit 3-7		ORDERID
-*/
