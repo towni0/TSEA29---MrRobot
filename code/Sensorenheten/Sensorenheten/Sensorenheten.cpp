@@ -418,6 +418,9 @@ void laserSensorFunction(){
 	}
 }
 
+/*
+
+*/
 void ultrasonicFunction(){
 	//in here every 100 us
 	if (TCNT2 > 184) {

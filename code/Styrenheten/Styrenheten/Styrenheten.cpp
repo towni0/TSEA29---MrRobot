@@ -71,8 +71,6 @@ uint8_t message6 = 5;
 uint8_t messageNumber = 1;
 
 int main(void){
-	DDRB = 0b11111111;
-
 	//Grace time for bluetooth timer prescaler /1024
 	TCCR2B |= (1<<CS20) | (1<<CS22);
 	
@@ -90,7 +88,6 @@ int main(void){
     {
 		//Send UART to bluetooth without DC
  		if(TCNT2 >= UART_BLUETOOTH_GRACE_PERIOD){
-			//LED_PORT ^= (1 << INVISIBLE_LED_PIN);
  			SendUART();
  			TCNT2 = 0;	
  		}
@@ -225,6 +222,16 @@ void SetPWM() {
 	Calls all init functions.
 */
 void Init() {
+	//Activate pull-up for unused pins to reduce stress on processor
+	DDRA = 0;
+	PORTA = 0b11111110;
+	DDRB = 0;
+	PORTB = 0b10001110;
+	DDRC = 0;
+	PORTC = 0b00111100;
+	DDRD = 0;
+	PORTD = 0b01110000;
+	
 	InitUART();
 	InitPWM();
 	InitLEDs();
@@ -235,9 +242,6 @@ void Init() {
 	Initiates UART.
 */
 void InitUART() {
-
-	//#UART INITS#//
-
 	//initiate UART målsökning to styr
 	//set baud rate 115200
 	uint16_t UBRR_val = UBRR_STYR_MALSOKNING;
@@ -267,8 +271,9 @@ void InitUART() {
 	Sets all LED pins as output and lights them up!
 */
 void InitLEDs() {
-	DDRB |= (1<<LED1_PIN) | (1<<LED2_PIN) | (1<<LED3_PIN) | (1<<INVISIBLE_LED_PIN) | (1<<LASER_LED_PIN);
-	// Set all heath LEDs activate
+	DDRB |= (1<<INVISIBLE_LED_PIN) | (1<<LASER_PIN);
+	DDRC |= (1<<LED1_PIN) | (1<<LED2_PIN) | (1<<LED3_PIN) | (1<<LASER_LED_PIN);
+	// Turn on all LEDs
 	LED_PORT |= (1<<LED1_PIN) | (1<<LED2_PIN) | (1<<LED3_PIN);
 }
 
@@ -302,7 +307,7 @@ void InitIRSender() {
 	
 	ICR3 = IRperiod; // period length in us
 	OCR3A = ICR3;
-	TCCR0B |= 1<<CS01; // Starta 8-bit ctr
+	TCCR0B |= 1<<CS01; // Start 8-bit ctr
 }
 
 /*
@@ -354,6 +359,7 @@ void TurnRight(int speed) {
 */
 void ActivateLaser() {
 	LASER_PORT |= (1<<LASER_PIN);
+	LED_PORT |= (1<<LASER_LED_PIN);
 }
 
 /*
@@ -361,6 +367,7 @@ void ActivateLaser() {
 */
 void DeactivateLaser() {
 	LASER_PORT &= ~(1<<LASER_PIN);
+	LED_PORT &= ~(1<<LASER_LED_PIN);
 }
 
 /*
@@ -368,7 +375,7 @@ void DeactivateLaser() {
 */
 void TurnOffIRSignature() {
 	IRisActivive = false;
-	LED_PORT |= (1 << INVISIBLE_LED_PIN);
+	PORTB |= (1 << INVISIBLE_LED_PIN);
 }
 
 /*
@@ -376,7 +383,7 @@ void TurnOffIRSignature() {
 */
 void TurnOnIRSignature() {
 	IRisActivive = true;
-	LED_PORT &= ~(1 << INVISIBLE_LED_PIN);
+	PORTB &= ~(1 << INVISIBLE_LED_PIN);
 
 }
 
@@ -471,8 +478,10 @@ void SendUART() {
 				break;
 			case 6:
 				cli();
-				UDR1 = orderQueue.front->orderdata;
-				dequeue(&orderQueue);
+				if((orderQueue.front != 0)){
+					UDR1 = orderQueue.front->orderdata;
+					dequeue(&orderQueue);
+				}
 				sei();
 				break;
 		}
