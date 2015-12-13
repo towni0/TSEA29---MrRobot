@@ -15,19 +15,19 @@ Idx Name          Size      VMA       LMA       File off  Algn
                   CONTENTS, READONLY
   5 .debug_aranges 000000e8  00000000  00000000  000012e0  2**0
                   CONTENTS, READONLY, DEBUGGING
-  6 .debug_info   00000c2e  00000000  00000000  000013c8  2**0
+  6 .debug_info   00000c30  00000000  00000000  000013c8  2**0
                   CONTENTS, READONLY, DEBUGGING
-  7 .debug_abbrev 000002f0  00000000  00000000  00001ff6  2**0
+  7 .debug_abbrev 000002f0  00000000  00000000  00001ff8  2**0
                   CONTENTS, READONLY, DEBUGGING
-  8 .debug_line   00000b39  00000000  00000000  000022e6  2**0
+  8 .debug_line   00000b39  00000000  00000000  000022e8  2**0
                   CONTENTS, READONLY, DEBUGGING
-  9 .debug_frame  00000258  00000000  00000000  00002e20  2**2
+  9 .debug_frame  00000258  00000000  00000000  00002e24  2**2
                   CONTENTS, READONLY, DEBUGGING
- 10 .debug_str    00000929  00000000  00000000  00003078  2**0
+ 10 .debug_str    00000929  00000000  00000000  0000307c  2**0
                   CONTENTS, READONLY, DEBUGGING
- 11 .debug_loc    000004be  00000000  00000000  000039a1  2**0
+ 11 .debug_loc    000004be  00000000  00000000  000039a5  2**0
                   CONTENTS, READONLY, DEBUGGING
- 12 .debug_ranges 000000d8  00000000  00000000  00003e5f  2**0
+ 12 .debug_ranges 000000d8  00000000  00000000  00003e63  2**0
                   CONTENTS, READONLY, DEBUGGING
 
 Disassembly of section .text:
@@ -854,9 +854,9 @@ void positioning() {
      578:	90 91 18 01 	lds	r25, 0x0118
      57c:	a0 91 19 01 	lds	r26, 0x0119
      580:	b0 91 1a 01 	lds	r27, 0x011A
-     584:	80 35       	cpi	r24, 0x50	; 80
-     586:	93 4c       	sbci	r25, 0xC3	; 195
-     588:	a1 05       	cpc	r26, r1
+     584:	80 37       	cpi	r24, 0x70	; 112
+     586:	91 41       	sbci	r25, 0x11	; 17
+     588:	a1 40       	sbci	r26, 0x01	; 1
      58a:	b1 05       	cpc	r27, r1
      58c:	c4 f0       	brlt	.+48     	; 0x5be <_Z11positioningv+0x5e>
      58e:	80 91 09 01 	lds	r24, 0x0109
@@ -1128,10 +1128,10 @@ void IRDebouncer(){
      6ea:	90 91 18 01 	lds	r25, 0x0118
      6ee:	a0 91 19 01 	lds	r26, 0x0119
      6f2:	b0 91 1a 01 	lds	r27, 0x011A
-     6f6:	80 3a       	cpi	r24, 0xA0	; 160
-     6f8:	26 e8       	ldi	r18, 0x86	; 134
+     6f6:	80 3e       	cpi	r24, 0xE0	; 224
+     6f8:	22 e2       	ldi	r18, 0x22	; 34
      6fa:	92 07       	cpc	r25, r18
-     6fc:	21 e0       	ldi	r18, 0x01	; 1
+     6fc:	22 e0       	ldi	r18, 0x02	; 2
      6fe:	a2 07       	cpc	r26, r18
      700:	b1 05       	cpc	r27, r1
      702:	0c f0       	brlt	.+2      	; 0x706 <_Z11IRDebouncerv+0x28>
@@ -1161,7 +1161,7 @@ void IRDebouncer(){
 		}
 	}
 	else{
-		enemySignatureCTR -= (rotating ? 12 : 3); //Decrement faster if we are rotating to minimize risk of shooting allies
+		enemySignatureCTR -= (rotating ? 12 : 4); //Decrement faster if we are rotating to minimize risk of shooting allies
      73a:	80 91 17 01 	lds	r24, 0x0117
      73e:	90 91 18 01 	lds	r25, 0x0118
      742:	a0 91 19 01 	lds	r26, 0x0119
@@ -1169,7 +1169,7 @@ void IRDebouncer(){
      74a:	20 91 28 01 	lds	r18, 0x0128
      74e:	21 11       	cpse	r18, r1
      750:	05 c0       	rjmp	.+10     	; 0x75c <_Z11IRDebouncerv+0x7e>
-     752:	43 e0       	ldi	r20, 0x03	; 3
+     752:	44 e0       	ldi	r20, 0x04	; 4
      754:	50 e0       	ldi	r21, 0x00	; 0
      756:	60 e0       	ldi	r22, 0x00	; 0
      758:	70 e0       	ldi	r23, 0x00	; 0
@@ -1190,7 +1190,7 @@ void IRDebouncer(){
 		}
 	}
 	else{
-		enemySignatureCTR -= (rotating ? 12 : 3); //Decrement faster if we are rotating to minimize risk of shooting allies
+		enemySignatureCTR -= (rotating ? 12 : 4); //Decrement faster if we are rotating to minimize risk of shooting allies
      76e:	80 93 17 01 	sts	0x0117, r24
      772:	90 93 18 01 	sts	0x0118, r25
      776:	a0 93 19 01 	sts	0x0119, r26
@@ -1213,9 +1213,9 @@ void IRDebouncer(){
      796:	90 91 18 01 	lds	r25, 0x0118
      79a:	a0 91 19 01 	lds	r26, 0x0119
      79e:	b0 91 1a 01 	lds	r27, 0x011A
-     7a2:	80 35       	cpi	r24, 0x50	; 80
-     7a4:	93 4c       	sbci	r25, 0xC3	; 195
-     7a6:	a1 05       	cpc	r26, r1
+     7a2:	80 37       	cpi	r24, 0x70	; 112
+     7a4:	91 41       	sbci	r25, 0x11	; 17
+     7a6:	a1 40       	sbci	r26, 0x01	; 1
      7a8:	b1 05       	cpc	r27, r1
      7aa:	3c f0       	brlt	.+14     	; 0x7ba <_Z11IRDebouncerv+0xdc>
      7ac:	80 91 10 01 	lds	r24, 0x0110
@@ -1670,9 +1670,9 @@ int main(void)
      a00:	90 91 18 01 	lds	r25, 0x0118
      a04:	a0 91 19 01 	lds	r26, 0x0119
      a08:	b0 91 1a 01 	lds	r27, 0x011A
-     a0c:	80 35       	cpi	r24, 0x50	; 80
-     a0e:	93 4c       	sbci	r25, 0xC3	; 195
-     a10:	a1 05       	cpc	r26, r1
+     a0c:	80 37       	cpi	r24, 0x70	; 112
+     a0e:	91 41       	sbci	r25, 0x11	; 17
+     a10:	a1 40       	sbci	r26, 0x01	; 1
      a12:	b1 05       	cpc	r27, r1
      a14:	34 f0       	brlt	.+12     	; 0xa22 <main+0xa2>
      a16:	80 91 10 01 	lds	r24, 0x0110
@@ -1731,9 +1731,9 @@ int main(void)
      a66:	90 91 18 01 	lds	r25, 0x0118
      a6a:	a0 91 19 01 	lds	r26, 0x0119
      a6e:	b0 91 1a 01 	lds	r27, 0x011A
-     a72:	80 35       	cpi	r24, 0x50	; 80
-     a74:	93 4c       	sbci	r25, 0xC3	; 195
-     a76:	a1 05       	cpc	r26, r1
+     a72:	80 37       	cpi	r24, 0x70	; 112
+     a74:	91 41       	sbci	r25, 0x11	; 17
+     a76:	a1 40       	sbci	r26, 0x01	; 1
      a78:	b1 05       	cpc	r27, r1
      a7a:	34 f0       	brlt	.+12     	; 0xa88 <main+0x108>
      a7c:	80 91 10 01 	lds	r24, 0x0110

@@ -116,7 +116,7 @@ bool laserSensorHit = false;
 
 // IR-signature counting
 long enemySignatureCTR = 0;
-const long enemySignatureLimit = 50000;
+const long enemySignatureLimit = 70000;
 
 // Used to count up to 3
 int IRCTR = 0;
@@ -655,7 +655,7 @@ void IRDebouncer(){
 		}
 	}
 	else{
-		enemySignatureCTR -= (rotating ? 12 : 3); //Decrement faster if we are rotating to minimize risk of shooting allies
+		enemySignatureCTR -= (rotating ? 12 : 4); //Decrement faster if we are rotating to minimize risk of shooting allies
 		//Cap at 0
 		if (enemySignatureCTR < 0){
 			enemySignatureCTR = 0;

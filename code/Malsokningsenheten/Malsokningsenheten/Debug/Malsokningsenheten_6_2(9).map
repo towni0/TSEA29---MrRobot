@@ -924,9 +924,9 @@ END GROUP
 .debug_pubnames
  *(.debug_pubnames)
 
-.debug_info     0x00000000      0xc2e
+.debug_info     0x00000000      0xc30
  *(.debug_info .gnu.linkonce.wi.*)
- .debug_info    0x00000000      0xc2e Malsokningsenheten.o
+ .debug_info    0x00000000      0xc30 Malsokningsenheten.o
 
 .debug_abbrev   0x00000000      0x2f0
  *(.debug_abbrev)
