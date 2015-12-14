@@ -1,4 +1,7 @@
-//quick implementation of queue for robot project (linked list)
+/* quick implementation
+// of queue for robot project (used to store orders so they are not lost before we send them to laptop (via Bluetooth)
+// (linked list)
+*/
 #include <stdlib.h>
 
 struct node{
@@ -20,7 +23,7 @@ void queue_init(struct queue *toBeInit){
 }
 
 void enqueue(uint8_t order, struct queue *queue){
-	
+
 	//first item to be added
 	if(queue->front == 0 && queue->back == 0){
 		queue->back = (struct node *)malloc(1*sizeof(struct node));

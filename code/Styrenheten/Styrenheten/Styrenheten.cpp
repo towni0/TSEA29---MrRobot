@@ -77,6 +77,7 @@ int main(void){
 	// Call all Init functions in this module
 	Init();
 	
+    //init queue where we keep orders
 	queue_init(&orderQueue);
 	
 	//enable global interrupts
@@ -86,7 +87,7 @@ int main(void){
 	
     while(1)
     {
-		//Send UART to bluetooth without DC
+        //Send UART to bluetooth without DC, we only send UART after a certain graceperiod because no other fix was able to be found to this problem
  		if(TCNT2 >= UART_BLUETOOTH_GRACE_PERIOD){
  			SendUART();
  			TCNT2 = 0;	
@@ -447,6 +448,7 @@ ISR(USART0_RX_vect){
 	if(messageID == ORDER_ID){
 		currentOrder = (snapbuffer>>3) & 0b00011111; //Mask out the order
 		cli();
+        //we put order in our orderqueue
 		enqueue(snapbuffer, &orderQueue);
 		sei();
 	}
@@ -478,6 +480,7 @@ void SendUART() {
 				break;
 			case 6:
 				cli();
+                //if queue is not empty we send order out and dequeue
 				if((orderQueue.front != 0)){
 					UDR1 = orderQueue.front->orderdata;
 					dequeue(&orderQueue);
