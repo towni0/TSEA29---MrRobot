@@ -1,6 +1,6 @@
 /* quick implementation
 // of queue for robot project (used to store orders so they are not lost before we send them to laptop (via Bluetooth)
-// (linked list)
+// C style (linked list)
 */
 #include <stdlib.h>
 
@@ -13,7 +13,6 @@ struct queue{
 		unsigned int size;
 		node *front;
 		node *back;
-
 }orderQueue;
 
 void queue_init(struct queue *toBeInit){

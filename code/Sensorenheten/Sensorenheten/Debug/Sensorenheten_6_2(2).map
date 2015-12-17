@@ -36,8 +36,6 @@ Discarded input sections
                 0x00000000       0x36 Sensorenheten.o
  .bss.laserIniated
                 0x00000000        0x1 Sensorenheten.o
- .bss.previousdistance
-                0x00000000        0x1 Sensorenheten.o
  .text          0x00000000        0x0 c:/program files (x86)/atmel/studio/7.0/toolchain/avr8/avr8-gnu-toolchain/bin/../lib/gcc/avr/4.9.2/../../../../avr/lib/avr51\libm.a(fixunssfsi.o)
  .data          0x00000000        0x0 c:/program files (x86)/atmel/studio/7.0/toolchain/avr8/avr8-gnu-toolchain/bin/../lib/gcc/avr/4.9.2/../../../../avr/lib/avr51\libm.a(fixunssfsi.o)
  .bss           0x00000000        0x0 c:/program files (x86)/atmel/studio/7.0/toolchain/avr8/avr8-gnu-toolchain/bin/../lib/gcc/avr/4.9.2/../../../../avr/lib/avr51\libm.a(fixunssfsi.o)
@@ -252,7 +250,7 @@ END GROUP
 .rela.plt
  *(.rela.plt)
 
-.text           0x00000000      0xac4
+.text           0x00000000      0xa6c
  *(.vectors)
  .vectors       0x00000000       0x8c C:/Program Files (x86)/Atmel/Studio/7.0/Packs/atmel/ATmega_DFP/1.0.90/gcc/dev/atmega1284p/avr51/crtatmega1284p.o
                 0x00000000                __vector_default
@@ -351,77 +349,71 @@ END GROUP
                 0x00000148        0xc Sensorenheten.o
                 0x00000148                _Z11clearADCMUXv
  .text.__vector_24
-                0x00000154      0x14e Sensorenheten.o
+                0x00000154      0x168 Sensorenheten.o
                 0x00000154                __vector_24
  .text._Z16resetTimerValuesv
-                0x000002a2        0xe Sensorenheten.o
-                0x000002a2                _Z16resetTimerValuesv
- .text._Z11StartPulse1v
-                0x000002b0       0x32 Sensorenheten.o
-                0x000002b0                _Z11StartPulse1v
- .text._Z11StartPulse2v
-                0x000002e2       0x32 Sensorenheten.o
-                0x000002e2                _Z11StartPulse2v
+                0x000002bc        0xe Sensorenheten.o
+                0x000002bc                _Z16resetTimerValuesv
+ .text._Z10StartPulsev
+                0x000002ca       0x32 Sensorenheten.o
+                0x000002ca                _Z10StartPulsev
  .text._Z17calculateDistancev
-                0x00000314       0x5c Sensorenheten.o
-                0x00000314                _Z17calculateDistancev
- .text._Z14CalculateTime1v
-                0x00000370       0xd8 Sensorenheten.o
-                0x00000370                _Z14CalculateTime1v
- .text._Z14CalculateTime2v
-                0x00000448       0xd4 Sensorenheten.o
-                0x00000448                _Z14CalculateTime2v
+                0x000002fc       0x5c Sensorenheten.o
+                0x000002fc                _Z17calculateDistancev
+ .text._Z13CalculateTimev
+                0x00000358       0xd8 Sensorenheten.o
+                0x00000358                _Z13CalculateTimev
  .text._Z16compareSignaturePhS_
-                0x0000051c       0x30 Sensorenheten.o
-                0x0000051c                _Z16compareSignaturePhS_
- .text._Z16IRSensorFunctionv
-                0x0000054c      0x1ce Sensorenheten.o
-                0x0000054c                _Z16IRSensorFunctionv
+                0x00000430       0x30 Sensorenheten.o
+                0x00000430                _Z16compareSignaturePhS_
  .text._Z19laserSensorFunctionv
-                0x0000071a       0x9c Sensorenheten.o
-                0x0000071a                _Z19laserSensorFunctionv
+                0x00000460       0x9c Sensorenheten.o
+                0x00000460                _Z19laserSensorFunctionv
  .text._Z18ultrasonicFunctionv
-                0x000007b6       0x70 Sensorenheten.o
-                0x000007b6                _Z18ultrasonicFunctionv
+                0x000004fc       0x5a Sensorenheten.o
+                0x000004fc                _Z18ultrasonicFunctionv
  .text._Z23waitForActivationSensorv
-                0x00000826       0x50 Sensorenheten.o
-                0x00000826                _Z23waitForActivationSensorv
- .text.main     0x00000876       0x88 Sensorenheten.o
-                0x00000876                main
+                0x00000556       0x4c Sensorenheten.o
+                0x00000556                _Z23waitForActivationSensorv
+ .text._Z16IRSensorFunctionv
+                0x000005a2      0x270 Sensorenheten.o
+                0x000005a2                _Z16IRSensorFunctionv
+ .text.main     0x00000812       0x94 Sensorenheten.o
+                0x00000812                main
  .text.avr-libc.fplib
-                0x000008fe       0x58 c:/program files (x86)/atmel/studio/7.0/toolchain/avr8/avr8-gnu-toolchain/bin/../lib/gcc/avr/4.9.2/../../../../avr/lib/avr51\libm.a(fixunssfsi.o)
-                0x000008fe                __fixunssfsi
+                0x000008a6       0x58 c:/program files (x86)/atmel/studio/7.0/toolchain/avr8/avr8-gnu-toolchain/bin/../lib/gcc/avr/4.9.2/../../../../avr/lib/avr51\libm.a(fixunssfsi.o)
+                0x000008a6                __fixunssfsi
  .text.avr-libc.fplib
-                0x00000956       0x7a c:/program files (x86)/atmel/studio/7.0/toolchain/avr8/avr8-gnu-toolchain/bin/../lib/gcc/avr/4.9.2/../../../../avr/lib/avr51\libm.a(floatsisf.o)
-                0x00000956                __floatunsisf
-                0x0000095a                __floatsisf
+                0x000008fe       0x7a c:/program files (x86)/atmel/studio/7.0/toolchain/avr8/avr8-gnu-toolchain/bin/../lib/gcc/avr/4.9.2/../../../../avr/lib/avr51\libm.a(floatsisf.o)
+                0x000008fe                __floatunsisf
+                0x00000902                __floatsisf
  .text.avr-libc.fplib
-                0x000009d0       0x44 c:/program files (x86)/atmel/studio/7.0/toolchain/avr8/avr8-gnu-toolchain/bin/../lib/gcc/avr/4.9.2/../../../../avr/lib/avr51\libm.a(fp_split3.o)
-                0x000009d0                __fp_split3
-                0x000009e0                __fp_splitA
+                0x00000978       0x44 c:/program files (x86)/atmel/studio/7.0/toolchain/avr8/avr8-gnu-toolchain/bin/../lib/gcc/avr/4.9.2/../../../../avr/lib/avr51\libm.a(fp_split3.o)
+                0x00000978                __fp_split3
+                0x00000988                __fp_splitA
  .text.avr-libc.fplib
-                0x00000a14        0xe c:/program files (x86)/atmel/studio/7.0/toolchain/avr8/avr8-gnu-toolchain/bin/../lib/gcc/avr/4.9.2/../../../../avr/lib/avr51\libm.a(fp_zero.o)
-                0x00000a14                __fp_zero
-                0x00000a16                __fp_szero
+                0x000009bc        0xe c:/program files (x86)/atmel/studio/7.0/toolchain/avr8/avr8-gnu-toolchain/bin/../lib/gcc/avr/4.9.2/../../../../avr/lib/avr51\libm.a(fp_zero.o)
+                0x000009bc                __fp_zero
+                0x000009be                __fp_szero
  .text.avr-libc.fplib
-                0x00000a22        0x8 c:/program files (x86)/atmel/studio/7.0/toolchain/avr8/avr8-gnu-toolchain/bin/../lib/gcc/avr/4.9.2/../../../../avr/lib/avr51\libm.a(gesf2.o)
-                0x00000a22                __gesf2
-                0x00000a22                __gtsf2
+                0x000009ca        0x8 c:/program files (x86)/atmel/studio/7.0/toolchain/avr8/avr8-gnu-toolchain/bin/../lib/gcc/avr/4.9.2/../../../../avr/lib/avr51\libm.a(gesf2.o)
+                0x000009ca                __gesf2
+                0x000009ca                __gtsf2
  .text.avr-libc.fplib
-                0x00000a2a       0x48 c:/program files (x86)/atmel/studio/7.0/toolchain/avr8/avr8-gnu-toolchain/bin/../lib/gcc/avr/4.9.2/../../../../avr/lib/avr51\libm.a(fp_cmp.o)
-                0x00000a2a                __fp_cmp
+                0x000009d2       0x48 c:/program files (x86)/atmel/studio/7.0/toolchain/avr8/avr8-gnu-toolchain/bin/../lib/gcc/avr/4.9.2/../../../../avr/lib/avr51\libm.a(fp_cmp.o)
+                0x000009d2                __fp_cmp
  .text.libgcc.div
-                0x00000a72       0x26 c:/program files (x86)/atmel/studio/7.0/toolchain/avr8/avr8-gnu-toolchain/bin/../lib/gcc/avr/4.9.2/avr51\libgcc.a(_divmodhi4.o)
-                0x00000a72                _div
-                0x00000a72                __divmodhi4
+                0x00000a1a       0x26 c:/program files (x86)/atmel/studio/7.0/toolchain/avr8/avr8-gnu-toolchain/bin/../lib/gcc/avr/4.9.2/avr51\libgcc.a(_divmodhi4.o)
+                0x00000a1a                _div
+                0x00000a1a                __divmodhi4
  .text.libgcc.div
-                0x00000a98       0x28 c:/program files (x86)/atmel/studio/7.0/toolchain/avr8/avr8-gnu-toolchain/bin/../lib/gcc/avr/4.9.2/avr51\libgcc.a(_udivmodhi4.o)
-                0x00000a98                __udivmodhi4
-                0x00000ac0                . = ALIGN (0x2)
+                0x00000a40       0x28 c:/program files (x86)/atmel/studio/7.0/toolchain/avr8/avr8-gnu-toolchain/bin/../lib/gcc/avr/4.9.2/avr51\libgcc.a(_udivmodhi4.o)
+                0x00000a40                __udivmodhi4
+                0x00000a68                . = ALIGN (0x2)
  *(.fini9)
- .fini9         0x00000ac0        0x0 c:/program files (x86)/atmel/studio/7.0/toolchain/avr8/avr8-gnu-toolchain/bin/../lib/gcc/avr/4.9.2/avr51\libgcc.a(_exit.o)
-                0x00000ac0                _exit
-                0x00000ac0                exit
+ .fini9         0x00000a68        0x0 c:/program files (x86)/atmel/studio/7.0/toolchain/avr8/avr8-gnu-toolchain/bin/../lib/gcc/avr/4.9.2/avr51\libgcc.a(_exit.o)
+                0x00000a68                _exit
+                0x00000a68                exit
  *(.fini9)
  *(.fini8)
  *(.fini8)
@@ -440,123 +432,120 @@ END GROUP
  *(.fini1)
  *(.fini1)
  *(.fini0)
- .fini0         0x00000ac0        0x4 c:/program files (x86)/atmel/studio/7.0/toolchain/avr8/avr8-gnu-toolchain/bin/../lib/gcc/avr/4.9.2/avr51\libgcc.a(_exit.o)
+ .fini0         0x00000a68        0x4 c:/program files (x86)/atmel/studio/7.0/toolchain/avr8/avr8-gnu-toolchain/bin/../lib/gcc/avr/4.9.2/avr51\libgcc.a(_exit.o)
  *(.fini0)
-                0x00000ac4                _etext = .
+                0x00000a6c                _etext = .
 
-.data           0x00800100       0x10 load address 0x00000ac4
+.data           0x00800100        0xe load address 0x00000a6c
                 0x00800100                PROVIDE (__data_start, .)
  *(.data)
  *(.data*)
- .data.useSensor1
-                0x00800100        0x1 Sensorenheten.o
-                0x00800100                useSensor1
  .data.oursignature
-                0x00800101        0x3 Sensorenheten.o
-                0x00800101                oursignature
+                0x00800100        0x3 Sensorenheten.o
+                0x00800100                oursignature
  .data.messageNumber
-                0x00800104        0x1 Sensorenheten.o
-                0x00800104                messageNumber
+                0x00800103        0x1 Sensorenheten.o
+                0x00800103                messageNumber
  .data.ADCcount
-                0x00800105        0x1 Sensorenheten.o
-                0x00800105                ADCcount
+                0x00800104        0x1 Sensorenheten.o
+                0x00800104                ADCcount
  .data.message5
-                0x00800106        0x1 Sensorenheten.o
-                0x00800106                message5
+                0x00800105        0x1 Sensorenheten.o
+                0x00800105                message5
  .data.message4
-                0x00800107        0x1 Sensorenheten.o
-                0x00800107                message4
+                0x00800106        0x1 Sensorenheten.o
+                0x00800106                message4
  .data.message3
-                0x00800108        0x1 Sensorenheten.o
-                0x00800108                message3
+                0x00800107        0x1 Sensorenheten.o
+                0x00800107                message3
  .data.message2
-                0x00800109        0x1 Sensorenheten.o
-                0x00800109                message2
+                0x00800108        0x1 Sensorenheten.o
+                0x00800108                message2
  .data.message1
-                0x0080010a        0x1 Sensorenheten.o
-                0x0080010a                message1
+                0x00800109        0x1 Sensorenheten.o
+                0x00800109                message1
  .data.tape2Threshold
-                0x0080010b        0x2 Sensorenheten.o
-                0x0080010b                tape2Threshold
+                0x0080010a        0x2 Sensorenheten.o
+                0x0080010a                tape2Threshold
  .data.tape1Threshold
-                0x0080010d        0x2 Sensorenheten.o
-                0x0080010d                tape1Threshold
+                0x0080010c        0x2 Sensorenheten.o
+                0x0080010c                tape1Threshold
  *(.rodata)
  *(.rodata*)
  *(.gnu.linkonce.d*)
-                0x00800110                . = ALIGN (0x2)
- *fill*         0x0080010f        0x1 
-                0x00800110                _edata = .
-                0x00800110                PROVIDE (__data_end, .)
+                0x0080010e                . = ALIGN (0x2)
+                0x0080010e                _edata = .
+                0x0080010e                PROVIDE (__data_end, .)
 
-.bss            0x00800110       0x1b
-                0x00800110                PROVIDE (__bss_start, .)
+.bss            0x0080010e       0x1b
+                0x0080010e                PROVIDE (__bss_start, .)
  *(.bss)
  *(.bss*)
  .bss.waitLaserActivation
-                0x00800110        0x1 Sensorenheten.o
-                0x00800110                waitLaserActivation
+                0x0080010e        0x1 Sensorenheten.o
+                0x0080010e                waitLaserActivation
  .bss.secsSinceLaserHit
-                0x00800111        0x1 Sensorenheten.o
-                0x00800111                secsSinceLaserHit
+                0x0080010f        0x1 Sensorenheten.o
+                0x0080010f                secsSinceLaserHit
+ .bss.laser     0x00800110        0x1 Sensorenheten.o
+                0x00800110                laser
  .bss.timeTaken
-                0x00800112        0x1 Sensorenheten.o
-                0x00800112                timeTaken
+                0x00800111        0x1 Sensorenheten.o
+                0x00800111                timeTaken
  .bss.timerStarted
-                0x00800113        0x1 Sensorenheten.o
-                0x00800113                timerStarted
+                0x00800112        0x1 Sensorenheten.o
+                0x00800112                timerStarted
  .bss.triggerSend
-                0x00800114        0x1 Sensorenheten.o
-                0x00800114                triggerSend
+                0x00800113        0x1 Sensorenheten.o
+                0x00800113                triggerSend
  .bss.triggerStarted
-                0x00800115        0x1 Sensorenheten.o
-                0x00800115                triggerStarted
- .bss.distance2
-                0x00800116        0x1 Sensorenheten.o
-                0x00800116                distance2
+                0x00800114        0x1 Sensorenheten.o
+                0x00800114                triggerStarted
  .bss.distance1
-                0x00800117        0x1 Sensorenheten.o
-                0x00800117                distance1
+                0x00800115        0x1 Sensorenheten.o
+                0x00800115                distance1
  .bss.distancecm1
-                0x00800118        0x1 Sensorenheten.o
-                0x00800118                distancecm1
- .bss.timer     0x00800119        0x2 Sensorenheten.o
-                0x00800119                timer
- .bss.IRtimer   0x0080011b        0x2 Sensorenheten.o
-                0x0080011b                IRtimer
- .bss.index     0x0080011d        0x2 Sensorenheten.o
-                0x0080011d                index
+                0x00800116        0x1 Sensorenheten.o
+                0x00800116                distancecm1
+ .bss.timer     0x00800117        0x2 Sensorenheten.o
+                0x00800117                timer
+ .bss.pause     0x00800119        0x1 Sensorenheten.o
+                0x00800119                pause
+ .bss.signaturePhase
+                0x0080011a        0x1 Sensorenheten.o
+                0x0080011a                signaturePhase
+ .bss.headerPhase
+                0x0080011b        0x1 Sensorenheten.o
+                0x0080011b                headerPhase
+ .bss.IRcount   0x0080011c        0x2 Sensorenheten.o
+                0x0080011c                IRcount
+ .bss.index     0x0080011e        0x2 Sensorenheten.o
+                0x0080011e                index
  .bss.signatureS
-                0x0080011f        0x1 Sensorenheten.o
-                0x0080011f                signatureS
+                0x00800120        0x1 Sensorenheten.o
+                0x00800120                signatureS
  .bss.signature
-                0x00800120        0x3 Sensorenheten.o
-                0x00800120                signature
- .bss.enemy     0x00800123        0x1 Sensorenheten.o
-                0x00800123                enemy
- .bss.header    0x00800124        0x1 Sensorenheten.o
-                0x00800124                header
- .bss.edge      0x00800125        0x1 Sensorenheten.o
-                0x00800125                edge
- .bss.laser     0x00800126        0x1 Sensorenheten.o
-                0x00800126                laser
+                0x00800121        0x3 Sensorenheten.o
+                0x00800121                signature
+ .bss.enemy     0x00800124        0x1 Sensorenheten.o
+                0x00800124                enemy
  .bss.tape2CurrentValue
-                0x00800127        0x2 Sensorenheten.o
-                0x00800127                tape2CurrentValue
+                0x00800125        0x2 Sensorenheten.o
+                0x00800125                tape2CurrentValue
  .bss.tape1CurrentValue
-                0x00800129        0x2 Sensorenheten.o
-                0x00800129                tape1CurrentValue
+                0x00800127        0x2 Sensorenheten.o
+                0x00800127                tape1CurrentValue
  *(COMMON)
-                0x0080012b                PROVIDE (__bss_end, .)
-                0x00000ac4                __data_load_start = LOADADDR (.data)
-                0x00000ad4                __data_load_end = (__data_load_start + SIZEOF (.data))
+                0x00800129                PROVIDE (__bss_end, .)
+                0x00000a6c                __data_load_start = LOADADDR (.data)
+                0x00000a7a                __data_load_end = (__data_load_start + SIZEOF (.data))
 
-.noinit         0x0080012b        0x0
-                0x0080012b                PROVIDE (__noinit_start, .)
+.noinit         0x00800129        0x0
+                0x00800129                PROVIDE (__noinit_start, .)
  *(.noinit*)
-                0x0080012b                PROVIDE (__noinit_end, .)
-                0x0080012b                _end = .
-                0x0080012b                PROVIDE (__heap_start, .)
+                0x00800129                PROVIDE (__noinit_end, .)
+                0x00800129                _end = .
+                0x00800129                PROVIDE (__heap_start, .)
 
 .eeprom         0x00810000        0x0
  *(.eeprom*)
@@ -620,38 +609,38 @@ END GROUP
 .debug_sfnames
  *(.debug_sfnames)
 
-.debug_aranges  0x00000000       0xa0
+.debug_aranges  0x00000000       0x90
  *(.debug_aranges)
  .debug_aranges
-                0x00000000       0xa0 Sensorenheten.o
+                0x00000000       0x90 Sensorenheten.o
 
 .debug_pubnames
  *(.debug_pubnames)
 
-.debug_info     0x00000000      0x847
+.debug_info     0x00000000      0x7e1
  *(.debug_info .gnu.linkonce.wi.*)
- .debug_info    0x00000000      0x847 Sensorenheten.o
+ .debug_info    0x00000000      0x7e1 Sensorenheten.o
 
-.debug_abbrev   0x00000000      0x2de
+.debug_abbrev   0x00000000      0x2b7
  *(.debug_abbrev)
- .debug_abbrev  0x00000000      0x2de Sensorenheten.o
+ .debug_abbrev  0x00000000      0x2b7 Sensorenheten.o
 
-.debug_line     0x00000000      0x8ce
+.debug_line     0x00000000      0x861
  *(.debug_line .debug_line.* .debug_line_end)
- .debug_line    0x00000000      0x8ce Sensorenheten.o
+ .debug_line    0x00000000      0x861 Sensorenheten.o
 
-.debug_frame    0x00000000      0x190
+.debug_frame    0x00000000      0x170
  *(.debug_frame)
- .debug_frame   0x00000000      0x190 Sensorenheten.o
+ .debug_frame   0x00000000      0x170 Sensorenheten.o
 
-.debug_str      0x00000000      0x64c
+.debug_str      0x00000000      0x607
  *(.debug_str)
- .debug_str     0x00000000      0x64c Sensorenheten.o
-                                0x690 (size before relaxing)
+ .debug_str     0x00000000      0x607 Sensorenheten.o
+                                0x645 (size before relaxing)
 
-.debug_loc      0x00000000      0x402
+.debug_loc      0x00000000      0x3ca
  *(.debug_loc)
- .debug_loc     0x00000000      0x402 Sensorenheten.o
+ .debug_loc     0x00000000      0x3ca Sensorenheten.o
 
 .debug_macinfo
  *(.debug_macinfo)
@@ -671,9 +660,9 @@ END GROUP
 .debug_pubtypes
  *(.debug_pubtypes)
 
-.debug_ranges   0x00000000       0xc0
+.debug_ranges   0x00000000       0x98
  *(.debug_ranges)
- .debug_ranges  0x00000000       0xc0 Sensorenheten.o
+ .debug_ranges  0x00000000       0x98 Sensorenheten.o
 
 .debug_macro
  *(.debug_macro)

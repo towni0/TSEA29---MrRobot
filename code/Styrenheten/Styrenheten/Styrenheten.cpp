@@ -12,8 +12,7 @@
 // Function headers
 void InitModule();
 void SetPWM();
-
-void MoveForward( int speed);
+void MoveForward(int speed);
 void TurnLeft(int speed);
 void TurnRight(int speed);
 void ActivateLaser();

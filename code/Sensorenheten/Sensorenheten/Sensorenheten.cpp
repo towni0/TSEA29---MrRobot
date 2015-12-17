@@ -24,13 +24,10 @@ uint8_t ADCcount = 1;
 
 uint8_t messageNumber = 1;
 
-uint8_t laser;
 
-void laserSensorFunction();
 void waitForActivationSensor();
 uint8_t tapeCheck(uint16_t message, uint8_t tapeSensorNumber);
 void clearADCMUX();
-void testTAPEsensors();
 
 //###############
 //## IR SENSOR ##
@@ -43,15 +40,11 @@ void testTAPEsensors();
 
 bool compareSignature(uint8_t* oursignature, uint8_t* signature);
 void IRSensorFunction();
-bool edge = false;
-bool header = false;
 bool enemy = false;
 uint8_t signature[] = {0,0,0};
 uint8_t signatureS = 0;
 uint8_t oursignature[] = {1,1,0};
 int index = 0;
-int IRtimer = 0;
-
 int IRcount = 0;
 bool headerPhase = false;
 bool signaturePhase = false;
@@ -63,20 +56,15 @@ bool pause = false;
 
 void ultrasonicFunction();
 void StartPulse();
-
 void CalculateTime();
-
 void resetTimerValues();
-
 float calculateDistance();
 
+// Variables
 int timer = 0;
 
 uint8_t distancecm1 = 0; //Ultrasonic sensor 1 distance [cm]
-// Variables
 uint8_t distance1 = 0; //Ultrasonic sensor 1 distance [dm]
-uint8_t distance2 = 0; //Ultrasonic sensor 2 distance [dm]
-uint8_t previousdistance = 0;
 
 bool triggerStarted = false;
 bool triggerSend = false;
@@ -85,6 +73,9 @@ bool timerStarted = false;
 bool timeTaken = false;
 
 //laser
+void laserSensorFunction();
+
+uint8_t laser;
 uint8_t secsSinceLaserHit = 0;
 bool waitLaserActivation = false;
 bool laserIniated = false;
@@ -93,19 +84,8 @@ bool laserIniated = false;
 int main(void)
 {
 	//init µcontroller
-	
-	/*
-	PIN0: Ultrasonic 1		(in)
-	PIN1: Ultrasonic 1		(out)
-	PIN2: Ultrasonic 2		(in)
-	PIN3: Ultrasonic 2		(out)
-	PIN4: Laser Aktivera	(out)
-	PIN5: Laser				(in)
-	*/
-	
 	DDRD &= ~(1<<PIND7); //Aktiveringsknapp (in)
 	DDRB = 0b00011110;
-	//DDRB = 0b11011110;
 		
 	//enable global interrupt
 	sei();
@@ -153,6 +133,7 @@ int main(void)
 	
 	//Start 1st ADC conversion
 	ADCSRA |= (1 << ADSC);
+	
 	waitForActivationSensor();
 	
 	//start first UART transmission
@@ -357,11 +338,11 @@ void CalculateTime() {
 	Returns the distance from the ultrasonic sensor.
 */
 float calculateDistance() {
-	// 12 is time per tick.
-	//divide 1000000 to make it to meters.
+	//each timer tick represent MICRO_SEC_PER_TICK ms
 	int uTime = timer * MICRO_SEC_PER_TICK;
-	//float seconds = uTime / 100;
+	//magic formula to get centimeter
 	float centiMeters = uTime/58;
+	//cap max distance to 240 cm because faulty sensor at high values
 	if (centiMeters > 240) return 240;
 	return centiMeters;
 }
@@ -420,7 +401,7 @@ void laserSensorFunction(){
 }
 
 /*
-
+	Drive the ultrasonic sensor and calculate distance
 */
 void ultrasonicFunction(){
 	//in here every 100 us
@@ -500,7 +481,7 @@ void IRSensorFunction(){
 				signaturePhase = false;
 				headerPhase = false;
 			}
-			//if pause is between 300 to 700 we accept it
+			//if pause is between ~300 to 700 we accept it
 			else if(bit_is_clear(PINB, 6)){
 				pause=false;
 				IRcount = 0;

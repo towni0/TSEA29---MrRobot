@@ -15,10 +15,8 @@
 
 #define TICKS_TO_WAIT_FOR_ACTIVATE_LASER 1000
 
-//left 800
 uint16_t tape1Threshold = 650; //Limit that determines what's tape and what's not
 uint16_t tape1CurrentValue = 0;
-//right 500
 uint16_t tape2Threshold = 650; //Limit that determines what's tape and what's not
 uint16_t tape2CurrentValue = 0;
 
@@ -136,34 +134,3 @@ void waitForActivation(){
 	}
 	return;
 }
-
-
-/* NEW SCHEME
-Meddelande 1:
-Bit 0-2:	Meddelande ID (000)
-Bit 3-5:	IR-signaturen
-Bit 6:      Laser (1 för träff)
-Bit 7:		Aktiv IR-signatur (robot framför oss)
-
-Meddelande 2:
-Bit 0-2:	Meddelande ID (001)
-Bit 3-7:	Främre avståndssensorn (ca 1 dm precision)
-
-Meddelande 3:
-Bit 0-2:	Meddelande ID (010)
-Bit 3-7:	Bakre avståndssensorn (ca 1 dm precision)
-
-Meddelande 4:
-Bit 0-2:	Meddelande ID (011)
-Bit 3-7:	5 LSB Gyro (grader rotatation)
-
-Meddelande 5:
-Bit 0-2:	Meddelande ID (100)
-Bit 3-5:	3 MSB Gyro (grader rotatation)
-Bit 6:		Tejpsensor 1 (vänster, 1 för tejp)
-Bit 7:		Tejpsensor 2 (höger, 1 för tejp)
-
-Meddelande 6:
-Bit 0-2:	Meddelande ID (101)(ORDER)
-Bit 3-7		ORDERID
-*/

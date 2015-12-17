@@ -34,6 +34,14 @@ c:/program files (x86)/atmel/studio/7.0/toolchain/avr8/avr8-gnu-toolchain/bin/..
                               Styrenheten.o (__do_clear_bss)
 c:/program files (x86)/atmel/studio/7.0/toolchain/avr8/avr8-gnu-toolchain/bin/../lib/gcc/avr/4.9.2/avr51\libgcc.a(_ctors.o)
                               Styrenheten.o (__do_global_ctors)
+c:/program files (x86)/atmel/studio/7.0/toolchain/avr8/avr8-gnu-toolchain/bin/../lib/gcc/avr/4.9.2/../../../../avr/lib/avr51\libc.a(malloc.o)
+                              Styrenheten.o (malloc)
+
+Allocating common symbols
+Common symbol       size              file
+
+__brkval            0x2               c:/program files (x86)/atmel/studio/7.0/toolchain/avr8/avr8-gnu-toolchain/bin/../lib/gcc/avr/4.9.2/../../../../avr/lib/avr51\libc.a(malloc.o)
+__flp               0x2               c:/program files (x86)/atmel/studio/7.0/toolchain/avr8/avr8-gnu-toolchain/bin/../lib/gcc/avr/4.9.2/../../../../avr/lib/avr51\libc.a(malloc.o)
 
 Discarded input sections
 
@@ -42,13 +50,11 @@ Discarded input sections
  .text          0x00000000        0x0 Styrenheten.o
  .data          0x00000000        0x0 Styrenheten.o
  .bss           0x00000000        0x0 Styrenheten.o
- .text._ZN5QueueC2Ev
-                0x00000000        0xc Styrenheten.o
- .text._ZN5Queue7dequeueEv
-                0x00000000       0x30 Styrenheten.o
- .text._ZN5Queue9queuesizeEv
+ .text._Z10queue_initP5queue
+                0x00000000       0x10 Styrenheten.o
+ .text._Z9queuesizeP5queue
                 0x00000000        0x8 Styrenheten.o
- .text._ZN5Queue7isemptyEv
+ .text._Z7isemptyP5queue
                 0x00000000       0x10 Styrenheten.o
  .bss.tape2CurrentValue
                 0x00000000        0x2 Styrenheten.o
@@ -173,6 +179,8 @@ Discarded input sections
                 0x00000000        0x0 c:/program files (x86)/atmel/studio/7.0/toolchain/avr8/avr8-gnu-toolchain/bin/../lib/gcc/avr/4.9.2/avr51\libgcc.a(_ctors.o)
  .text.libgcc.fixed
                 0x00000000        0x0 c:/program files (x86)/atmel/studio/7.0/toolchain/avr8/avr8-gnu-toolchain/bin/../lib/gcc/avr/4.9.2/avr51\libgcc.a(_ctors.o)
+ .text          0x00000000        0x0 c:/program files (x86)/atmel/studio/7.0/toolchain/avr8/avr8-gnu-toolchain/bin/../lib/gcc/avr/4.9.2/../../../../avr/lib/avr51\libc.a(malloc.o)
+ .bss           0x00000000        0x0 c:/program files (x86)/atmel/studio/7.0/toolchain/avr8/avr8-gnu-toolchain/bin/../lib/gcc/avr/4.9.2/../../../../avr/lib/avr51\libc.a(malloc.o)
 
 Memory Configuration
 
@@ -293,7 +301,7 @@ END GROUP
 .rela.plt
  *(.rela.plt)
 
-.text           0x00000000      0x830
+.text           0x00000000      0xb14
  *(.vectors)
  .vectors       0x00000000       0x8c C:/Program Files (x86)/Atmel/Studio/7.0/Packs/atmel/ATmega_DFP/1.0.90/gcc/dev/atmega1284p/avr51/crtatmega1284p.o
                 0x00000000                __vector_default
@@ -301,213 +309,220 @@ END GROUP
  *(.vectors)
  *(.progmem.gcc*)
  .progmem.gcc_sw_table.main
-                0x0000008c       0x2a Styrenheten.o
-                0x000000b6                . = ALIGN (0x2)
-                0x000000b6                __trampolines_start = .
+                0x0000008c       0x28 Styrenheten.o
+                0x000000b4                . = ALIGN (0x2)
+                0x000000b4                __trampolines_start = .
  *(.trampolines)
- .trampolines   0x000000b6        0x0 linker stubs
+ .trampolines   0x000000b4        0x0 linker stubs
  *(.trampolines*)
-                0x000000b6                __trampolines_end = .
+                0x000000b4                __trampolines_end = .
  *(.progmem*)
-                0x000000b6                . = ALIGN (0x2)
+                0x000000b4                . = ALIGN (0x2)
  *(.jumptables)
  *(.jumptables*)
  *(.lowtext)
  *(.lowtext*)
-                0x000000b6                __ctors_start = .
+                0x000000b4                __ctors_start = .
  *(.ctors)
- .ctors         0x000000b6        0x2 Styrenheten.o
-                0x000000b8                __ctors_end = .
-                0x000000b8                __dtors_start = .
+ .ctors         0x000000b4        0x2 Styrenheten.o
+                0x000000b6                __ctors_end = .
+                0x000000b6                __dtors_start = .
  *(.dtors)
-                0x000000b8                __dtors_end = .
+                0x000000b6                __dtors_end = .
  SORT(*)(.ctors)
  SORT(*)(.dtors)
  *(.init0)
- .init0         0x000000b8        0x0 C:/Program Files (x86)/Atmel/Studio/7.0/Packs/atmel/ATmega_DFP/1.0.90/gcc/dev/atmega1284p/avr51/crtatmega1284p.o
-                0x000000b8                __init
+ .init0         0x000000b6        0x0 C:/Program Files (x86)/Atmel/Studio/7.0/Packs/atmel/ATmega_DFP/1.0.90/gcc/dev/atmega1284p/avr51/crtatmega1284p.o
+                0x000000b6                __init
  *(.init0)
  *(.init1)
  *(.init1)
  *(.init2)
- .init2         0x000000b8        0xc C:/Program Files (x86)/Atmel/Studio/7.0/Packs/atmel/ATmega_DFP/1.0.90/gcc/dev/atmega1284p/avr51/crtatmega1284p.o
+ .init2         0x000000b6        0xc C:/Program Files (x86)/Atmel/Studio/7.0/Packs/atmel/ATmega_DFP/1.0.90/gcc/dev/atmega1284p/avr51/crtatmega1284p.o
  *(.init2)
  *(.init3)
  *(.init3)
  *(.init4)
- .init4         0x000000c4       0x1a c:/program files (x86)/atmel/studio/7.0/toolchain/avr8/avr8-gnu-toolchain/bin/../lib/gcc/avr/4.9.2/avr51\libgcc.a(_copy_data.o)
-                0x000000c4                __do_copy_data
- .init4         0x000000de       0x10 c:/program files (x86)/atmel/studio/7.0/toolchain/avr8/avr8-gnu-toolchain/bin/../lib/gcc/avr/4.9.2/avr51\libgcc.a(_clear_bss.o)
-                0x000000de                __do_clear_bss
+ .init4         0x000000c2       0x1a c:/program files (x86)/atmel/studio/7.0/toolchain/avr8/avr8-gnu-toolchain/bin/../lib/gcc/avr/4.9.2/avr51\libgcc.a(_copy_data.o)
+                0x000000c2                __do_copy_data
+ .init4         0x000000dc       0x10 c:/program files (x86)/atmel/studio/7.0/toolchain/avr8/avr8-gnu-toolchain/bin/../lib/gcc/avr/4.9.2/avr51\libgcc.a(_clear_bss.o)
+                0x000000dc                __do_clear_bss
  *(.init4)
  *(.init5)
  *(.init5)
  *(.init6)
- .init6         0x000000ee       0x14 c:/program files (x86)/atmel/studio/7.0/toolchain/avr8/avr8-gnu-toolchain/bin/../lib/gcc/avr/4.9.2/avr51\libgcc.a(_ctors.o)
-                0x000000ee                __do_global_ctors
+ .init6         0x000000ec       0x14 c:/program files (x86)/atmel/studio/7.0/toolchain/avr8/avr8-gnu-toolchain/bin/../lib/gcc/avr/4.9.2/avr51\libgcc.a(_ctors.o)
+                0x000000ec                __do_global_ctors
  *(.init6)
  *(.init7)
  *(.init7)
  *(.init8)
  *(.init8)
  *(.init9)
- .init9         0x00000102        0x4 C:/Program Files (x86)/Atmel/Studio/7.0/Packs/atmel/ATmega_DFP/1.0.90/gcc/dev/atmega1284p/avr51/crtatmega1284p.o
+ .init9         0x00000100        0x4 C:/Program Files (x86)/Atmel/Studio/7.0/Packs/atmel/ATmega_DFP/1.0.90/gcc/dev/atmega1284p/avr51/crtatmega1284p.o
  *(.init9)
  *(.text)
- .text          0x00000106        0x2 C:/Program Files (x86)/Atmel/Studio/7.0/Packs/atmel/ATmega_DFP/1.0.90/gcc/dev/atmega1284p/avr51/crtatmega1284p.o
-                0x00000106                __vector_22
-                0x00000106                __vector_28
-                0x00000106                __vector_1
-                0x00000106                __vector_32
-                0x00000106                __vector_34
-                0x00000106                __vector_24
-                0x00000106                __vector_12
-                0x00000106                __bad_interrupt
-                0x00000106                __vector_6
-                0x00000106                __vector_31
-                0x00000106                __vector_3
-                0x00000106                __vector_23
-                0x00000106                __vector_30
-                0x00000106                __vector_25
-                0x00000106                __vector_11
-                0x00000106                __vector_13
-                0x00000106                __vector_17
-                0x00000106                __vector_19
-                0x00000106                __vector_7
-                0x00000106                __vector_27
-                0x00000106                __vector_5
-                0x00000106                __vector_33
-                0x00000106                __vector_4
-                0x00000106                __vector_9
-                0x00000106                __vector_2
-                0x00000106                __vector_21
-                0x00000106                __vector_15
-                0x00000106                __vector_29
-                0x00000106                __vector_8
-                0x00000106                __vector_26
-                0x00000106                __vector_14
-                0x00000106                __vector_10
-                0x00000106                __vector_16
-                0x00000106                __vector_18
-                0x00000108                . = ALIGN (0x2)
+ .text          0x00000104        0x2 C:/Program Files (x86)/Atmel/Studio/7.0/Packs/atmel/ATmega_DFP/1.0.90/gcc/dev/atmega1284p/avr51/crtatmega1284p.o
+                0x00000104                __vector_22
+                0x00000104                __vector_28
+                0x00000104                __vector_1
+                0x00000104                __vector_32
+                0x00000104                __vector_34
+                0x00000104                __vector_24
+                0x00000104                __vector_12
+                0x00000104                __bad_interrupt
+                0x00000104                __vector_6
+                0x00000104                __vector_31
+                0x00000104                __vector_3
+                0x00000104                __vector_23
+                0x00000104                __vector_30
+                0x00000104                __vector_25
+                0x00000104                __vector_11
+                0x00000104                __vector_13
+                0x00000104                __vector_17
+                0x00000104                __vector_19
+                0x00000104                __vector_7
+                0x00000104                __vector_27
+                0x00000104                __vector_5
+                0x00000104                __vector_33
+                0x00000104                __vector_4
+                0x00000104                __vector_9
+                0x00000104                __vector_2
+                0x00000104                __vector_21
+                0x00000104                __vector_15
+                0x00000104                __vector_29
+                0x00000104                __vector_8
+                0x00000104                __vector_26
+                0x00000104                __vector_14
+                0x00000104                __vector_10
+                0x00000104                __vector_16
+                0x00000104                __vector_18
+                0x00000106                . = ALIGN (0x2)
  *(.text.*)
  .text._Z17waitForActivationv
-                0x00000108       0x20 Styrenheten.o
-                0x00000108                _Z17waitForActivationv
- .text._ZN5Queue7enqueueEh
-                0x00000128       0x46 Styrenheten.o
-                0x00000128                _ZN5Queue7enqueueEh
+                0x00000106       0x20 Styrenheten.o
+                0x00000106                _Z17waitForActivationv
+ .text._Z7enqueuehP5queue
+                0x00000126       0x62 Styrenheten.o
+                0x00000126                _Z7enqueuehP5queue
+ .text._Z7dequeueP5queue
+                0x00000188       0x48 Styrenheten.o
+                0x00000188                _Z7dequeueP5queue
  .text._Z9IR_senderv
-                0x0000016e       0xa4 Styrenheten.o
-                0x0000016e                _Z9IR_senderv
- .text._Z6SetPWMv
-                0x00000212       0x36 Styrenheten.o
-                0x00000212                _Z6SetPWMv
- .text._Z8InitUARTv
-                0x00000248       0x32 Styrenheten.o
-                0x00000248                _Z8InitUARTv
- .text._Z8InitLEDsv
-                0x0000027a        0xe Styrenheten.o
-                0x0000027a                _Z8InitLEDsv
- .text._Z7InitPWMv
-                0x00000288       0x48 Styrenheten.o
-                0x00000288                _Z7InitPWMv
- .text._Z12InitIRSenderv
-                0x000002d0       0x3a Styrenheten.o
-                0x000002d0                _Z12InitIRSenderv
- .text._Z4Initv
-                0x0000030a        0xa Styrenheten.o
-                0x0000030a                _Z4Initv
- .text._Z11MoveForwardi
-                0x00000314       0x10 Styrenheten.o
-                0x00000314                _Z11MoveForwardi
+                0x000001d0       0xa4 Styrenheten.o
+                0x000001d0                _Z9IR_senderv
  .text._Z7ResetSEv
-                0x00000324       0x1a Styrenheten.o
-                0x00000324                _Z7ResetSEv
+                0x00000274       0x14 Styrenheten.o
+                0x00000274                _Z7ResetSEv
+ .text._Z6SetPWMv
+                0x00000288       0x36 Styrenheten.o
+                0x00000288                _Z6SetPWMv
+ .text._Z8InitUARTv
+                0x000002be       0x32 Styrenheten.o
+                0x000002be                _Z8InitUARTv
+ .text._Z8InitLEDsv
+                0x000002f0       0x14 Styrenheten.o
+                0x000002f0                _Z8InitLEDsv
+ .text._Z7InitPWMv
+                0x00000304       0x48 Styrenheten.o
+                0x00000304                _Z7InitPWMv
+ .text._Z12InitIRSenderv
+                0x0000034c       0x3a Styrenheten.o
+                0x0000034c                _Z12InitIRSenderv
+ .text._Z4Initv
+                0x00000386       0x22 Styrenheten.o
+                0x00000386                _Z4Initv
+ .text._Z11MoveForwardi
+                0x000003a8       0x10 Styrenheten.o
+                0x000003a8                _Z11MoveForwardi
  .text._Z13MoveBackwardsi
-                0x0000033e       0x10 Styrenheten.o
-                0x0000033e                _Z13MoveBackwardsi
+                0x000003b8       0x10 Styrenheten.o
+                0x000003b8                _Z13MoveBackwardsi
  .text._Z8TurnLefti
-                0x0000034e       0x10 Styrenheten.o
-                0x0000034e                _Z8TurnLefti
+                0x000003c8       0x10 Styrenheten.o
+                0x000003c8                _Z8TurnLefti
  .text._Z9TurnRighti
-                0x0000035e       0x10 Styrenheten.o
-                0x0000035e                _Z9TurnRighti
+                0x000003d8       0x10 Styrenheten.o
+                0x000003d8                _Z9TurnRighti
  .text._Z13ActivateLaserv
-                0x0000036e        0x4 Styrenheten.o
-                0x0000036e                _Z13ActivateLaserv
+                0x000003e8        0x6 Styrenheten.o
+                0x000003e8                _Z13ActivateLaserv
  .text._Z15DeactivateLaserv
-                0x00000372        0x4 Styrenheten.o
-                0x00000372                _Z15DeactivateLaserv
+                0x000003ee        0x6 Styrenheten.o
+                0x000003ee                _Z15DeactivateLaserv
  .text._Z18TurnOffIRSignaturev
-                0x00000376        0x8 Styrenheten.o
-                0x00000376                _Z18TurnOffIRSignaturev
+                0x000003f4        0x8 Styrenheten.o
+                0x000003f4                _Z18TurnOffIRSignaturev
  .text._Z17TurnOnIRSignaturev
-                0x0000037e        0xa Styrenheten.o
-                0x0000037e                _Z17TurnOnIRSignaturev
+                0x000003fc        0xa Styrenheten.o
+                0x000003fc                _Z17TurnOnIRSignaturev
  .text._Z17DecrementLEDLivesv
-                0x00000388       0x36 Styrenheten.o
-                0x00000388                _Z17DecrementLEDLivesv
+                0x00000406       0x36 Styrenheten.o
+                0x00000406                _Z17DecrementLEDLivesv
  .text._Z8StopMovev
-                0x000003be        0xc Styrenheten.o
-                0x000003be                _Z8StopMovev
+                0x0000043c        0xc Styrenheten.o
+                0x0000043c                _Z8StopMovev
  .text.__vector_20
-                0x000003ca       0xae Styrenheten.o
-                0x000003ca                __vector_20
+                0x00000448       0xae Styrenheten.o
+                0x00000448                __vector_20
  .text._Z8SendUARTv
-                0x00000478       0x8e Styrenheten.o
-                0x00000478                _Z8SendUARTv
- .text.main     0x00000506       0x9c Styrenheten.o
-                0x00000506                main
+                0x000004f6       0x8e Styrenheten.o
+                0x000004f6                _Z8SendUARTv
+ .text.main     0x00000584       0xb4 Styrenheten.o
+                0x00000584                main
  .text._GLOBAL__sub_I_tape1Threshold
-                0x000005a2       0x34 Styrenheten.o
+                0x00000638       0x28 Styrenheten.o
  .text.avr-libc.fplib
-                0x000005d6        0xa c:/program files (x86)/atmel/studio/7.0/toolchain/avr8/avr8-gnu-toolchain/bin/../lib/gcc/avr/4.9.2/../../../../avr/lib/avr51\libm.a(fixsfsi.o)
-                0x000005d6                __fixsfsi
+                0x00000660        0xa c:/program files (x86)/atmel/studio/7.0/toolchain/avr8/avr8-gnu-toolchain/bin/../lib/gcc/avr/4.9.2/../../../../avr/lib/avr51\libm.a(fixsfsi.o)
+                0x00000660                __fixsfsi
  .text.avr-libc.fplib
-                0x000005e0       0x58 c:/program files (x86)/atmel/studio/7.0/toolchain/avr8/avr8-gnu-toolchain/bin/../lib/gcc/avr/4.9.2/../../../../avr/lib/avr51\libm.a(fixunssfsi.o)
-                0x000005e0                __fixunssfsi
+                0x0000066a       0x58 c:/program files (x86)/atmel/studio/7.0/toolchain/avr8/avr8-gnu-toolchain/bin/../lib/gcc/avr/4.9.2/../../../../avr/lib/avr51\libm.a(fixunssfsi.o)
+                0x0000066a                __fixunssfsi
  .text.avr-libc.fplib
-                0x00000638       0x7a c:/program files (x86)/atmel/studio/7.0/toolchain/avr8/avr8-gnu-toolchain/bin/../lib/gcc/avr/4.9.2/../../../../avr/lib/avr51\libm.a(floatsisf.o)
-                0x00000638                __floatunsisf
-                0x0000063c                __floatsisf
+                0x000006c2       0x7a c:/program files (x86)/atmel/studio/7.0/toolchain/avr8/avr8-gnu-toolchain/bin/../lib/gcc/avr/4.9.2/../../../../avr/lib/avr51\libm.a(floatsisf.o)
+                0x000006c2                __floatunsisf
+                0x000006c6                __floatsisf
  .text.avr-libc.fplib
-                0x000006b2       0x44 c:/program files (x86)/atmel/studio/7.0/toolchain/avr8/avr8-gnu-toolchain/bin/../lib/gcc/avr/4.9.2/../../../../avr/lib/avr51\libm.a(fp_split3.o)
-                0x000006b2                __fp_split3
-                0x000006c2                __fp_splitA
+                0x0000073c       0x44 c:/program files (x86)/atmel/studio/7.0/toolchain/avr8/avr8-gnu-toolchain/bin/../lib/gcc/avr/4.9.2/../../../../avr/lib/avr51\libm.a(fp_split3.o)
+                0x0000073c                __fp_split3
+                0x0000074c                __fp_splitA
  .text.avr-libc.fplib
-                0x000006f6        0xe c:/program files (x86)/atmel/studio/7.0/toolchain/avr8/avr8-gnu-toolchain/bin/../lib/gcc/avr/4.9.2/../../../../avr/lib/avr51\libm.a(fp_zero.o)
-                0x000006f6                __fp_zero
-                0x000006f8                __fp_szero
+                0x00000780        0xe c:/program files (x86)/atmel/studio/7.0/toolchain/avr8/avr8-gnu-toolchain/bin/../lib/gcc/avr/4.9.2/../../../../avr/lib/avr51\libm.a(fp_zero.o)
+                0x00000780                __fp_zero
+                0x00000782                __fp_szero
  .text.avr-libc.fplib
-                0x00000704        0x4 c:/program files (x86)/atmel/studio/7.0/toolchain/avr8/avr8-gnu-toolchain/bin/../lib/gcc/avr/4.9.2/../../../../avr/lib/avr51\libm.a(mulsf3.o)
-                0x00000704                __mulsf3
+                0x0000078e        0x4 c:/program files (x86)/atmel/studio/7.0/toolchain/avr8/avr8-gnu-toolchain/bin/../lib/gcc/avr/4.9.2/../../../../avr/lib/avr51\libm.a(mulsf3.o)
+                0x0000078e                __mulsf3
  .text.avr-libc.fplib
-                0x00000708       0xc2 c:/program files (x86)/atmel/studio/7.0/toolchain/avr8/avr8-gnu-toolchain/bin/../lib/gcc/avr/4.9.2/../../../../avr/lib/avr51\libm.a(mulsf3x.o)
-                0x0000071c                __mulsf3x
-                0x00000720                __mulsf3_pse
+                0x00000792       0xc2 c:/program files (x86)/atmel/studio/7.0/toolchain/avr8/avr8-gnu-toolchain/bin/../lib/gcc/avr/4.9.2/../../../../avr/lib/avr51\libm.a(mulsf3x.o)
+                0x000007a6                __mulsf3x
+                0x000007aa                __mulsf3_pse
  .text.avr-libc.fplib
-                0x000007ca        0xc c:/program files (x86)/atmel/studio/7.0/toolchain/avr8/avr8-gnu-toolchain/bin/../lib/gcc/avr/4.9.2/../../../../avr/lib/avr51\libm.a(fp_inf.o)
-                0x000007ca                __fp_inf
+                0x00000854        0xc c:/program files (x86)/atmel/studio/7.0/toolchain/avr8/avr8-gnu-toolchain/bin/../lib/gcc/avr/4.9.2/../../../../avr/lib/avr51\libm.a(fp_inf.o)
+                0x00000854                __fp_inf
  .text.avr-libc.fplib
-                0x000007d6        0x6 c:/program files (x86)/atmel/studio/7.0/toolchain/avr8/avr8-gnu-toolchain/bin/../lib/gcc/avr/4.9.2/../../../../avr/lib/avr51\libm.a(fp_nan.o)
-                0x000007d6                __fp_nan
+                0x00000860        0x6 c:/program files (x86)/atmel/studio/7.0/toolchain/avr8/avr8-gnu-toolchain/bin/../lib/gcc/avr/4.9.2/../../../../avr/lib/avr51\libm.a(fp_nan.o)
+                0x00000860                __fp_nan
  .text.avr-libc.fplib
-                0x000007dc        0xe c:/program files (x86)/atmel/studio/7.0/toolchain/avr8/avr8-gnu-toolchain/bin/../lib/gcc/avr/4.9.2/../../../../avr/lib/avr51\libm.a(fp_pscA.o)
-                0x000007dc                __fp_pscA
+                0x00000866        0xe c:/program files (x86)/atmel/studio/7.0/toolchain/avr8/avr8-gnu-toolchain/bin/../lib/gcc/avr/4.9.2/../../../../avr/lib/avr51\libm.a(fp_pscA.o)
+                0x00000866                __fp_pscA
  .text.avr-libc.fplib
-                0x000007ea        0xe c:/program files (x86)/atmel/studio/7.0/toolchain/avr8/avr8-gnu-toolchain/bin/../lib/gcc/avr/4.9.2/../../../../avr/lib/avr51\libm.a(fp_pscB.o)
-                0x000007ea                __fp_pscB
+                0x00000874        0xe c:/program files (x86)/atmel/studio/7.0/toolchain/avr8/avr8-gnu-toolchain/bin/../lib/gcc/avr/4.9.2/../../../../avr/lib/avr51\libm.a(fp_pscB.o)
+                0x00000874                __fp_pscB
  .text.avr-libc.fplib
-                0x000007f8       0x22 c:/program files (x86)/atmel/studio/7.0/toolchain/avr8/avr8-gnu-toolchain/bin/../lib/gcc/avr/4.9.2/../../../../avr/lib/avr51\libm.a(fp_round.o)
-                0x000007f8                __fp_round
- .text.libgcc   0x0000081a       0x12 c:/program files (x86)/atmel/studio/7.0/toolchain/avr8/avr8-gnu-toolchain/bin/../lib/gcc/avr/4.9.2/avr51\libgcc.a(_tablejump2.o)
-                0x0000081a                __tablejump2__
-                0x0000082c                . = ALIGN (0x2)
+                0x00000882       0x22 c:/program files (x86)/atmel/studio/7.0/toolchain/avr8/avr8-gnu-toolchain/bin/../lib/gcc/avr/4.9.2/../../../../avr/lib/avr51\libm.a(fp_round.o)
+                0x00000882                __fp_round
+ .text.libgcc   0x000008a4       0x12 c:/program files (x86)/atmel/studio/7.0/toolchain/avr8/avr8-gnu-toolchain/bin/../lib/gcc/avr/4.9.2/avr51\libgcc.a(_tablejump2.o)
+                0x000008a4                __tablejump2__
+ .text.avr-libc
+                0x000008b6      0x25a c:/program files (x86)/atmel/studio/7.0/toolchain/avr8/avr8-gnu-toolchain/bin/../lib/gcc/avr/4.9.2/../../../../avr/lib/avr51\libc.a(malloc.o)
+                0x000008b6                malloc
+                0x000009e0                free
+                0x00000b10                . = ALIGN (0x2)
  *(.fini9)
- .fini9         0x0000082c        0x0 c:/program files (x86)/atmel/studio/7.0/toolchain/avr8/avr8-gnu-toolchain/bin/../lib/gcc/avr/4.9.2/avr51\libgcc.a(_exit.o)
-                0x0000082c                _exit
-                0x0000082c                exit
+ .fini9         0x00000b10        0x0 c:/program files (x86)/atmel/studio/7.0/toolchain/avr8/avr8-gnu-toolchain/bin/../lib/gcc/avr/4.9.2/avr51\libgcc.a(_exit.o)
+                0x00000b10                _exit
+                0x00000b10                exit
  *(.fini9)
  *(.fini8)
  *(.fini8)
@@ -526,64 +541,65 @@ END GROUP
  *(.fini1)
  *(.fini1)
  *(.fini0)
- .fini0         0x0000082c        0x4 c:/program files (x86)/atmel/studio/7.0/toolchain/avr8/avr8-gnu-toolchain/bin/../lib/gcc/avr/4.9.2/avr51\libgcc.a(_exit.o)
+ .fini0         0x00000b10        0x4 c:/program files (x86)/atmel/studio/7.0/toolchain/avr8/avr8-gnu-toolchain/bin/../lib/gcc/avr/4.9.2/avr51\libgcc.a(_exit.o)
  *(.fini0)
-                0x00000830                _etext = .
+                0x00000b14                _etext = .
 
-.data           0x00800100       0x20 load address 0x00000830
+.data           0x00800100       0x26 load address 0x00000b14
                 0x00800100                PROVIDE (__data_start, .)
  *(.data)
+ .data          0x00800100        0x6 c:/program files (x86)/atmel/studio/7.0/toolchain/avr8/avr8-gnu-toolchain/bin/../lib/gcc/avr/4.9.2/../../../../avr/lib/avr51\libc.a(malloc.o)
+                0x00800100                __malloc_heap_end
+                0x00800102                __malloc_heap_start
+                0x00800104                __malloc_margin
  *(.data*)
  .data.messageNumber
-                0x00800100        0x1 Styrenheten.o
-                0x00800100                messageNumber
- .data.message6
-                0x00800101        0x1 Styrenheten.o
-                0x00800101                message6
- .data.message5
-                0x00800102        0x1 Styrenheten.o
-                0x00800102                message5
- .data.message4
-                0x00800103        0x1 Styrenheten.o
-                0x00800103                message4
- .data.message3
-                0x00800104        0x1 Styrenheten.o
-                0x00800104                message3
- .data.message2
-                0x00800105        0x1 Styrenheten.o
-                0x00800105                message2
- .data.IRisActivive
                 0x00800106        0x1 Styrenheten.o
-                0x00800106                IRisActivive
- .data.health   0x00800107        0x2 Styrenheten.o
-                0x00800107                health
- .data.period   0x00800109        0x2 Styrenheten.o
-                0x00800109                period
- .data.isHigh   0x0080010b        0x1 Styrenheten.o
-                0x0080010b                isHigh
+                0x00800106                messageNumber
+ .data.message6
+                0x00800107        0x1 Styrenheten.o
+                0x00800107                message6
+ .data.message5
+                0x00800108        0x1 Styrenheten.o
+                0x00800108                message5
+ .data.message4
+                0x00800109        0x1 Styrenheten.o
+                0x00800109                message4
+ .data.message3
+                0x0080010a        0x1 Styrenheten.o
+                0x0080010a                message3
+ .data.message2
+                0x0080010b        0x1 Styrenheten.o
+                0x0080010b                message2
+ .data.IRisActivive
+                0x0080010c        0x1 Styrenheten.o
+                0x0080010c                IRisActivive
+ .data.health   0x0080010d        0x2 Styrenheten.o
+                0x0080010d                health
+ .data.period   0x0080010f        0x2 Styrenheten.o
+                0x0080010f                period
+ .data.isHigh   0x00800111        0x1 Styrenheten.o
+                0x00800111                isHigh
  .data.pauseTimes
-                0x0080010c       0x10 Styrenheten.o
-                0x0080010c                pauseTimes
+                0x00800112       0x10 Styrenheten.o
+                0x00800112                pauseTimes
  .data.IRperiod
-                0x0080011c        0x2 Styrenheten.o
-                0x0080011c                IRperiod
+                0x00800122        0x2 Styrenheten.o
+                0x00800122                IRperiod
  .data.IRdutyCycle
-                0x0080011e        0x2 Styrenheten.o
-                0x0080011e                IRdutyCycle
+                0x00800124        0x2 Styrenheten.o
+                0x00800124                IRdutyCycle
  *(.rodata)
  *(.rodata*)
  *(.gnu.linkonce.d*)
-                0x00800120                . = ALIGN (0x2)
-                0x00800120                _edata = .
-                0x00800120                PROVIDE (__data_end, .)
+                0x00800126                . = ALIGN (0x2)
+                0x00800126                _edata = .
+                0x00800126                PROVIDE (__data_end, .)
 
-.bss            0x00800120        0xe
-                0x00800120                PROVIDE (__bss_start, .)
+.bss            0x00800126       0x12
+                0x00800126                PROVIDE (__bss_start, .)
  *(.bss)
  *(.bss*)
- .bss.orderQueue
-                0x00800120        0x6 Styrenheten.o
-                0x00800120                orderQueue
  .bss.message1  0x00800126        0x1 Styrenheten.o
                 0x00800126                message1
  .bss.currentOrder
@@ -596,17 +612,23 @@ END GROUP
                 0x0080012a                ctr
  .bss.ptIndex   0x0080012c        0x2 Styrenheten.o
                 0x0080012c                ptIndex
+ .bss.orderQueue
+                0x0080012e        0x6 Styrenheten.o
+                0x0080012e                orderQueue
  *(COMMON)
-                0x0080012e                PROVIDE (__bss_end, .)
-                0x00000830                __data_load_start = LOADADDR (.data)
-                0x00000850                __data_load_end = (__data_load_start + SIZEOF (.data))
+ COMMON         0x00800134        0x4 c:/program files (x86)/atmel/studio/7.0/toolchain/avr8/avr8-gnu-toolchain/bin/../lib/gcc/avr/4.9.2/../../../../avr/lib/avr51\libc.a(malloc.o)
+                0x00800134                __brkval
+                0x00800136                __flp
+                0x00800138                PROVIDE (__bss_end, .)
+                0x00000b14                __data_load_start = LOADADDR (.data)
+                0x00000b3a                __data_load_end = (__data_load_start + SIZEOF (.data))
 
-.noinit         0x0080012e        0x0
-                0x0080012e                PROVIDE (__noinit_start, .)
+.noinit         0x00800138        0x0
+                0x00800138                PROVIDE (__noinit_start, .)
  *(.noinit*)
-                0x0080012e                PROVIDE (__noinit_end, .)
-                0x0080012e                _end = .
-                0x0080012e                PROVIDE (__heap_start, .)
+                0x00800138                PROVIDE (__noinit_end, .)
+                0x00800138                _end = .
+                0x00800138                PROVIDE (__heap_start, .)
 
 .eeprom         0x00810000        0x0
  *(.eeprom*)
@@ -649,6 +671,7 @@ END GROUP
  *(.comment)
  .comment       0x00000000       0x30 Styrenheten.o
                                  0x31 (size before relaxing)
+ .comment       0x00000030       0x31 c:/program files (x86)/atmel/studio/7.0/toolchain/avr8/avr8-gnu-toolchain/bin/../lib/gcc/avr/4.9.2/../../../../avr/lib/avr51\libc.a(malloc.o)
 
 .note.gnu.avr.deviceinfo
                 0x00000000       0x40
@@ -678,30 +701,30 @@ END GROUP
 .debug_pubnames
  *(.debug_pubnames)
 
-.debug_info     0x00000000      0xaaf
+.debug_info     0x00000000      0xa69
  *(.debug_info .gnu.linkonce.wi.*)
- .debug_info    0x00000000      0xaaf Styrenheten.o
+ .debug_info    0x00000000      0xa69 Styrenheten.o
 
-.debug_abbrev   0x00000000      0x3d6
+.debug_abbrev   0x00000000      0x33b
  *(.debug_abbrev)
- .debug_abbrev  0x00000000      0x3d6 Styrenheten.o
+ .debug_abbrev  0x00000000      0x33b Styrenheten.o
 
-.debug_line     0x00000000      0x7a0
+.debug_line     0x00000000      0x8ba
  *(.debug_line .debug_line.* .debug_line_end)
- .debug_line    0x00000000      0x7a0 Styrenheten.o
+ .debug_line    0x00000000      0x8ba Styrenheten.o
 
 .debug_frame    0x00000000      0x238
  *(.debug_frame)
  .debug_frame   0x00000000      0x238 Styrenheten.o
 
-.debug_str      0x00000000      0x6e3
+.debug_str      0x00000000      0x6eb
  *(.debug_str)
- .debug_str     0x00000000      0x6e3 Styrenheten.o
-                                0x742 (size before relaxing)
+ .debug_str     0x00000000      0x6eb Styrenheten.o
+                                0x74f (size before relaxing)
 
-.debug_loc      0x00000000      0x3b0
+.debug_loc      0x00000000      0x3f8
  *(.debug_loc)
- .debug_loc     0x00000000      0x3b0 Styrenheten.o
+ .debug_loc     0x00000000      0x3f8 Styrenheten.o
 
 .debug_macinfo
  *(.debug_macinfo)

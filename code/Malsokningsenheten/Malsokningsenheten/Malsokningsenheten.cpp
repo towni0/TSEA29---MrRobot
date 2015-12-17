@@ -76,7 +76,7 @@ uint8_t messageNumber = 1;
 #define HALF_SECOND 9000
 #define QUARTER_SECOND 4500
 
-// Data
+//variables
 bool canShoot = true;
 int health = 3;
 bool dead = false;
@@ -95,7 +95,12 @@ bool checkLaserSensor();
 bool checkLaserCooldown();
 bool invisibilityHandler();
 bool collisionCheck();
+void positioning();
 void snapshotUART();
+
+//shoot conditions
+int maxDistance = 20;
+bool isPositioning = false;
 
 // Rotation stuff
 bool rotating = false;
@@ -126,33 +131,13 @@ int orders[10];
 
 //gyro
 const float sampleTimeInMS = 5; // the gyro gives us degrees/sec
-const int sampleticks = 90 ;
+const int sampleticks = 90 ; //used for timer (5 ms)
 double millidegreesTurned = 0;
-
-
-//Test kod för testläge
-bool targetDistanceIsSet = false;
-bool needToRotate = false;
-int maxDistance = 20;
-int distanceToTarget = 0;
-bool isPositioning = false;
-bool checkLeft = false;
-bool scanDone = false;
-bool prepareToFire = false;
-
-void positioning();
-
-// Test kod för tävling
-long forwardTickCTR = 0;	// This is used to see how long we have Moved Forward(kinda)
-long forwardMaxTimeInTicks = 100000;
-int maxRange = 15;
-bool isMovingForward = true;
-bool signatureConfirmed = false;
-
 
 
 int main(void)
 {
+	//set data direction
 	DDRB = 0b11111011;
 	DDRC = 0xFF;
 	
@@ -206,7 +191,7 @@ int main(void)
 			//#############
 
 			IRDebouncer();			
-			if(enemySignatureCTR >= enemySignatureLimit && !isPositioning) isPositioning = true;
+			if(enemySignatureCTR >= enemySignatureLimit && !isPositioning) isPositioning = true; //start scanning if signature is found
 			if(checkLaserSensor() || invisibilityHandler() || checkLaserCooldown() || checkForTape() || checkBacking() || collisionCheck()) continue;
 			
 			if (rotating) {
@@ -309,6 +294,7 @@ void SendUART() {
 		//mux through messages
 		switch(messageNumber){
 			case 1:
+				//change if we see enemy signature only if debouncer says so
 				message1 &= ~(1<<IRSENSOR_INDEX); //Reset bit
 				(isEnemy ? message1 |= (1<<IRSENSOR_INDEX) : message1 &= ~(1<<IRSENSOR_INDEX));
 				UDR1 = message1;
@@ -406,7 +392,6 @@ bool UpdateRotation() {
 			}
 			else{
 				StopRotate(MOVE_FORWARD);
-				isMovingForward = true;		// tävlingsläge
 			}
 			
 			// used to only rotate 360 when searching.
