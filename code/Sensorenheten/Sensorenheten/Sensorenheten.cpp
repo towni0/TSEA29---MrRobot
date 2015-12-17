@@ -2,6 +2,7 @@
  * Sensorenheten
  * 
  * TSEA29 Group 15
+ * Programmerare: Joacim Stålberg, Mattias Ulmstedt, Tor Utterborn, Hans Tchou, Johan Olin och Per Olin.
  * LIU
  */ 
 
